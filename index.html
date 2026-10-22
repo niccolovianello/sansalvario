@@ -68,7 +68,7 @@ button{font:inherit;color:inherit}
 .hnav button:disabled{opacity:.35;cursor:default}
 .nextb{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 12px;white-space:nowrap;border:0;border-radius:99px;background:rgba(255,255,255,.16);color:#fff;font:700 13px var(--font);cursor:pointer}
 .mid .stamp{margin-top:8px}
-.m3{display:grid;grid-template-columns:minmax(0,1fr) 116px minmax(0,1fr);grid-template-rows:128px 54px;align-items:start;gap:4px;margin-top:8px}
+.m3{display:grid;grid-template-columns:minmax(0,1fr) 116px minmax(0,1fr);grid-template-rows:128px 90px;align-items:start;gap:4px;margin-top:8px}
 .m3>.tm,.m3>.mid{grid-row:1;align-self:stretch;display:flex;flex-direction:column;justify-content:center;overflow:hidden;max-height:128px}   /* squadre e numeri centrati sulla stessa linea */
 .tm{text-align:center}
 .tm .fl{display:none}
@@ -76,7 +76,7 @@ button{font:inherit;color:inherit}
 .tm:not(.me) b{color:var(--kitmuted)}
 .goals{grid-row:2;align-self:stretch}
 .goals.h{grid-column:1 / 3}.goals.a{grid-column:2 / 4}
-.goals ul{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,18px);grid-auto-flow:column;column-gap:6px;margin:0;padding:0;list-style:none;font-size:14px;line-height:18px;font-weight:500;color:#fff;text-align:center}
+.goals ul{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,18px);grid-auto-flow:column;column-gap:6px;margin:0;padding:0;list-style:none;font-size:14px;line-height:18px;font-weight:500;color:#fff;text-align:center}
 .goals li{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .goals.a ul{direction:rtl}.goals.a li{direction:ltr}
 .mid{text-align:center;align-items:center}
@@ -472,8 +472,8 @@ function scorerLabel(n){
 const gName = g => scorerLabel(g.name) + (g.n > 1 ? ' ×' + g.n : '');
 function scorerBlock(m){
   const sc = scorerList(m.scorers); if(!sc.length) return '';
-  // al massimo 6 righe (2 colonne da 3): oltre, l’ultima riga dice quanti altri
-  const rows = sc.length > 6 ? [...sc.slice(0, 5).map(g => esc(gName(g))), `+ altri ${sc.length - 5}`] : sc.map(g => esc(gName(g)));
+  // al massimo 10 righe (2 colonne da 5): oltre, l’ultima riga dice quanti altri
+  const rows = sc.length > 10 ? [...sc.slice(0, 9).map(g => esc(gName(g))), `+ altri ${sc.length - 9}`] : sc.map(g => esc(gName(g)));
   return `<ul aria-label="Marcatori">${rows.map(t => `<li>${t}</li>`).join('')}</ul>`;
 }
 // "Andata, giornata 4" → numero e girone per le etichette brevi
