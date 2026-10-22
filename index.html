@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A.S.D. San Salvario</title>
 <meta name="theme-color" content="#f3f4f8">
-<script>/* tema prima del render, niente lampo */try{var t=localStorage.getItem((/-test\//.test(location.pathname)?'test-':'')+'tema');if(t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script>/* tema prima del render, niente lampo */try{var t=localStorage.getItem((/-test\/|\/dev\//.test(location.pathname)?'test-':'')+'tema');if(t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}</script>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -352,8 +352,8 @@ const dDate = d => new Date(d).toLocaleDateString('it-IT',{weekday:'long',day:'n
 const dShort = d => new Date(d).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'}) + ' · ' + new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 const hhmm = d => new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 const DB = CONFIG.firebaseUrl.replace(/\/$/,'');
-// Sito di test (…/sansalvario-test/): salva codice e nome con un prefisso, per non mescolarli col sito vero sullo stesso indirizzo.
-const TEST = /-test\//.test(location.pathname);
+// Sito di test (…/sansalvario/dev/ o …/sansalvario-test/): salva codice e nome con un prefisso, per non mescolarli col sito vero sullo stesso indirizzo.
+const TEST = /-test\/|\/dev\//.test(location.pathname);
 const K = k => (TEST ? 'test-' : '') + k;
 function setTheme(dark, keep){
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
