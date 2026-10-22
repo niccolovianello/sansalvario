@@ -64,6 +64,7 @@ html.locked .top .crest{display:none}   /* nella schermata del codice c’è gi�
 .kitbg .fl{color:var(--kitmuted)}
 /* stemma in filigrana, come un disegno tessuto nella maglia */
 .kitbg::after{content:"";position:absolute;z-index:-1;right:-70px;top:50%;width:260px;height:260px;transform:translateY(-50%) rotate(-12deg);background:url(crest-mark.webp) center/contain no-repeat;opacity:.09;pointer-events:none}
+.kitbg.home::after{right:auto;left:-70px;transform:translateY(-50%) rotate(12deg)}   /* lo stemma sta dalla parte di San Salvario */
 .mh{display:flex;align-items:center;gap:10px}
 .mh .lab{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .mh .lab>.fl{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -636,7 +637,7 @@ function drawHero(){
   const arrow = (to, lab, d) => `<button type="button" ${to ? `data-match="${to.id}"` : 'disabled'} aria-label="${lab}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg></button>`;
   const day = new Date(m.date).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
   $('#hero').innerHTML = `<h2 class="sr">${esc(vs(m))}, ${esc(dShort(m.date))}</h2>
-    <div class="kitbg">
+    <div class="kitbg ${m.home ? 'home' : 'away'}">
     <div class="mh"><div class="lab"><span class="fl">${esc(day.charAt(0).toUpperCase() + day.slice(1))}${kicked(m) && !/^(oggi|ieri)$/.test(relDay(m.date)) ? '' : ' · ' + relDay(m.date)}${g.n !== '–' ? ' · ' + g.n + 'ª giornata' : ''}</span><span class="pills">${stampHA(m)}${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}"><span class="va">Vai alla </span>prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</span></div>
     <div class="hnav">${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
     <div class="m3">${team(m.home ? 'San Salvario' : m.opp, m.home, 'Casa')}${mid}${team(m.home ? m.opp : 'San Salvario', !m.home, 'Ospiti')}<div class="goals ${m.home ? 'h' : 'a'}">${o ? scorerBlock(m) : ''}</div></div>
