@@ -231,13 +231,21 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
 .lock .go{background:var(--stripe)}
 .lock :focus-visible{outline-color:#fff}
+/* schermata del codice: tutta la pagina è la maglia, il modulo al centro */
+html.locked body{background:var(--kit)}
+html.locked main{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+html.locked .lock{width:100%;margin:auto;padding:0 0 8vh;background:none;border-radius:0}
+html.locked .top{margin:0;padding:0 0 10px;background:none;color:#fff}
+html.locked .top::before{display:none}
+html.locked .top small{color:var(--kitmuted)}
+html.locked .top .theme{background:rgba(255,255,255,.14);border-color:transparent;color:#fff}
+html.locked .top :focus-visible{outline-color:#fff}
+@media (max-width:899px){html.locked body::before{content:"";position:fixed;left:0;top:0;bottom:0;width:8px;background:var(--stripe)}html.locked main{padding-left:calc(var(--gut) + 8px)}}
 @media (max-width:899px){
   .top{position:relative;margin:-14px calc(-1 * var(--gut)) 0;padding:12px var(--gut) 6px calc(var(--gut) + 8px);background:var(--kit);color:#fff}
   .top::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--stripe)}
   .top small{color:var(--kitmuted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .top .season{display:none}
-  .lock{margin:0 calc(-1 * var(--gut));border-radius:0;max-width:none;padding-left:calc(var(--gut) + 8px);padding-right:var(--gut)}
-  .lock::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--stripe)}
   .top .theme{background:rgba(255,255,255,.14);border-color:transparent;color:#fff}
   .top :focus-visible{outline-color:#fff}
   #hero{margin:0 calc(-1 * var(--gut));border-radius:0;border-bottom:1px solid var(--line)}
@@ -967,7 +975,7 @@ document.addEventListener('submit', async e => {
 let started = false;
 async function start(){
   if(started) return; started = true;
-  $('#lock').hidden = true;
+  $('#lock').hidden = true; document.documentElement.classList.remove('locked'); setTheme(document.documentElement.dataset.theme === 'dark');
   renderTop();
   await loadICS(); await load(); renderAll(); renderLive();
   $('#app').hidden = false;
@@ -978,7 +986,7 @@ async function start(){
   try{ saved = localStorage.getItem(K('codice')) || ''; }catch(e){}
   try{ if(saved && await unlock(saved)) return start(); }
   catch(e){ $('#err').textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; }
-  $('#lock').hidden = false;
+  $('#lock').hidden = false; document.documentElement.classList.add('locked'); document.querySelector('meta[name=theme-color]').content = '#253369';
 })();
 </script>
 </body>
