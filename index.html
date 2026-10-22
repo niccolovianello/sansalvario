@@ -96,7 +96,6 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .res b{font-size:17px}.res small{display:block;opacity:.75;font-size:13px}
 .goals{grid-row:2;text-align:center;font-size:14px}
 .goals.c1{grid-column:1}.goals.c3{grid-column:3}
-.goals h4{margin:0 0 4px;font:600 11px var(--body);letter-spacing:.12em;text-transform:uppercase;opacity:.7}
 .goals ul{list-style:none;margin:0;padding:0}
 .goals li{padding:3px 0;font-weight:500}
 .cal .r{text-align:right}.cal .r small{font:500 12px var(--body)}
@@ -317,7 +316,7 @@ function scorerLabel(n){
 const gName = g => scorerLabel(g.name) + (g.n > 1 ? ' ×' + g.n : '');
 function scorerBlock(m){
   const sc = scorerList(m.scorers); if(!sc.length) return '';
-  return `<div class="goals ${m.home ? 'c1' : 'c3'}"><h4>Marcatori</h4><ul>${sc.map(g => `<li>${esc(gName(g))}</li>`).join('')}</ul></div>`;
+  return `<div class="goals ${m.home ? 'c1' : 'c3'}"><ul aria-label="Marcatori">${sc.map(g => `<li>${esc(gName(g))}</li>`).join('')}</ul></div>`;
 }
 const rBadge = m => { const o = outcome(m); return o ? `<span class="r ${o.cls}">${o.gf}–${o.gs}<small>${o.label}</small></span>` : ''; };
 function subLinks(){
