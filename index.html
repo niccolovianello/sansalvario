@@ -205,11 +205,13 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .subs a{flex:1 1 100%;justify-content:center}
 .subs svg{flex:none}
 .rank{list-style:none;margin:0;padding:2px 14px}
-.rank li{display:grid;grid-template-columns:28px minmax(0,1fr) 36px;gap:10px;align-items:center;min-height:46px;border-bottom:1px solid var(--line)}
-.rank li:last-child{border-bottom:0}.rank li.none{display:block}
-.rank .pos{font-size:16px;font-weight:800;color:var(--muted)}
-.rank .nm{font-size:15px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rank .val{font-size:22px;font-weight:800;color:var(--val);text-align:right}
+.rank li{padding:10px 0 11px;border-bottom:1px solid var(--line)}
+.rank li:last-child{border-bottom:0}
+.rank h3{margin:0;font-size:15px;font-weight:500;color:var(--muted)}
+.rank h3 b{font-size:24px;font-weight:800;color:var(--val);margin-right:2px}
+.rank p{margin:2px 0 0;font-size:15.5px;font-weight:500;line-height:1.45}
+.rank p span{color:var(--muted)}
+.rank p i{font-style:normal;white-space:nowrap}
 .rank .empty{display:block;color:var(--muted);font-size:14.5px;padding:12px 0}
 /* come funziona */
 .help{margin-top:12px}
@@ -809,10 +811,10 @@ function renderRank(){
   // a pari gol, ordine alfabetico per cognome ("J. Varvello" → Varvello; nome completo → cognome dalla rosa)
   const sur = l => { const i = l.match(/^\p{L}\.\s+(.+)$/u); if(i) return i[1]; const r = ROSTER.find(x => x.name === l); return r ? surname(r.name) : l; };
   const rows = [...tot].sort((a,b) => b[1] - a[1] || sur(a[0]).localeCompare(sur(b[0]),'it') || a[0].localeCompare(b[0],'it'));
-  $('#rank').innerHTML = rows.map(([n, v], i) => {
-    const pos = rows.findIndex(r => r[1] === v) + 1;   // a pari gol stessa posizione
-    return `<li title="${esc(n)}: ${v} gol"><span class="pos">${pos}</span><span class="nm">${esc(n)}</span><b class="val">${v}</b></li>`;
-  }).join('') || '<li class="none"><span class="empty">Nessun gol segnato finora.</span></li>';
+  // raggruppa per numero di gol: "2 gol · 3 giocatori" e sotto i nomi
+  const groups = []; rows.forEach(([n, v]) => { const g = groups[groups.length - 1]; if(g && g.v === v) g.names.push(n); else groups.push({v, names:[n]}); });
+  $('#rank').innerHTML = groups.map(g => `<li class="rg"><h3><b>${g.v}</b> gol${g.names.length > 1 ? `<span> · ${g.names.length} giocatori</span>` : ''}</h3><p>${g.names.map(n => `<i>${esc(n)}</i>`).join('<span aria-hidden="true"> · </span>')}</p></li>`).join('')
+    || '<li class="none"><span class="empty">Nessun gol segnato finora.</span></li>';
 }
 function drawCal(){
   renderRank();
