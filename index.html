@@ -29,7 +29,7 @@ button{font:inherit;color:inherit}
 .pen{color:var(--val)}
 /* etichette: piccole pastiglie piene */
 .stamp{display:inline-block;flex:none;padding:3px 10px;border-radius:99px;background:var(--soft);color:var(--val);font:700 13px/1.3 var(--font)}
-.stamp.ok{background:var(--gfill);color:#fff}
+.stamp.ok{background:var(--gfill);color:#fff;margin-top:0;min-height:0;font-weight:700}   /* .ok è anche il messaggio di conferma: qui non deve ereditarne il margine */
 .stamp:not(.ok):not(.ink):not(.d){background:var(--rfill);color:#fff}
 .stamp.d{background:var(--soft);color:var(--muted)}
 .stamp.ink{background:var(--kit);color:#fff}
@@ -60,7 +60,9 @@ button{font:inherit;color:inherit}
 .mh{display:flex;align-items:center;gap:10px}
 .mh .lab{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .mh .lab>.fl{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pills{display:flex;flex-wrap:nowrap;align-items:center;gap:8px;height:30px}
+.pills{display:flex;flex-wrap:nowrap;align-items:center;gap:8px;height:30px;max-width:100%}
+.pills .stamp{display:inline-flex;align-items:center;height:30px;padding:0 12px;line-height:1}
+@media (max-width:480px){.nextb .va{display:none}.nextb{text-transform:capitalize}}
 .mh .lab .fl{font-size:14px;font-weight:500;color:var(--onkit)}
 .hnav{flex:none;display:flex;gap:6px}
 .hnav>*{flex:none}
