@@ -304,7 +304,7 @@ html.locked .top :focus-visible{outline-color:#fff}
       <dt>Chi è convocato?</dt>
       <dd>Fino a 20 disponibili sono tutti convocati. Se sono di più, lo staff sceglie i 20 nella scheda “Convocazioni”, che si apre con il codice staff.</dd>
       <dt>Chi inserisce il risultato?</dt>
-      <dd>Chiunque abbia il codice squadra, dal fischio d’inizio in poi, nella scheda “Risultato”. Lo vede tutta la squadra e si può correggere.</dd>
+      <dd>Chiunque abbia il codice squadra, dal calcio d’inizio in poi, nella scheda “Risultato”. Lo vede tutta la squadra e si può correggere.</dd>
       <dt>Come mando la partita nel gruppo?</dt>
       <dd>Ogni partita ha il suo indirizzo: copia il link dalla barra del browser, oppure usa “Copia promemoria” nella scheda “La squadra”.</dd>
     </dl>
@@ -332,7 +332,7 @@ const CONFIG = {
   // Realtime Database Firebase: rosa e presenze stanno sotto /t/<codice squadra>/ (il codice non è scritto qui, lo sanno solo la squadra e le regole Firebase).
   firebaseUrl: "https://asd-san-salvario-default-rtdb.europe-west1.firebasedatabase.app"
 };
-// date in formato AAAA-MM-GGTHH:MM (ora del fischio d’inizio).
+// date in formato AAAA-MM-GGTHH:MM (ora del calcio d’inizio).
 let MATCHES = [
   {id:"262a2-2026-27-san-salvario-calendar",  date:"2026-10-03T12:45", ritrovo:"11:45", opp:"Orange 11 A.S.D.", home:false, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:"", giornata:"Andata, giornata 1"},
   {id:"262a12-2026-27-san-salvario-calendar", date:"2026-10-09T21:00", ritrovo:"20:00", opp:"Automotive Lighting Italia Spa", home:true, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:"", giornata:"Andata, giornata 2"},
@@ -366,7 +366,7 @@ if(TEST){ document.title = '[TEST] ' + document.title; document.documentElement.
 let BASE = '';   // DB + '/t/<codice>', impostato da unlock()
 let sorted = [];
 const nextMatch = () => sorted.find(m => new Date(m.date) > Date.now() - 3*3600e3);
-const kicked = m => new Date(m.date) <= Date.now();               // fischio d’inizio passato
+const kicked = m => new Date(m.date) <= Date.now();               // calcio d’inizio passato
 const over = m => new Date(m.date).getTime() + 2*3600e3 < Date.now();   // partita finita
 const pl = (n, one, many) => n + ' ' + (n === 1 ? one : many);
 const S = {sel:'', tab:'me', role:'calciatore', pick:'', typed:'', stato:'', tavola:'', done:'', bad:false, edit:false, fix:false};
@@ -619,7 +619,7 @@ function drawHero(){
   const team = (name, me, lab) => `<div class="tm${me ? ' me' : ''}"><span class="sr">${lab}: </span><b>${esc(name)}</b></div>`;
   const mid = o
     ? `<div class="mid"><span class="sr">Risultato </span><b class="big${o.gf > 9 || o.gs > 9 ? ' long' : ''}">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</b>${stampO(o)}</div>`
-    : `<div class="mid"><span class="fl">fischio</span><b>${hhmm(m.date)}</b><span class="r3">ritrovo ${esc(m.ritrovo)}</span></div>`;
+    : `<div class="mid"><span class="fl">calcio d’inizio</span><b>${hhmm(m.date)}</b><span class="r3">ritrovo ${esc(m.ritrovo)}</span></div>`;
   const i = sorted.findIndex(x => x.id === m.id), prev = sorted[i-1], next = sorted[i+1], nx = nextMatch();
   const arrow = (to, lab, d) => `<button type="button" ${to ? `data-match="${to.id}"` : 'disabled'} aria-label="${lab}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg></button>`;
   const day = new Date(m.date).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
@@ -639,9 +639,9 @@ function renderStats(){
   const tav = a.filter(x => x.tavola === 'si').length;   // anche chi non gioca può restare a tavola
   const names = new Set(a.map(x => slug(x.nome)));
   const wait = ROSTER.filter(r => !names.has(slug(r.name))).length;
-  const done = over(match());   // a partita finita i conteggi diventano “chi c’era”
+  const done = over(match());   // a partita finita “da confermare” diventa “senza risposta”
   if(!$('#stats')) return;
-  $('#stats').outerHTML = `<span id="stats" style="display:contents"><span class="c"><b>${yes.length}</b>${done ? (yes.length === 1 ? 'c’era' : 'c’erano') : (yes.length === 1 ? 'disponibile' : 'disponibili')}</span><span class="c"><b>${tav}</b>a tavola</span><span class="c"><b>${wait}</b>${done ? 'senza risposta' : 'da confermare'}</span></span>`;
+  $('#stats').outerHTML = `<span id="stats" style="display:contents"><span class="c"><b>${yes.length}</b>${yes.length === 1 ? 'disponibile' : 'disponibili'}</span><span class="c"><b>${tav}</b>a tavola</span><span class="c"><b>${wait}</b>${done ? 'senza risposta' : 'da confermare'}</span></span>`;
   $('#split').textContent = `${pl(np, 'calciatore', 'calciatori')} · ${pl(dr, 'dirigente', 'dirigenti')} · ${pl(no.length, 'assente', 'assenti')}`;
   $('#sqn').textContent = ROSTER.length;
 }
@@ -666,7 +666,7 @@ function drawBody(){
     const m = match();
     if(S.rFor !== m.id){ const o = outcome(m); S.rFor = m.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = m.scorers || ''; S.done = ''; }
     const head = `<div class="step"><div><h2>Risultato</h2><p>Lo vede tutta la squadra e si può correggere.</p></div></div>`;
-    if(!kicked(m)){ b.innerHTML = head + '<p class="prev">Il risultato si potrà inserire dal fischio d’inizio in poi.</p>'; return; }
+    if(!kicked(m)){ b.innerHTML = head + '<p class="prev">Il risultato si potrà inserire dal calcio d’inizio in poi.</p>'; return; }
     b.innerHTML = head + `
       <div class="seg">
         <div><label for="rgf">Gol San Salvario</label><input id="rgf" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGf)}"></div>
@@ -690,7 +690,7 @@ function drawBody(){
     const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
     const cu = callup(), inConv = new Set(cu.list.map(x => slug(x.nome)));
     // “Convocati” solo quando lo staff ha scelto; prima sono “Disponibili” (a partita finita “Presenti”)
-    const avail = over(match()) ? 'C’erano' : 'Disponibili';
+    const avail = 'Disponibili';
     const present = role => {
       const yes = a.filter(x => x.ruolo === role && x.stato === 'si');
       if(role !== 'calciatore') return grp(avail, yes, true);
@@ -714,7 +714,7 @@ function drawBody(){
   if(over(m) && !S.fix){
     b.innerHTML = `<div class="past"><div class="step"><div class="num">${CLOCK}</div><div><h2>Partita finita</h2><p>${esc(dShort(m.date))}</p></div></div>
       ${me ? (saved ? mineBox(saved) : `<p class="mine">${esc(me.name)}, non avevi risposto.</p>`) : ''}
-      <p><button class="link" data-tab="sq">Vedi chi c’era</button>${me ? ` · <button class="link" data-fix="1">${saved ? 'Correggi la tua risposta' : 'Rispondi ora'}</button>` : ''}</p></div>`;
+      <p><button class="link" data-tab="sq">Vedi i disponibili</button>${me ? ` · <button class="link" data-fix="1">${saved ? 'Correggi la tua risposta' : 'Rispondi ora'}</button>` : ''}</p></div>`;
     return;
   }
   const who = me && !S.edit
