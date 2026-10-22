@@ -387,7 +387,7 @@ function renderHero(){
 function renderStats(){
   const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');
   const pl = yes.filter(x => x.ruolo === 'calciatore').length, dr = yes.length - pl;
-  const tav = yes.filter(x => x.tavola === 'si').length;
+  const tav = a.filter(x => x.tavola === 'si').length;   // anche chi non gioca può restare a tavola
   const names = new Set(a.map(x => slug(x.nome)));
   const wait = ROSTER.filter(r => !names.has(slug(r.name))).length;
   $('#stats').innerHTML = `
@@ -456,7 +456,7 @@ function renderBody(){
   }
   if(S.tab === 'sq'){
     const a = answers(), names = new Set(a.map(x => slug(x.nome)));
-    const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li><div class="who">${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}</div><span>${x.tavola === 'si' && x.stato === 'si' ? 'A tavola' : ''}</span></li>`; };
+    const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li><div class="who">${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}</div><span>${x.tavola === 'si' ? 'A tavola' : ''}</span></li>`; };
     const grp = (t, arr) => `<div class="grp"><h4>${t} (${arr.length})</h4><ul>${arr.map(li).join('') || '<li><span>Nessuno</span></li>'}</ul></div>`;
     const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
     const cu = callup(), inConv = new Set(cu.list.map(x => slug(x.nome)));
@@ -485,9 +485,9 @@ function renderBody(){
     <input id="typed" type="text" maxlength="30" autocomplete="name" value="${esc(S.typed)}" placeholder="Nome e cognome">
     <div class="step" style="margin-top:28px"><div class="num">02</div><div><h3>Ci sei?</h3></div></div>
     <div class="seg"><button class="opt yes" data-stato="si" aria-pressed="${S.stato==='si'}">Ci sono</button><button class="opt no" data-stato="no" aria-pressed="${S.stato==='no'}">Non ci sono</button></div>
-    ${S.stato === 'si' ? `<div class="step"><div class="num">03</div><div><h3>Resti a tavola?</h3><p>Per il dopo partita.</p></div></div>
-    <div class="seg"><button class="opt yes" data-tavola="si" aria-pressed="${S.tavola==='si'}">Sì</button><button class="opt" data-tavola="no" aria-pressed="${S.tavola==='no'}">No</button></div>` : ''}
-    <button class="go" id="go" ${name && S.stato && (S.stato==='no' || S.tavola) ? '' : 'disabled'}>Conferma presenza</button>
+    <div class="step"><div class="num">03</div><div><h3>Resti a tavola?</h3><p>Per il dopo partita, anche se non giochi.</p></div></div>
+    <div class="seg"><button class="opt yes" data-tavola="si" aria-pressed="${S.tavola==='si'}">Sì</button><button class="opt" data-tavola="no" aria-pressed="${S.tavola==='no'}">No</button></div>
+    <button class="go" id="go" ${name && S.stato && S.tavola ? '' : 'disabled'}>Conferma presenza</button>
     <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
 }
 // Aggiorna anteprima marcatori e pulsante Salva senza ridisegnare il modulo
@@ -546,7 +546,7 @@ document.addEventListener('click', async e => {
   else if(d.match){ S.sel = d.match; S.stato = S.tavola = S.done = ''; S.rFor = S.cFor = ''; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
   else if(t.id === 'go'){
     const name = (S.typed || S.pick).trim();
-    const ok = await save(S.sel, {nome:name, ruolo:S.role, stato:S.stato, tavola:S.stato==='si' ? S.tavola : 'no'});
+    const ok = await save(S.sel, {nome:name, ruolo:S.role, stato:S.stato, tavola:S.tavola});
     S.done = ok ? 'Presenza confermata. Grazie!' : 'Non sono riuscito a salvare. Controlla la connessione e riprova.';
     if(ok){ localStorage.setItem('mio', JSON.stringify({role:S.role, pick:S.pick})); }
     renderStats(); renderBody();
@@ -560,7 +560,7 @@ document.addEventListener('change', e => {
 document.addEventListener('input', e => {
   const rk = {rgf:'rGf', rgs:'rGs', rsc:'rSc'}[e.target.id];
   if(rk){ S[rk] = e.target.value.trim(); S.done = ''; $('#ok').textContent = ''; resultInputs(); return; }
-  if(e.target.id === 'typed'){ S.typed = e.target.value; S.done = ''; const g = $('#go'); if(g) g.disabled = !((S.typed||S.pick).trim() && S.stato && (S.stato==='no' || S.tavola)); }
+  if(e.target.id === 'typed'){ S.typed = e.target.value; S.done = ''; const g = $('#go'); if(g) g.disabled = !((S.typed||S.pick).trim() && S.stato && S.tavola); }
 });
 
 document.addEventListener('submit', async e => {
