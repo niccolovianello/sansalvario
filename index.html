@@ -17,6 +17,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--body
 :focus-visible{outline:3px solid var(--red);outline-offset:2px}
 main{max-width:720px;margin:0 auto;padding:16px 16px 56px}
 .top{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 14px;font:700 22px var(--cond);letter-spacing:.06em;text-transform:uppercase}
+.test-chip{display:none;margin-left:8px;padding:2px 8px;border-radius:99px;background:var(--red);color:#fff;font:700 12px var(--body);letter-spacing:.06em;vertical-align:middle}
+.test .test-chip{display:inline-block}
+.motto{margin:2px 0 0;font:italic 400 14px var(--body);color:var(--muted);text-transform:none;letter-spacing:0}
 .top small{font:500 13px var(--body);color:var(--muted);text-transform:none;letter-spacing:0}
 .hero{background:var(--navy);color:#fff;border-radius:24px;padding:22px;background-image:linear-gradient(115deg,transparent 55%,rgba(255,255,255,.05) 55%,rgba(255,255,255,.05) 75%,transparent 75%)}
 .chips{display:flex;gap:12px;align-items:center;font-size:15px;flex-wrap:wrap}
@@ -154,7 +157,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 </head>
 <body>
 <main>
-  <div class="top"><span>A.S.D. San Salvario</span><small id="season"></small></div>
+  <div class="top"><div><span>A.S.D. San Salvario</span><span class="test-chip">Test</span><p class="motto">“Ci entra prima in culo che in testa”</p></div><small id="season"></small></div>
   <form class="hero lock" id="lock" hidden>
     <span class="chip">AREA SQUADRA</span>
     <h1>Inserisci il codice</h1>
@@ -219,13 +222,17 @@ const dDate = d => new Date(d).toLocaleDateString('it-IT',{weekday:'long',day:'n
 const dShort = d => new Date(d).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'}) + ' · ' + new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 const hhmm = d => new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 const DB = CONFIG.firebaseUrl.replace(/\/$/,'');
+// Sito di test (…/sansalvario-test/): salva codice e nome con un prefisso, per non mescolarli col sito vero sullo stesso indirizzo.
+const TEST = /-test\//.test(location.pathname);
+const K = k => (TEST ? 'test-' : '') + k;
+if(TEST){ document.title = '[TEST] ' + document.title; document.documentElement.classList.add('test'); }
 let BASE = '';   // DB + '/t/<codice>', impostato da unlock()
 let sorted = [];
 const S = {sel:'', tab:'me', role:'calciatore', pick:'', typed:'', stato:'', tavola:'', done:''};
 let presences = {}, results = {}, callups = {};
 const MAX_CONV = 20;   // massimo convocati per partita
 let STAFF = '';   // codice staff, se questo dispositivo è entrato nell’area staff
-try{ const m = JSON.parse(localStorage.getItem('mio') || '{}'); S.role = m.role || S.role; S.pick = m.pick || ''; STAFF = localStorage.getItem('staff') || ''; }catch(e){}
+try{ const m = JSON.parse(localStorage.getItem(K('mio')) || '{}'); S.role = m.role || S.role; S.pick = m.pick || ''; STAFF = localStorage.getItem(K('staff')) || ''; }catch(e){}
 
 function useMatches(list){
   MATCHES = list.map(m => Object.assign({}, m, {base:{score:m.score || '', scorers:m.scorers || ''}})); applyResults();
@@ -580,14 +587,14 @@ document.addEventListener('click', async e => {
   else if(d.role){ S.role = d.role; S.pick = ''; S.done = ''; renderBody(); }
   else if(d.stato){ S.stato = d.stato; S.done = ''; renderBody(); }
   else if(d.tavola){ S.tavola = d.tavola; renderBody(); }
-  else if(d.out){ try{ localStorage.removeItem('codice'); localStorage.removeItem('staff'); }catch(x){} location.reload(); }
+  else if(d.out){ try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); }catch(x){} location.reload(); }
   else if(d.staffin){ S.tab = 'staff'; S.done = ''; renderBody(); $('.panel').scrollIntoView({behavior:'smooth'}); }
-  else if(d.staffout){ STAFF = ''; try{ localStorage.removeItem('staff'); }catch(x){} if(S.tab === 'staff' || S.tab === 'conv') S.tab = 'me'; renderBody(); renderFoot(); }
+  else if(d.staffout){ STAFF = ''; try{ localStorage.removeItem(K('staff')); }catch(x){} if(S.tab === 'staff' || S.tab === 'conv') S.tab = 'me'; renderBody(); renderFoot(); }
   else if(t.id === 'staffgo'){
     const code = normCode($('#staffcode').value);
     try{ S.done = code && await staffCheck(code) ? '' : 'Codice staff errato. Riprova.'; }
     catch(x){ S.done = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; }
-    if(!S.done){ STAFF = code; try{ localStorage.setItem('staff', code); }catch(x){} S.done = ''; S.tab = 'conv'; S.cFor = ''; renderFoot(); }
+    if(!S.done){ STAFF = code; try{ localStorage.setItem(K('staff'), code); }catch(x){} S.done = ''; S.tab = 'conv'; S.cFor = ''; renderFoot(); }
     renderBody();
   }
   else if(t.id === 'csave'){
@@ -608,7 +615,7 @@ document.addEventListener('click', async e => {
     const r = ROSTER.find(x => x.name === S.pick); if(!r) return;   // solo nomi della rosa
     const ok = await save(S.sel, {nome:r.name, ruolo:r.role, stato:S.stato, tavola:S.tavola});
     S.done = ok ? 'Presenza confermata. Grazie!' : 'Non sono riuscito a salvare. Controlla la connessione e riprova.';
-    if(ok){ localStorage.setItem('mio', JSON.stringify({role:S.role, pick:S.pick})); }
+    if(ok){ localStorage.setItem(K('mio'), JSON.stringify({role:S.role, pick:S.pick})); }
     renderStats(); renderBody();
   }
 });
@@ -647,7 +654,7 @@ document.addEventListener('submit', async e => {
   try{
     if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Riprova.'; return; }
   }catch(x){ err.textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; return; }
-  try{ localStorage.setItem('codice', code); }catch(x){}
+  try{ localStorage.setItem(K('codice'), code); }catch(x){}
   start();
 });
 
@@ -663,7 +670,7 @@ async function start(){
 }
 (async () => {
   let saved = '';
-  try{ saved = localStorage.getItem('codice') || ''; }catch(e){}
+  try{ saved = localStorage.getItem(K('codice')) || ''; }catch(e){}
   try{ if(saved && await unlock(saved)) return start(); }
   catch(e){ $('#err').textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; }
   $('#lock').hidden = false;
