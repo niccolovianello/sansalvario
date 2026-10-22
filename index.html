@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#17255a;--ink:#12204f;--red:#dc143c;--bg:#f6f7fa;--card:#fff;--line:#e2e5ee;--muted:#6b7390;--green:#1f8a5b;--cond:'Barlow Condensed','Arial Narrow','Liberation Sans Narrow',sans-serif;--body:'DM Sans',system-ui,sans-serif;--field:#fff;color-scheme:light}
-:root[data-theme=dark]{--navy:#1d2d6b;--ink:#e6eaf6;--red:#ec2f55;--bg:#0c1229;--card:#151d3d;--line:#283361;--muted:#98a1c2;--green:#35b07c;--field:#101836;color-scheme:dark}
+:root{--navy:#17255a;--ink:#12204f;--red:#dc143c;--rfill:#dc143c;--bg:#f6f7fa;--card:#fff;--line:#e2e5ee;--muted:#646c8a;--green:#1b7d52;--gfill:#1b7d52;--cond:'Barlow Condensed','Arial Narrow','Liberation Sans Narrow',sans-serif;--body:'DM Sans',system-ui,sans-serif;--field:#fff;color-scheme:light}
+:root[data-theme=dark]{--navy:#24387f;--ink:#e6eaf6;--red:#ff5c7a;--rfill:#dc143c;--bg:#0c1229;--card:#151d3d;--line:#283361;--muted:#98a1c2;--green:#35b07c;--gfill:#1b7d52;--field:#101836;color-scheme:dark}
 body,.stat,.panel,.cal button,.rank,.opt,select,input{transition:background-color .35s,border-color .35s,color .35s}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -21,24 +21,24 @@ body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--body
 :focus-visible{outline:3px solid var(--red);outline-offset:2px}
 main{max-width:860px;margin:0 auto;padding:16px clamp(16px,4vw,32px) 56px}
 .top{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 14px;font:700 22px var(--cond);letter-spacing:.06em;text-transform:uppercase}
-.test-chip{display:none;margin-left:8px;padding:2px 8px;border-radius:99px;background:var(--red);color:#fff;font:700 12px var(--body);letter-spacing:.06em;vertical-align:middle}
+.test-chip{display:none;margin-left:8px;padding:2px 8px;border-radius:99px;background:var(--rfill);color:#fff;font:700 12px var(--body);letter-spacing:.06em;vertical-align:middle}
 .test .test-chip{display:inline-block}
 .motto{margin:2px 0 0;font:italic 400 14px var(--body);color:var(--muted);text-transform:none;letter-spacing:0}
+.club{display:inline;margin:0;font:inherit}
 .top small{display:block;margin-top:2px;font:500 13px var(--body);color:var(--muted);text-transform:none;letter-spacing:0}
 .hero{background:var(--navy);color:#fff;border-radius:24px;padding:22px;background-image:linear-gradient(115deg,transparent 55%,rgba(255,255,255,.05) 55%,rgba(255,255,255,.05) 75%,transparent 75%)}
+.hhead{display:flex;gap:12px;align-items:flex-start}
+.hhead .chips{flex:1}
+.hnav{flex:none;display:flex;gap:8px}
+.hnav button{width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
+.hnav button:disabled{opacity:.3;cursor:default}
+.chip.go-next{border:0;color:#fff;font-family:var(--body);cursor:pointer;text-transform:uppercase}
+.hero :focus-visible{outline-color:#fff}
+[data-theme=dark] .hero{box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
 .chips{display:flex;gap:12px;align-items:center;font-size:15px;flex-wrap:wrap}
 .chip{background:rgba(255,255,255,.14);padding:4px 12px;border-radius:8px;font-weight:700;font-size:12px;letter-spacing:.15em}
-.teams{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin:34px 0 26px}
-.us{font:600 17px var(--cond);letter-spacing:.2em;text-transform:uppercase}
-.us i{font:400 12px var(--body);font-style:normal;letter-spacing:.2em;opacity:.6;margin-left:10px}
-.opp{font:700 clamp(40px,12vw,64px)/.95 var(--cond);text-transform:uppercase;margin-top:12px}
-.times{text-align:right}
-.times b{display:block;font:700 clamp(40px,11vw,58px)/1 var(--cond)}
-.times span{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:12px}
-.times .r b{opacity:.75;font-size:clamp(34px,9vw,46px)}
 .where{display:flex;gap:12px;border-top:1px solid rgba(255,255,255,.2);padding-top:18px;font-size:15px;opacity:.95}
 .where svg{flex:none;margin-top:2px}
-.score{font:700 28px var(--cond);margin-top:8px}
 .live{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px;margin:14px 2px}
 .dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(31,138,91,.15)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -55,19 +55,19 @@ main{max-width:860px;margin:0 auto;padding:16px clamp(16px,4vw,32px) 56px}
 .body{padding:22px}
 .step{display:flex;gap:16px;margin-bottom:8px}
 .num{flex:none;width:48px;height:48px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font:700 16px var(--body)}
-.step h3{font:700 26px/1.2 var(--cond);margin:0}
-.step p{margin:2px 0 0;color:var(--muted);font-size:15px}
+.step h2{font:700 26px/1.2 var(--cond);margin:0}
+.step p{margin:2px 0 0;color:var(--muted);font-size:15px;text-wrap:pretty}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
 .opt{min-height:56px;border-radius:14px;border:1px solid var(--line);background:var(--field);color:var(--muted);font:500 17px var(--body);cursor:pointer}
 .opt[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
-.opt.yes[aria-pressed=true]{background:var(--green);border-color:var(--green)}
-.opt.no[aria-pressed=true]{background:var(--red);border-color:var(--red)}
+.opt.yes[aria-pressed=true]{background:var(--gfill);border-color:var(--gfill)}
+.opt.no[aria-pressed=true]{background:var(--rfill);border-color:var(--rfill)}
 label{display:block;font-weight:700;font-size:15px;margin:16px 0 8px}
 select,input{width:100%;min-height:52px;font:inherit;border:1px solid var(--line);border-radius:14px;padding:0 14px;background:var(--field);color:var(--ink)}
-.go{width:100%;min-height:56px;margin-top:22px;border:0;border-radius:14px;background:var(--red);color:#fff;font:700 18px var(--body);cursor:pointer}
-.go:disabled{opacity:.4;cursor:not-allowed}
+.go{width:100%;min-height:56px;margin-top:22px;border:0;border-radius:14px;background:var(--rfill);color:#fff;font:700 18px var(--body);cursor:pointer}
+.go:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
 .ok{margin-top:12px;color:var(--green);font-weight:700;min-height:24px}
-.grp h4{font:700 20px var(--cond);margin:18px 0 6px;letter-spacing:.03em}
+.grp h3{font:700 20px var(--cond);margin:18px 0 6px;letter-spacing:.03em}
 .sqh{font:700 28px/1.1 var(--cond);text-transform:uppercase;letter-spacing:.04em;margin:36px 0 0;padding-bottom:10px;border-bottom:4px solid var(--red)}
 .sqh:first-child{margin-top:0}
 .sqh em{font:500 14px var(--body);font-style:normal;background:var(--bg);border-radius:8px;padding:2px 9px;margin-left:8px;vertical-align:middle;letter-spacing:0;text-transform:none}
@@ -75,11 +75,11 @@ select,input{width:100%;min-height:52px;font:inherit;border:1px solid var(--line
 .grp li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
 .grp li span{color:var(--muted);font-size:13px;text-align:right}
 .grp .who{display:flex;align-items:center;gap:14px}
-.nr{flex:none;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font:700 15px var(--cond)}
+.nr{flex:none;width:30px;height:30px;border-radius:50%;background:var(--rfill);color:#fff;display:grid;place-items:center;font:700 15px var(--cond)}
 .nr.none{background:none}
 h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .sw{display:flex;gap:22px;align-items:baseline;flex-wrap:wrap;margin:34px 2px 12px}
-.swb{background:none;border:0;padding:0;font:700 28px var(--cond);color:var(--ink);opacity:.35;cursor:pointer;transition:opacity .15s}
+.swb{background:none;border:0;padding:0;font:700 28px var(--cond);color:var(--ink);opacity:.55;cursor:pointer;transition:opacity .15s}
 .swb[aria-selected=true]{opacity:1}
 @media (max-width:480px){.sw{gap:16px}.swb{font-size:24px}}
 .rank{list-style:none;margin:0;padding:6px 18px;background:var(--card);border:1px solid var(--line);border-radius:18px}
@@ -94,16 +94,13 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 [data-theme=dark] .cal button[aria-current=true]{border-color:#6a7fd6}
 .cal b{font:700 20px var(--cond);text-transform:uppercase}
 .cal small{color:var(--muted);display:block}
-.cal .r{font:700 22px var(--cond);white-space:nowrap}
+.cal .r{font:700 22px var(--cond);white-space:nowrap;text-align:right}
 .note{font-size:13px;color:var(--muted);margin-top:16px}
-.res{display:flex;gap:14px;align-items:center;margin:0 0 16px;padding:14px 16px;background:rgba(255,255,255,.1);border-radius:14px}
-.res .big{font:700 46px/1 var(--cond)}
-.res b{font-size:17px}.res small{display:block;opacity:.75;font-size:13px}
 .goals{grid-row:2;text-align:center;font-size:14px}
 .goals.c1{grid-column:1}.goals.c3{grid-column:3}
 .goals ul{list-style:none;margin:0;padding:0}
 .goals li{padding:3px 0;font-weight:500}
-.cal .r{text-align:right}.cal .r small{font:500 12px var(--body)}
+.cal .r small{font:500 12px var(--body)}
 .r.w{color:var(--green)}.r.l{color:var(--red)}.r.d{color:var(--muted)}
 .match3{display:grid;grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr);gap:8px;align-items:center;margin:28px 0 24px}
 .tm{font:700 clamp(22px,6vw,38px)/1.02 var(--cond);text-transform:uppercase;text-align:center;overflow-wrap:break-word;opacity:.85}
@@ -112,12 +109,13 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .mid{text-align:center}
 .mid .t1{font:700 clamp(40px,11vw,56px)/1 var(--cond)}
 .mid .t2{font:700 clamp(30px,8vw,40px)/1 var(--cond);opacity:.75;margin-top:14px}
-.mid span{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-top:4px}
+.mid span{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-top:4px}
 .mid .big{font:700 clamp(46px,13vw,64px)/1 var(--cond)}
-.mid .out{display:block;font-size:14px;margin-top:2px}
+.mid .out{display:inline-block;font-size:14px;margin-top:8px;padding:2px 10px;border-radius:8px;background:rgba(255,255,255,.14)}
+.mid .out.w{background:var(--gfill)}.mid .out.l{background:var(--rfill)}
 .subs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .subs a span{white-space:nowrap}
-.subs a{flex:1 1 200px;display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:center;text-align:center;text-decoration:none;background:var(--navy);color:#fff;font-weight:700;border-radius:14px;padding:14px 16px}
+.subs a{flex:1 1 200px;display:flex;justify-content:center;gap:12px;align-items:center;text-align:left;text-decoration:none;background:var(--navy);color:#fff;font-weight:700;border-radius:14px;padding:14px 16px}
 @media (min-width:900px){
   main{max-width:1760px;padding:24px clamp(28px,3.5vw,56px) 72px}
   .cols{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(32px,3vw,56px);align-items:start}
@@ -133,7 +131,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 @media (min-width:900px){.match3{grid-template-columns:minmax(0,1fr) 150px minmax(0,1fr)}}
 @media (min-width:1400px){.match3{grid-template-columns:minmax(0,1fr) 180px minmax(0,1fr)}}
 .lock{max-width:440px;margin:0 auto}
-.lock h1{font:700 clamp(40px,12vw,56px)/.95 var(--cond);text-transform:uppercase;margin:18px 0 10px}
+.lock h2{font:700 clamp(40px,12vw,56px)/.95 var(--cond);text-transform:uppercase;margin:18px 0 10px}
 .lock p{margin:0;opacity:.8}
 .lock label{color:#fff;margin-top:26px}
 .lock input{text-transform:uppercase;letter-spacing:.3em;font:700 24px var(--cond);text-align:center;border:0}
@@ -147,14 +145,13 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .ac li.none{color:var(--muted);cursor:default;background:none}
 .hint{color:var(--red);font-size:13px;min-height:18px;margin:6px 0 0}
 .pick{display:flex;align-items:center;gap:14px;margin:0;padding:9px 0;border-bottom:1px solid var(--line);font-weight:400;cursor:pointer}
-.pick input{width:22px;height:22px;min-height:0;margin:0 0 0 auto;accent-color:var(--red);flex:none}
+.pick input{width:22px;height:22px;min-height:0;margin:0 0 0 auto;accent-color:var(--rfill);flex:none}
 .pick.off{opacity:.45;cursor:not-allowed}
 .cnt{font:700 22px var(--cond);margin:18px 0 4px}.cnt.full{color:var(--red)}
 .grp .note{font-size:13px;color:var(--muted);margin:-2px 0 6px}
 .tabs{overflow-x:auto;scrollbar-width:none}.tab{white-space:nowrap;flex:none}
 @media (max-width:480px){.tabs{gap:16px;padding:0 16px}.tab{font-size:18px;gap:6px}}
 @media (max-width:380px){.tabs{gap:12px}.tab{font-size:17px}}
-.go.alt{background:none;border:1px solid var(--line);color:var(--muted);margin-top:10px}
 .prev{font-size:14px;color:var(--muted);margin:8px 0 0}
 .foot-btns{display:flex;gap:18px;flex-wrap:wrap}
 .top-r{display:flex;align-items:center;gap:14px}
@@ -167,15 +164,27 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 [data-theme=dark] .theme .cut{transform:translate(-7px,5px)}
 [data-theme=dark] .theme .rays{transform:rotate(-90deg) scale(.4);opacity:0}
 @media (prefers-reduced-motion:reduce){.theme *,body,.stat,.panel,.cal button,.rank,.opt,select,input{transition:none!important}}
+.cal .nx{flex:none;align-self:center;font:700 12px var(--body);font-style:normal;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--rfill);padding:3px 9px;border-radius:8px}
+::placeholder{color:var(--muted);opacity:1}
+.live.bad .dot{background:var(--muted);box-shadow:0 0 0 5px rgba(100,108,138,.18)}
+.live.bad{color:var(--red)}
+.ok.bad{color:var(--red);display:flex;gap:8px;align-items:flex-start}
+.ok.bad svg{flex:none;margin-top:3px}
+.mine{margin:6px 0 0;padding:12px 14px;border-radius:14px;background:var(--bg);font-size:15px}
+.why{color:var(--muted);font-size:13px;min-height:18px;margin:8px 0 0}
+.link{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.link.del{display:block;margin:18px auto 0;color:var(--red);font-weight:500}
+.past p{margin:14px 0 0}
+@media (max-width:480px){.stat p{min-height:2.5em;line-height:1.25}}
 .out-btn{background:none;border:0;padding:0;font:inherit;color:var(--muted);text-decoration:underline;cursor:pointer}
 </style>
 </head>
 <body>
 <main>
-  <div class="top"><div><span>A.S.D. San Salvario</span><span class="test-chip">Test</span><small id="season"></small><p class="motto">“Ci entra prima in culo che in testa”</p></div><div class="top-r"><button class="theme" id="theme" type="button" aria-label="Tema scuro" aria-pressed="false"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><mask id="moon-cut"><rect x="-6" y="-6" width="36" height="36" fill="#fff"/><circle class="cut" cx="25" cy="2" r="6.5" fill="#000"/></mask><circle class="sun" cx="12" cy="12" r="5" fill="currentColor" mask="url(#moon-cut)"/><g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg></button></div></div>
+  <div class="top"><div><h1 class="club">A.S.D. San Salvario</h1><span class="test-chip">Test</span><small id="season"></small><p class="motto">“Ci entra prima in culo che in testa”</p></div><div class="top-r"><button class="theme" id="theme" type="button" aria-label="Tema scuro" aria-pressed="false"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><mask id="moon-cut"><rect x="-6" y="-6" width="36" height="36" fill="#fff"/><circle class="cut" cx="25" cy="2" r="6.5" fill="#000"/></mask><circle class="sun" cx="12" cy="12" r="5" fill="currentColor" mask="url(#moon-cut)"/><g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg></button></div></div>
   <form class="hero lock" id="lock" hidden>
     <span class="chip">AREA SQUADRA</span>
-    <h1>Inserisci il codice</h1>
+    <h2>Inserisci il codice</h2>
     <p>Te lo chiediamo una volta sola su questo dispositivo.</p>
     <label for="code">Codice squadra</label>
     <input id="code" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
@@ -183,28 +192,28 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
     <div class="err" id="err" role="alert"></div>
   </form>
   <div class="cols" id="app" hidden><div class="main-col">
-  <section class="hero" id="hero" aria-live="polite"></section>
+  <section class="hero" id="hero" aria-label="Partita"></section>
   <div class="live"><span class="dot"></span><span id="mode"></span></div>
   <section class="stats" id="stats"></section>
 
   <section class="panel">
     <div class="tabs" role="tablist">
-      <button class="tab" role="tab" id="t-me" aria-selected="true" data-tab="me">La tua presenza</button>
-      <button class="tab" role="tab" id="t-sq" aria-selected="false" data-tab="sq">La squadra <em id="sqn">0</em></button>
-      <button class="tab" role="tab" id="t-ris" aria-selected="false" data-tab="ris">Risultato</button>
-      <button class="tab" role="tab" id="t-conv" aria-selected="false" data-tab="conv" hidden>Convocati</button>
+      <button class="tab" role="tab" id="t-me" aria-selected="true" aria-controls="body" data-tab="me">La tua presenza</button>
+      <button class="tab" role="tab" id="t-sq" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="sq">La squadra <em id="sqn">0</em></button>
+      <button class="tab" role="tab" id="t-ris" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="ris">Risultato</button>
+      <button class="tab" role="tab" id="t-conv" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="conv" hidden>Convocati</button>
     </div>
-    <div class="body" id="body"></div>
+    <div class="body" id="body" role="tabpanel" aria-labelledby="t-me"></div>
   </section>
 
   </div>
   <aside class="side">
   <div class="sw" role="tablist">
-    <button class="swb" role="tab" data-side="cal" aria-selected="true">Calendario</button>
-    <button class="swb" role="tab" data-side="rank" aria-selected="false">Classifica marcatori</button>
+    <button class="swb" role="tab" id="s-cal" aria-controls="cal" data-side="cal" aria-selected="true">Calendario</button>
+    <button class="swb" role="tab" id="s-rank" aria-controls="rank" tabindex="-1" data-side="rank" aria-selected="false">Classifica marcatori</button>
   </div>
-  <div class="cal" id="cal"></div>
-  <ol class="rank" id="rank" aria-label="Classifica marcatori" hidden></ol>
+  <div class="cal" id="cal" role="tabpanel" aria-labelledby="s-cal"></div>
+  <ol class="rank" id="rank" role="tabpanel" aria-labelledby="s-rank" hidden></ol>
 
   <p class="note" id="foot"></p>
   </aside></div>
@@ -242,7 +251,7 @@ const TEST = /-test\//.test(location.pathname);
 const K = k => (TEST ? 'test-' : '') + k;
 function setTheme(dark, keep){
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-  const b = document.getElementById('theme'); b.setAttribute('aria-pressed', dark); b.setAttribute('aria-label', dark ? 'Tema chiaro' : 'Tema scuro');
+  const b = document.getElementById('theme'); b.setAttribute('aria-pressed', dark);
   document.querySelector('meta[name=theme-color]').content = dark ? '#0c1229' : '#f6f7fa';
   if(keep) try{ localStorage.setItem(K('tema'), dark ? 'dark' : 'light'); }catch(e){}
 }
@@ -251,7 +260,12 @@ document.getElementById('theme').addEventListener('click', () => setTheme(docume
 if(TEST){ document.title = '[TEST] ' + document.title; document.documentElement.classList.add('test'); }
 let BASE = '';   // DB + '/t/<codice>', impostato da unlock()
 let sorted = [];
-const S = {sel:'', tab:'me', role:'calciatore', pick:'', typed:'', stato:'', tavola:'', done:''};
+const nextMatch = () => sorted.find(m => new Date(m.date) > Date.now() - 3*3600e3);
+const kicked = m => new Date(m.date) <= Date.now();               // fischio d’inizio passato
+const over = m => new Date(m.date).getTime() + 2*3600e3 < Date.now();   // partita finita
+const pl = (n, one, many) => n + ' ' + (n === 1 ? one : many);
+const S = {sel:'', tab:'me', role:'calciatore', pick:'', typed:'', stato:'', tavola:'', done:'', bad:false, edit:false, fix:false};
+let LIVE = true;   // false se l’ultimo aggiornamento da Firebase non è riuscito
 let presences = {}, results = {}, callups = {};
 const MAX_CONV = 20;   // massimo convocati per partita
 let STAFF = '';   // codice staff, se questo dispositivo è entrato nell’area staff
@@ -260,7 +274,7 @@ try{ const m = JSON.parse(localStorage.getItem(K('mio')) || '{}'); S.role = m.ro
 function useMatches(list){
   MATCHES = list.map(m => Object.assign({}, m, {base:{score:m.score || '', scorers:m.scorers || ''}})); applyResults();
   sorted = [...MATCHES].sort((a,b) => new Date(a.date) - new Date(b.date));
-  const f = sorted.find(m => new Date(m.date) > Date.now() - 3*3600e3) || sorted[sorted.length-1];
+  const f = nextMatch() || sorted[sorted.length-1];
   S.sel = f ? f.id : '';
 }
 // I risultati di Firebase valgono sopra a quelli scritti nel calendario
@@ -369,6 +383,7 @@ async function load(){
   let changed = false;
   try{
     const [p, r, c] = await Promise.all(['presenze','risultati','convocati'].map(k => fetch(`${BASE}/${k}.json`, {cache:'no-store'})));
+    LIVE = p.ok;
     if(p.ok) presences = (await p.json()) || {};
     if(c.ok) callups = (await c.json()) || {};
     if(r.ok){
@@ -376,7 +391,7 @@ async function load(){
       changed = JSON.stringify(next) !== JSON.stringify(results);
       results = next; applyResults();
     }
-  }catch(e){}
+  }catch(e){ LIVE = false; }
   return changed;
 }
 async function save(matchId, rec){
@@ -408,6 +423,17 @@ async function saveResult(id, score, scorers){
   }catch(e){ return false; }
 }
 const match = () => MATCHES.find(m => m.id === S.sel);
+const mine = () => S.pick ? (presences[S.sel] || {})[slug(S.pick)] : null;   // la risposta salvata di chi usa questo dispositivo
+const say = (t, bad) => { S.done = t; S.bad = !!bad; };
+const WARN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>';
+const KEY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>';
+const CLOCK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok" role="alert">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+const answerText = r => (r.stato === 'si' ? 'Ci sono' : 'Non ci sono') + ' · ' + (r.tavola === 'si' ? 'resto a tavola' : 'non resto a tavola');
+function renderLive(){
+  $('.live').classList.toggle('bad', !LIVE);
+  $('#mode').textContent = LIVE ? 'Conteggi condivisi · aggiornamento ogni 5 secondi' : 'Non aggiornato · controlla la connessione, riprovo tra poco';
+}
 const answers = () => Object.values(presences[S.sel] || {});
 // Convocati della partita selezionata: fino a 20 disponibili sono tutti convocati, oltre decide lo staff
 function callup(){
@@ -432,49 +458,53 @@ function renderHero(){
   const lg = n => n.split(/\s+/).some(w => w.length > 9) ? 'sm' : '';
   const home = m.home ? 'San Salvario' : m.opp, away = m.home ? m.opp : 'San Salvario';
   const mid = o
-    ? `<div class="mid"><div class="big">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</div><b class="out">${o.label}</b></div>`
+    ? `<div class="mid"><div class="big">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</div><b class="out ${o.cls}">${o.label}</b></div>`
     : `<div class="mid"><div class="t1">${hhmm(m.date)}</div><span>Fischio d’inizio</span><div class="t2">${esc(m.ritrovo)}</div><span>Ritrovo</span></div>`;
+  const i = sorted.findIndex(x => x.id === m.id), prev = sorted[i-1], next = sorted[i+1], nx = nextMatch();
+  const arrow = (to, lab, d) => `<button type="button" ${to ? `data-match="${to.id}"` : 'disabled'} aria-label="${lab}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg></button>`;
   $('#hero').innerHTML = `
-    <div class="chips"><span class="chip">${m.home?'IN CASA':'TRASFERTA'}</span><span>${esc(dDate(m.date))}</span>${m.giornata ? `<span>${esc(m.giornata)}</span>` : ''}</div>
+    <div class="hhead"><div class="chips"><span class="chip">${m.home?'IN CASA':'TRASFERTA'}</span><span>${esc(dDate(m.date))}</span>${m.giornata ? `<span>${esc(m.giornata)}</span>` : ''}${nx && nx.id !== m.id ? `<button type="button" class="chip go-next" data-match="${nx.id}">Vai alla prossima</button>` : ''}</div>
+    <div class="hnav">${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
     <div class="match3"><div class="tm ${m.home ? 'me' : ''} ${lg(home)}">${esc(home)}</div>${mid}<div class="tm ${m.home ? '' : 'me'} ${lg(away)}">${esc(away)}</div>${o ? scorerBlock(m) : ''}</div>
-    <div class="where"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${esc(m.place)}, ${esc(m.address)}</span></div>`;
+    <div class="where"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${esc([m.place, m.address].filter(Boolean).join(', '))}</span></div>`;
 }
 function renderStats(){
   const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');
-  const pl = yes.filter(x => x.ruolo === 'calciatore').length, dr = yes.length - pl;
+  const np = yes.filter(x => x.ruolo === 'calciatore').length, dr = yes.length - np;
   const tav = a.filter(x => x.tavola === 'si').length;   // anche chi non gioca può restare a tavola
   const names = new Set(a.map(x => slug(x.nome)));
   const wait = ROSTER.filter(r => !names.has(slug(r.name))).length;
+  const done = over(match());   // a partita finita i conteggi diventano “chi c’era”
   $('#stats').innerHTML = `
-    <div class="stat"><p>Presenti</p><b>${yes.length}</b><small>${pl} calciatori · ${dr} dirigenti</small></div>
+    <div class="stat"><p>${done ? 'C’erano' : 'Presenti'}</p><b>${yes.length}</b><small>${pl(np, 'calciatore', 'calciatori')} · ${pl(dr, 'dirigente', 'dirigenti')}</small></div>
     <div class="stat red"><p>A tavola</p><b>${tav}</b><small>Per il dopo partita</small></div>
-    <div class="stat"><p>Da confermare</p><b>${wait}</b><small>${no.length} assenti · ${a.length} risposte</small></div>`;
+    <div class="stat"><p>${done ? 'Senza risposta' : 'Da confermare'}</p><b>${wait}</b><small>${pl(no.length, 'assente', 'assenti')} · ${pl(a.length, 'risposta', 'risposte')}</small></div>`;
   $('#sqn').textContent = ROSTER.length;
 }
 function renderBody(){
   const b = $('#body');
   $('#t-conv').hidden = !STAFF;
   if(S.tab === 'conv' && !STAFF) S.tab = 'me';
-  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.tab === S.tab));
+  document.querySelectorAll('.tab').forEach(t => { const on = t.dataset.tab === S.tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; if(on) b.setAttribute('aria-labelledby', t.id); });
   // con 4 schede su telefono la barra scorre: tieni visibile quella selezionata
   const tb = $('.tabs'), st = $('.tab[aria-selected=true]');
   if(st && st.offsetLeft + st.offsetWidth > tb.scrollLeft + tb.clientWidth) tb.scrollLeft = st.offsetLeft + st.offsetWidth - tb.clientWidth + 16;
   else if(st && st.offsetLeft < tb.scrollLeft) tb.scrollLeft = Math.max(0, st.offsetLeft - 16);
   if(S.tab === 'staff'){
     b.innerHTML = STAFF ? `
-      <div class="step"><div class="num">🔑</div><div><h3>Area staff</h3><p>Sei nell’area staff su questo dispositivo.</p></div></div>
-      <div class="ok" id="ok" role="status">${esc(S.done)}</div>` : `
-      <div class="step"><div class="num">🔑</div><div><h3>Area staff</h3><p>Riservata allo staff. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
+      <div class="step"><div class="num">${KEY}</div><div><h2>Area staff</h2><p>Sei nell’area staff su questo dispositivo.</p></div></div>
+      ${okDiv()}` : `
+      <div class="step"><div class="num">${KEY}</div><div><h2>Area staff</h2><p>Riservata allo staff. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
       <label for="staffcode">Codice staff</label>
       <input id="staffcode" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false">
       <button class="go" id="staffgo">Entra nell’area staff</button>
-      <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+      ${okDiv()}`;
     return;
   }
   if(S.tab === 'conv'){
     const m = match(), cu = callup();
     if(S.cFor !== m.id){ S.cFor = m.id; S.cSel = new Set(cu.list.map(x => slug(x.nome))); S.done = ''; }
-    const head = `<div class="step"><div class="num">01</div><div><h3>Convocazioni</h3><p>${esc(m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario')} · ${esc(dShort(m.date))}. Per un’altra partita, sceglila dal calendario.</p></div></div>`;
+    const head = `<div class="step"><div class="num">01</div><div><h2>Convocazioni</h2><p>${esc(m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario')} · ${esc(dShort(m.date))}. Per un’altra partita, sceglila dal calendario.</p></div></div>`;
     const who = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}`; };
     if(!cu.av.length){ b.innerHTML = head + '<p class="prev">Nessun calciatore ha ancora dato disponibilità.</p>'; return; }
     if(cu.auto){
@@ -486,65 +516,82 @@ function renderBody(){
       <div class="cnt" id="cnt"></div>
       <div>${cu.av.map(x => { const k = slug(x.nome); return `<label class="pick">${who(x)}<input type="checkbox" data-conv="${esc(k)}" ${S.cSel.has(k) ? 'checked' : ''}></label>`; }).join('')}</div>
       <button class="go" id="csave">Salva convocazioni</button>
-      <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+      ${okDiv()}`;
     callupInputs();
     return;
   }
   if(S.tab === 'ris'){
     const m = match();
     if(S.rFor !== m.id){ const o = outcome(m); S.rFor = m.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = m.scorers || ''; S.done = ''; }
-    b.innerHTML = `
-      <div class="step"><div class="num">01</div><div><h3>Risultato</h3><p>${esc(m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario')} · ${esc(dShort(m.date))}. Per un’altra partita, sceglila dal calendario.</p></div></div>
+    const head = `<div class="step"><div class="num">01</div><div><h2>Risultato</h2><p>${esc(m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario')} · ${esc(dShort(m.date))}. Per un’altra partita, usa le frecce in alto o il calendario.</p></div></div>`;
+    if(!kicked(m)){ b.innerHTML = head + '<p class="prev">Il risultato si potrà inserire dal fischio d’inizio in poi.</p>'; return; }
+    b.innerHTML = head + `
       <div class="seg">
         <div><label for="rgf">Gol San Salvario</label><input id="rgf" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGf)}"></div>
         <div><label for="rgs">Gol ${esc(m.opp)}</label><input id="rgs" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGs)}"></div>
       </div>
-      <div class="step" style="margin-top:28px"><div class="num">02</div><div><h3>Marcatori</h3><p>Solo San Salvario, per cognome, separati da virgola. Doppietta: Rossi (2).</p></div></div>
+      <div class="step" style="margin-top:28px"><div class="num">02</div><div><h2>Marcatori</h2><p>Solo San Salvario, per cognome, separati da virgola. Doppietta: Rossi (2).</p></div></div>
       <label for="rsc">Marcatori</label>
       <input id="rsc" type="text" maxlength="300" autocomplete="off" value="${esc(S.rSc)}" placeholder="Es. Rossi (2), Bianchi">
       <p class="prev" id="prev"></p>
       <button class="go" id="rsave">Salva risultato</button>
-      <button class="go alt" id="rclear">Elimina risultato</button>
-      <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+      ${outcome(m) ? '<button class="link del" id="rclear">Elimina risultato</button>' : ''}
+      ${okDiv()}`;
     resultInputs();
     return;
   }
   if(S.tab === 'sq'){
     const a = answers(), names = new Set(a.map(x => slug(x.nome)));
     const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li><div class="who">${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}</div><span>${x.tavola === 'si' ? 'A tavola' : ''}</span></li>`; };
-    const grp = (t, arr) => `<div class="grp"><h4>${t} (${arr.length})</h4><ul>${arr.map(li).join('') || '<li><span>Nessuno</span></li>'}</ul></div>`;
+    const grp = (t, arr) => `<div class="grp"><h3>${t} (${arr.length})</h3><ul>${arr.map(li).join('') || '<li><span>Nessuno</span></li>'}</ul></div>`;
     const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
     const cu = callup(), inConv = new Set(cu.list.map(x => slug(x.nome)));
     const present = role => {
       const yes = a.filter(x => x.ruolo === role && x.stato === 'si');
       if(role !== 'calciatore') return grp('Presenti', yes);
-      if(!cu.decided) return grp('Presenti', yes).replace('</h4>', `</h4><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
+      if(!cu.decided) return grp('Presenti', yes).replace('</h3>', `</h3><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
       return grp('Convocati', cu.list) + (cu.auto ? '' : grp('Disponibili non convocati', yes.filter(x => !inConv.has(slug(x.nome)))));
     };
     const sec = (role, title) => {
       const ra = a.filter(x => x.ruolo === role), rw = wait.filter(x => x.ruolo === role);
-      return `<h3 class="sqh">${title}<em>${ROSTER.filter(r => r.role === role).length}</em></h3>` +
+      return `<h2 class="sqh">${title}<em>${ROSTER.filter(r => r.role === role).length}</em></h2>` +
         present(role) + grp('Assenti', ra.filter(x => x.stato === 'no')) + grp('Da confermare', rw);
     };
     b.innerHTML = sec('calciatore', 'Calciatori') + sec('dirigente', 'Dirigenti');
     return;
   }
-  const list = ROSTER.filter(r => r.role === S.role);
-  const name = S.pick;
-  b.innerHTML = `
-    <div class="step"><div class="num">01</div><div><h3>Chi sei?</h3><p>Scegli il tuo nome dall’elenco o cercalo.</p></div></div>
-    <div class="seg"><button class="opt" data-role="calciatore" aria-pressed="${S.role==='calciatore'}">Calciatore</button><button class="opt" data-role="dirigente" aria-pressed="${S.role==='dirigente'}">Dirigente</button></div>
+  const m = match(), list = ROSTER.filter(r => r.role === S.role), me = ROSTER.find(r => r.name === S.pick);
+  // a ogni cambio di partita o di nome riparti dalla risposta già salvata
+  const fk = S.sel + '|' + S.pick;
+  if(S.fFor !== fk){ S.fFor = fk; const r = mine(); S.stato = r ? r.stato : ''; S.tavola = r ? r.tavola : ''; }
+  const saved = mine();
+  if(over(m) && !S.fix){
+    b.innerHTML = `<div class="past"><div class="step"><div class="num">${CLOCK}</div><div><h2>Partita finita</h2><p>${esc(dShort(m.date))}</p></div></div>
+      ${me ? `<p class="mine">${saved ? `La tua risposta: <b>${esc(answerText(saved))}</b>` : `${esc(me.name)}, non avevi risposto.`}</p>` : ''}
+      <p><button class="link" data-tab="sq">Vedi chi c’era</button>${me ? ` · <button class="link" data-fix="1">Correggi la tua risposta</button>` : ''}</p></div>`;
+    return;
+  }
+  const who = me && !S.edit
+    ? `<div class="step"><div class="num">01</div><div><h2>Sei ${esc(me.name)}</h2><p>${me.role === 'dirigente' ? 'Dirigente' : 'Calciatore'}${me.number ? ' · #' + me.number : ''} · <button class="link" data-edit="1">Cambia</button></p></div></div>`
+    : `<div class="step"><div class="num">01</div><div><h2>Chi sei?</h2><p>Scegli il tuo nome dall’elenco o cercalo.</p></div></div>
+    <div class="seg" role="group" aria-label="Ruolo"><button class="opt" data-role="calciatore" aria-pressed="${S.role==='calciatore'}">Calciatore</button><button class="opt" data-role="dirigente" aria-pressed="${S.role==='dirigente'}">Dirigente</button></div>
     <label for="pick">Scegli dall’elenco</label>
     <select id="pick"><option value="">Seleziona il tuo nome</option>${list.map(r => `<option value="${esc(r.name)}" ${r.name===S.pick?'selected':''}>${esc(r.name)}${r.number ? ' · #' + r.number : ''}</option>`).join('')}</select>
     <label for="typed">Oppure cerca il tuo nome</label>
     <div class="ac"><input id="typed" type="text" maxlength="30" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="acl" value="${esc(S.typed)}" placeholder="Scrivi nome, cognome o numero"><ul id="acl" role="listbox" aria-label="Nomi della rosa" hidden></ul></div>
-    <p class="hint" id="achint"></p>
-    <div class="step" style="margin-top:28px"><div class="num">02</div><div><h3>Ci sei?</h3></div></div>
-    <div class="seg"><button class="opt yes" data-stato="si" aria-pressed="${S.stato==='si'}">Ci sono</button><button class="opt no" data-stato="no" aria-pressed="${S.stato==='no'}">Non ci sono</button></div>
-    <div class="step"><div class="num">03</div><div><h3>Resti a tavola?</h3><p>Per il dopo partita, anche se non giochi.</p></div></div>
-    <div class="seg"><button class="opt yes" data-tavola="si" aria-pressed="${S.tavola==='si'}">Sì</button><button class="opt" data-tavola="no" aria-pressed="${S.tavola==='no'}">No</button></div>
-    <button class="go" id="go" ${name && S.stato && S.tavola ? '' : 'disabled'}>Conferma presenza</button>
-    <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+    <p class="hint" id="achint"></p>`;
+  const same = saved && saved.stato === S.stato && saved.tavola === S.tavola;
+  const why = !me ? 'Prima scegli il tuo nome.' : !S.stato ? 'Rispondi a “Ci sei?”.' : !S.tavola ? 'Rispondi a “Resti a tavola?”.' : '';
+  S.goOff = !!why || !!same;
+  b.innerHTML = who + `
+    ${saved ? `<p class="mine">La tua risposta: <b>${esc(answerText(saved))}</b></p>` : ''}
+    <div class="step" style="margin-top:28px"><div class="num">02</div><div><h2 id="h-ci">Ci sei?</h2></div></div>
+    <div class="seg" role="group" aria-labelledby="h-ci"><button class="opt yes" data-stato="si" aria-pressed="${S.stato==='si'}">Ci sono</button><button class="opt no" data-stato="no" aria-pressed="${S.stato==='no'}">Non ci sono</button></div>
+    <div class="step"><div class="num">03</div><div><h2 id="h-tav">Resti a tavola?</h2><p>Per il dopo partita, anche se non giochi.</p></div></div>
+    <div class="seg" role="group" aria-labelledby="h-tav"><button class="opt yes" data-tavola="si" aria-pressed="${S.tavola==='si'}">Sì</button><button class="opt" data-tavola="no" aria-pressed="${S.tavola==='no'}">No</button></div>
+    ${same ? '' : `<button class="go" id="go" ${S.goOff ? 'disabled' : ''}>${saved ? 'Aggiorna risposta' : 'Conferma presenza'}</button>`}
+    <p class="why" id="why">${why}</p>
+    ${okDiv()}`;
   if(S.typed) acRender();
 }
 // Aggiorna anteprima marcatori e pulsante Salva senza ridisegnare il modulo
@@ -575,11 +622,11 @@ function acRender(){
   ul.hidden = !open; inp.setAttribute('aria-expanded', open);
   if(items.length && open) inp.setAttribute('aria-activedescendant', 'aco-' + S.acI); else inp.removeAttribute('aria-activedescendant');
   $('#achint').textContent = open ? 'Scegli il tuo nome tra quelli proposti.' : '';
-  const g = $('#go'); if(g) g.disabled = open || !(S.pick && S.stato && S.tavola);   // finché si sta cercando, il nome non è scelto
+  const g = $('#go'); if(g) g.disabled = open || S.goOff;   // finché si sta cercando, il nome non è scelto   // finché si sta cercando, il nome non è scelto
 }
 function acChoose(name){
   const r = ROSTER.find(x => x.name === name); if(!r) return;
-  S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; renderBody();
+  S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; S.edit = false; renderBody();
 }
 function renderFoot(){
   $('#foot').innerHTML = `<span class="foot-btns"><button class="out-btn" data-out="1">Esci da questo dispositivo</button>${STAFF ? '<button class="out-btn" data-staffout="1">Esci dall’area staff</button>' : '<button class="out-btn" data-staffin="1">Area staff</button>'}</span>`;
@@ -598,46 +645,51 @@ function renderRank(){
 }
 function renderCal(){
   renderRank();
-  $('#cal').innerHTML = subLinks() + sorted.map(m => `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span><b>${m.home?'San Salvario – '+esc(m.opp):esc(m.opp)+' – San Salvario'}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small></span>${rBadge(m)}</button>`).join('');
+  const nx = nextMatch();
+  $('#cal').innerHTML = subLinks() + sorted.map(m => `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span><b>${m.home?'San Salvario – '+esc(m.opp):esc(m.opp)+' – San Salvario'}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small></span>${rBadge(m) || (nx && nx.id === m.id ? '<em class="nx">Prossima</em>' : '')}</button>`).join('');
 }
 function renderAll(){ $('#season').textContent = CONFIG.season; renderHero(); renderStats(); renderBody(); renderCal(); }
 
 document.addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
   const d = t.dataset;
-  if(d.side){ document.querySelectorAll('.swb').forEach(x => x.setAttribute('aria-selected', x === t)); $('#cal').hidden = d.side !== 'cal'; $('#rank').hidden = d.side !== 'rank'; }
+  if(d.side){ document.querySelectorAll('.swb').forEach(x => { x.setAttribute('aria-selected', x === t); x.tabIndex = x === t ? 0 : -1; }); $('#cal').hidden = d.side !== 'cal'; $('#rank').hidden = d.side !== 'rank'; }
   else if(d.tab){ S.tab = d.tab; renderBody(); }
   else if(d.role){ S.role = d.role; S.pick = ''; S.done = ''; renderBody(); }
   else if(d.stato){ S.stato = d.stato; S.done = ''; renderBody(); }
   else if(d.tavola){ S.tavola = d.tavola; renderBody(); }
-  else if(d.out){ try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); }catch(x){} location.reload(); }
+  else if(d.edit){ S.edit = true; renderBody(); }
+  else if(d.fix){ S.fix = true; renderBody(); }
+  else if(d.out){ if(!confirm('Uscire da questo dispositivo? Per rientrare servirà di nuovo il codice squadra.')) return; try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); }catch(x){} location.reload(); }
   else if(d.staffin){ S.tab = 'staff'; S.done = ''; renderBody(); $('.panel').scrollIntoView({behavior:'smooth'}); }
   else if(d.staffout){ STAFF = ''; try{ localStorage.removeItem(K('staff')); }catch(x){} if(S.tab === 'staff' || S.tab === 'conv') S.tab = 'me'; renderBody(); renderFoot(); }
   else if(t.id === 'staffgo'){
     const code = normCode($('#staffcode').value);
-    try{ S.done = code && await staffCheck(code) ? '' : 'Codice staff errato. Riprova.'; }
-    catch(x){ S.done = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; }
+    try{ say(code && await staffCheck(code) ? '' : 'Codice staff errato. Riprova.', true); }
+    catch(x){ say('Non riesco a collegarmi. Controlla la connessione e riprova.', true); }
     if(!S.done){ STAFF = code; try{ localStorage.setItem(K('staff'), code); }catch(x){} S.done = ''; S.tab = 'conv'; S.cFor = ''; renderFoot(); }
     renderBody();
   }
   else if(t.id === 'csave'){
     const keys = [...S.cSel].slice(0, MAX_CONV);
     const ok = await saveCallup(S.sel, keys);
-    S.done = ok ? 'Convocazioni salvate.' : 'Non sono riuscito a salvare. Controlla la connessione o rientra nell’area staff.';
+    say(ok ? 'Convocazioni salvate.' : 'Non sono riuscito a salvare. Controlla la connessione o rientra nell’area staff.', !ok);
     renderBody();
   }
   else if(t.id === 'rsave' || t.id === 'rclear'){
-    const clear = t.id === 'rclear', id = S.sel;
+    const clear = t.id === 'rclear', id = S.sel, m = match(), o = outcome(m);
+    if(clear && !confirm(`Eliminare il risultato ${m.home ? `San Salvario ${o.gf}–${o.gs} ${m.opp}` : `${m.opp} ${o.gs}–${o.gf} San Salvario`}?`)) return;
     const ok = await saveResult(id, clear ? '' : `${+S.rGf}-${+S.rGs}`, clear ? '' : scorerList(S.rSc).map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', '));
     if(ok && clear){ S.rGf = S.rGs = S.rSc = ''; }
-    S.done = ok ? (clear ? 'Risultato eliminato.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione e riprova.';
+    say(ok ? (clear ? 'Risultato eliminato.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione e riprova.', !ok);
     renderHero(); renderCal(); renderBody();
   }
-  else if(d.match){ S.sel = d.match; S.stato = S.tavola = S.done = ''; S.rFor = S.cFor = ''; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(d.match){ const inHero = !!t.closest('#hero'); S.sel = d.match; S.done = ''; S.fix = false; S.rFor = S.cFor = ''; renderAll(); if(!inHero) window.scrollTo({top:0,behavior:'smooth'}); }
   else if(t.id === 'go'){
     const r = ROSTER.find(x => x.name === S.pick); if(!r) return;   // solo nomi della rosa
+    const upd = !!mine();
     const ok = await save(S.sel, {nome:r.name, ruolo:r.role, stato:S.stato, tavola:S.tavola});
-    S.done = ok ? 'Presenza confermata. Grazie!' : 'Non sono riuscito a salvare. Controlla la connessione e riprova.';
+    say(ok ? (upd ? 'Risposta aggiornata. Grazie!' : 'Presenza confermata. Grazie!') : 'Non sono riuscito a salvare. Controlla la connessione e riprova.', !ok);
     if(ok){ localStorage.setItem(K('mio'), JSON.stringify({role:S.role, pick:S.pick})); }
     renderStats(); renderBody();
   }
@@ -645,7 +697,7 @@ document.addEventListener('click', async e => {
 document.addEventListener('change', e => {
   const ck = e.target.dataset && e.target.dataset.conv;
   if(ck){ e.target.checked ? S.cSel.add(ck) : S.cSel.delete(ck); $('#ok').textContent = ''; callupInputs(); return; }
-  if(e.target.id === 'pick'){ S.pick = e.target.value; S.typed = ''; S.done = ''; renderBody(); }
+  if(e.target.id === 'pick'){ S.pick = e.target.value; S.typed = ''; S.done = ''; S.edit = false; renderBody(); }
 });
 document.addEventListener('input', e => {
   const rk = {rgf:'rGf', rgs:'rGs', rsc:'rSc'}[e.target.id];
@@ -660,6 +712,13 @@ document.addEventListener('keydown', e => {
   else if(e.key === 'ArrowUp' && n){ e.preventDefault(); S.acI = (S.acI - 1 + n) % n; acRender(); }
   else if(e.key === 'Enter' && n){ e.preventDefault(); acChoose(S.acList[S.acI].name); }
   else if(e.key === 'Escape'){ $('#acl').hidden = true; e.target.setAttribute('aria-expanded', false); }
+});
+// frecce, Home e Fine per muoversi tra le schede
+document.addEventListener('keydown', e => {
+  const t = e.target.closest && e.target.closest('[role=tab]'); if(!t || !['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+  const all = [...t.parentNode.querySelectorAll('[role=tab]:not([hidden])')], i = all.indexOf(t);
+  const n = e.key === 'Home' ? all[0] : e.key === 'End' ? all[all.length-1] : all[(i + (e.key === 'ArrowRight' ? 1 : -1) + all.length) % all.length];
+  e.preventDefault(); n.click(); n.focus();
 });
 document.addEventListener('focusout', e => { if(e.target.id === 'typed'){ $('#acl').hidden = true; e.target.setAttribute('aria-expanded', false); } });
 document.addEventListener('focusin', e => { if(e.target.id === 'typed' && S.typed) acRender(); });
@@ -685,11 +744,10 @@ let started = false;
 async function start(){
   if(started) return; started = true;
   $('#lock').hidden = true;
-  $('#mode').textContent = 'Conteggi condivisi · aggiornamento ogni 5 secondi';
   renderFoot();
-  await loadICS(); await load(); renderAll();
+  await loadICS(); await load(); renderAll(); renderLive();
   $('#app').hidden = false;
-  setInterval(async () => { if(await load()){ renderHero(); renderCal(); } renderStats(); if(S.tab === 'sq') renderBody(); }, 5000);
+  setInterval(async () => { if(await load()){ renderHero(); renderCal(); } renderLive(); renderStats(); if(S.tab === 'sq') renderBody(); }, 5000);
 }
 (async () => {
   let saved = '';
