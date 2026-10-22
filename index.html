@@ -12,9 +12,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
-/* Mondo “maglia da gara”: campi pieni nei colori del club, numeri da maglia, schede bianche arrotondate */
-:root{--kit:#17255a;--kit2:#22337a;--stripe:#dc143c;--ground:#f3f4f8;--card:#fff;--line:#e2e5ee;--ink:#0f1633;--muted:#4a5170;--val:#17255a;--sel:#17255a;--onsel:#fff;--soft:#eef0f7;--red:#c8102e;--rfill:#c8102e;--green:#1b7d52;--gfill:#1b7d52;--field:#fff;--focus:#17255a;--onkit:#fff;--kitmuted:#c9d0ea;--font:'Rubik',system-ui,sans-serif;color-scheme:light}
-:root[data-theme=dark]{--kit:#1d2b6b;--kit2:#26388a;--stripe:#ff4d6d;--ground:#0a0f22;--card:#141b36;--line:#27305a;--ink:#e7eaf6;--muted:#a3abc9;--val:#b9c6ff;--sel:#b9c6ff;--onsel:#0a0f22;--soft:#1b2347;--red:#ff6b81;--rfill:#c8102e;--green:#4cc38a;--gfill:#1b7d52;--field:#0f1530;--focus:#b9c6ff;--onkit:#fff;--kitmuted:#c3cbef;color-scheme:dark}
+/* Mondo “maglia da gara”: campi pieni nei colori dello stemma (blu #253369, rosso #e30613), numeri da maglia, schede bianche arrotondate */
+:root{--kit:#253369;--kit2:#2f3f7d;--stripe:#e30613;--ground:#f3f4f8;--card:#fff;--line:#e2e5ee;--ink:#0f1633;--muted:#4a5170;--val:#253369;--sel:#253369;--onsel:#fff;--soft:#eef0f7;--red:#c8102e;--rfill:#c8102e;--green:#1b7d52;--gfill:#1b7d52;--field:#fff;--focus:#253369;--onkit:#fff;--kitmuted:#c9d0ea;--font:'Rubik',system-ui,sans-serif;color-scheme:light}
+:root[data-theme=dark]{--kit:#2a3a78;--kit2:#33448a;--stripe:#e30613;--ground:#0a0f22;--card:#141b36;--line:#27305a;--ink:#e7eaf6;--muted:#a3abc9;--val:#b9c6ff;--sel:#b9c6ff;--onsel:#0a0f22;--soft:#1b2347;--red:#ff6b81;--rfill:#c8102e;--green:#4cc38a;--gfill:#1b7d52;--field:#0f1530;--focus:#b9c6ff;--onkit:#fff;--kitmuted:#c3cbef;color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--ground);color:var(--ink);font:400 16px/1.5 var(--font);font-variant-numeric:tabular-nums;transition:background-color .3s,color .3s}
@@ -131,7 +131,7 @@ select,input{caret-color:var(--stripe);width:100%;min-height:48px;font:inherit;b
 input[type=number]{color:var(--val);font-weight:700;-moz-appearance:textfield}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .go{display:block;width:100%;min-height:50px;margin-top:14px;border:0;border-radius:12px;background:var(--stripe);color:#fff;font:700 17px var(--font);cursor:pointer}
-[data-theme=dark] .go{background:#dc143c}
+[data-theme=dark] .go{background:#e30613}
 .go:disabled{opacity:.45;cursor:not-allowed}
 .btn2{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);font:700 15px var(--font);color:var(--val);cursor:pointer;text-decoration:none}
 .ok{margin-top:12px;color:var(--green);font-weight:700;min-height:24px}
@@ -226,7 +226,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .lock h2{margin:0 0 8px;font-size:30px;font-weight:800;line-height:1.1}
 .lock p{margin:0;color:var(--kitmuted);text-wrap:pretty}
 .lock label{color:#fff}
-.lock input{letter-spacing:.3em;font-size:24px;font-weight:800;text-align:center;text-transform:uppercase;border:0;color:#17255a;background:#fff}
+.lock input{letter-spacing:.3em;font-size:24px;font-weight:800;text-align:center;text-transform:uppercase;border:0;color:#253369;background:#fff}
 .lock .fmt{margin:6px 0 0;font-size:14px;color:var(--kitmuted)}
 .lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
 .lock .go{background:var(--stripe)}
