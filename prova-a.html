@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A.S.D. San Salvario</title>
+<meta name="theme-color" content="#f3f4f8">
+<script>/* tema prima del render, niente lampo */try{var t=localStorage.getItem((/-test\/|\/dev\//.test(location.pathname)?'test-':'')+'tema');if(t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* Mondo “maglia da gara”: campi pieni nei colori dello stemma (blu #253369, rosso #e30613), numeri da maglia, schede bianche arrotondate */
+:root{--kit:#253369;--kit2:#2f3f7d;--stripe:#e30613;--ground:#f3f4f8;--card:#fff;--line:#e2e5ee;--ink:#0f1633;--muted:#4a5170;--val:#253369;--sel:#253369;--onsel:#fff;--soft:#eef0f7;--red:#c8102e;--rfill:#c8102e;--green:#1b7d52;--gfill:#1b7d52;--field:#fff;--focus:#253369;--onkit:#fff;--kitmuted:#c9d0ea;--font:'Rubik',system-ui,sans-serif;color-scheme:light}
+:root[data-theme=dark]{--kit:#2a3a78;--kit2:#33448a;--stripe:#e30613;--ground:#0a0f22;--card:#141b36;--line:#27305a;--ink:#e7eaf6;--muted:#a3abc9;--val:#b9c6ff;--sel:#b9c6ff;--onsel:#0a0f22;--soft:#1b2347;--red:#ff6b81;--rfill:#c8102e;--green:#4cc38a;--gfill:#1b7d52;--field:#0f1530;--focus:#b9c6ff;--onkit:#fff;--kitmuted:#c3cbef;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--ground);color:var(--ink);font:400 16px/1.5 var(--font);font-variant-numeric:tabular-nums;transition:background-color .3s,color .3s}
+::selection{background:var(--sel);color:var(--onsel)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.kitbg :focus-visible{outline-color:#fff}
+::placeholder{color:var(--muted);opacity:1}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+main{--gut:clamp(14px,4vw,32px);max-width:860px;margin:0 auto;padding:14px var(--gut) 56px}
+button{font:inherit;color:inherit}
+.fl{display:block;font-size:13px;font-weight:500;line-height:1.3;color:var(--muted)}
+.pen{color:var(--val)}
+/* etichette: piccole pastiglie piene */
+.stamp{display:inline-block;flex:none;padding:3px 10px;border-radius:99px;background:var(--soft);color:var(--val);font:700 13px/1.3 var(--font)}
+.stamp.ok{background:var(--gfill);color:#fff;margin-top:0;min-height:0;font-weight:700}   /* .ok è anche il messaggio di conferma: qui non deve ereditarne il margine */
+.stamp:not(.ok):not(.ink):not(.d){background:var(--rfill);color:#fff}
+.stamp.d{background:var(--soft);color:var(--muted)}
+.stamp.ink{background:var(--kit);color:#fff}
+.kitbg .stamp.ink{background:rgba(255,255,255,.16);color:#fff}
+.thud{animation:pop .3s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+/* testata */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 10px}
+.club{display:inline;margin:0;font-size:21px;font-weight:800;line-height:1.15;letter-spacing:-.01em}
+.top small{display:block;margin-top:2px;font-size:12.5px;line-height:1.35;color:var(--muted)}
+.test-chip{display:none;margin-left:8px;vertical-align:3px}
+.test .test-chip{display:inline-block}
+.top-r{display:flex;gap:8px}
+.theme{flex:none;width:44px;height:44px;display:grid;place-items:center;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--card);cursor:pointer}
+.theme svg{overflow:visible}
+.theme .sun{transform-box:fill-box;transform-origin:center;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.theme .cut{transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.theme .rays{transform-origin:12px 12px;transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .3s}
+[data-theme=dark] .theme .sun{transform:scale(1.75)}
+[data-theme=dark] .theme .cut{transform:translate(-7px,5px)}
+[data-theme=dark] .theme .rays{transform:rotate(-90deg) scale(.4);opacity:0}
+/* la maglia: scheda della partita */
+.sheet{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px}
+.match{overflow:hidden;border:0}
+.kitbg{position:relative;background:var(--kit);color:var(--onkit);padding:12px 14px 14px 20px}
+.kitbg::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--stripe)}
+.kitbg .fl{color:var(--kitmuted)}
+.mh{display:flex;align-items:center;gap:10px}
+.mh .lab{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.mh .lab>.fl{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pills{display:flex;flex-wrap:nowrap;align-items:center;gap:8px;height:30px;max-width:100%}
+.pills .stamp{display:inline-flex;align-items:center;height:30px;padding:0 12px;line-height:1}
+@media (max-width:480px){.nextb .va{display:none}.nextb{text-transform:capitalize}}
+.mh .lab .fl{font-size:14px;font-weight:500;color:var(--onkit)}
+.hnav{flex:none;display:flex;gap:6px}
+.hnav>*{flex:none}
+.hnav button{height:44px;border:0;border-radius:99px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
+.hnav button{width:44px;display:grid;place-items:center;padding:0}
+.hnav button:disabled{opacity:.35;cursor:default}
+.nextb{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 12px;white-space:nowrap;border:0;border-radius:99px;background:rgba(255,255,255,.16);color:#fff;font:700 13px var(--font);cursor:pointer}
+.m3{display:grid;grid-template-columns:minmax(0,1fr) 116px minmax(0,1fr);grid-template-rows:128px 90px;align-items:start;gap:4px;margin-top:8px}
+.m3>.tm,.m3>.mid{grid-row:1;align-self:stretch;display:flex;flex-direction:column;justify-content:center;overflow:hidden;max-height:128px}   /* squadre e numeri centrati sulla stessa linea */
+.tm{text-align:center}
+.tm .fl{display:none}
+.tm b{display:block;font-size:clamp(18px,5vw,30px);font-weight:800;line-height:1.08;letter-spacing:-.01em;overflow-wrap:normal;hyphens:none}
+.tm:not(.me) b{color:var(--kitmuted)}
+.goals{grid-row:2;align-self:stretch}
+.goals.h{grid-column:1 / 3}.goals.a{grid-column:2 / 4}
+.goals ul{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,18px);grid-auto-flow:column;column-gap:6px;margin:0;padding:0;list-style:none;font-size:14px;line-height:18px;font-weight:500;color:#fff;text-align:center}
+.goals li{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.goals.a ul{direction:rtl}.goals.a li{direction:ltr}
+.mid{text-align:center;align-items:center}
+.mid .stamp{margin-top:8px}
+.mid .fl{color:var(--kitmuted)}
+.mid b{display:block;font-size:clamp(34px,9.6vw,50px);font-weight:800;line-height:1;letter-spacing:-.02em}
+.mid b{white-space:nowrap}
+.mid b.big.long{font-size:clamp(34px,9.4vw,50px)}
+.mid b.big{font-size:clamp(46px,13vw,62px)}
+.mid .r3{display:block;margin-top:4px;font-size:16px;font-weight:700;color:#fff;white-space:nowrap}
+.m2{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:15px}
+.m2 svg{flex:none}
+.m2 a{color:#fff;text-underline-offset:3px}
+.m2 .addr{color:var(--kitmuted)}
+@media (max-width:599px){.m2 .addr{display:none}}
+.m4{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 12px;padding:8px 14px 9px 20px;background:var(--card)}
+.m4 .c{white-space:nowrap;font-size:14px;color:var(--muted)}
+.m4 .c b{font-size:21px;font-weight:800;color:var(--val);margin-right:3px}
+.m4 .foot{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px}
+.m4 .split{font-size:13px;color:var(--muted)}
+.live{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--green)}
+.live.bad{color:var(--red)}.live.bad .dot{background:var(--red)}
+.live .link{font-size:13px}
+/* schede */
+.panel{margin-top:12px;overflow:hidden}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;margin:6px;padding:3px;background:var(--soft);border-radius:14px}
+.tab{display:flex;gap:6px;align-items:center;justify-content:center;min-height:44px;padding:0 8px;background:none;border:0;border-radius:10px;font:500 15px var(--font);color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab[aria-selected=true]{background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 2px rgba(15,22,51,.12)}
+.tab em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--val)}
+.tab .lk{flex:none}
+@media (max-width:599px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:359px){.tab{font-size:14px;padding:0 4px}}
+.body{padding:6px 14px 16px}
+/* righe del modulo */
+.step{display:flex;align-items:baseline;gap:10px;margin:0}
+.step+.step,.seg+.step,.mine+.step,.ok+.step{margin-top:14px}
+.num{flex:none;min-width:14px;font-size:20px;font-weight:800;color:var(--stripe)}
+.num svg{vertical-align:-3px;color:var(--muted)}
+.step>div:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px;flex:1}
+.step h2{margin:0;font-size:20px;font-weight:700;line-height:1.25}
+.step p{flex-basis:100%;margin:0;color:var(--muted);font-size:14.5px;text-wrap:pretty}
+.step .stamp{margin-left:auto}
+.step.wait,.step.wait+.seg{opacity:.5}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 0}
+.opt{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--field);font:500 17px var(--font);cursor:pointer}
+.bx{display:none}
+.opt[aria-pressed=true]{background:var(--sel);border-color:var(--sel);color:var(--onsel);font-weight:700}
+.opt[aria-pressed=true] .bx{display:block;width:12px;height:7px;border:solid currentColor;border-width:0 0 2.5px 2.5px;transform:rotate(-45deg) translateY(-2px)}
+label{display:block;font-size:14px;font-weight:700;margin:14px 0 6px}
+select,input{width:100%;min-height:48px;font:inherit;border:1px solid var(--line);border-radius:12px;padding:0 12px;background:var(--field);color:var(--ink)}
+input[type=number]{color:var(--val);font-weight:700;-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.go{display:block;width:100%;min-height:50px;margin-top:14px;border:0;border-radius:12px;background:var(--stripe);color:#fff;font:700 17px var(--font);cursor:pointer}
+[data-theme=dark] .go{background:#e30613}
+.go:disabled{background:var(--soft);color:var(--muted);cursor:not-allowed}
+.btn2{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);font:700 15px var(--font);color:var(--val);cursor:pointer;text-decoration:none}
+.ok{margin-top:12px;color:var(--green);font-weight:700;min-height:24px}
+.ok:empty{display:none}
+.ok.bad{color:var(--red);display:flex;gap:8px;align-items:flex-start}
+.ok.bad svg{flex:none;margin-top:3px}
+.ok .link{margin-left:6px}
+.mine{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:15px}
+.mine .fl{flex-basis:100%}
+.why{color:var(--muted);font-size:14px;min-height:20px;margin:8px 0 0}
+.hint{color:var(--muted);font-size:14px;margin:6px 0 0}
+.hint:empty{display:none}
+.prev{font-size:14.5px;color:var(--muted);margin:10px 0 0}
+.prev.warn{color:var(--red);font-weight:500}
+.link{background:none;border:0;padding:3px 0;font:inherit;font-weight:700;color:var(--val);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.link.del{display:block;margin:18px auto 0;color:var(--red);font-weight:500}
+.sub{display:block;margin:4px 0 0;font-weight:500}
+.sub+.step,#pick+.step{margin-top:24px}
+.past p{margin:14px 0 0}
+.staffout{margin:22px 0 0;text-align:center}
+.staffout .link{font-weight:500;color:var(--muted)}
+/* squadra */
+.sqtools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:4px 0 6px}
+.sqtools p{margin:0;font-size:14px;color:var(--muted);flex:1 1 200px}
+.sqh{display:flex;align-items:baseline;gap:8px;margin:24px 0 0;font-size:20px;font-weight:800}
+.sqh:first-child{margin-top:0}
+.sqh em{font-style:normal;font-size:14px;font-weight:500;color:var(--muted)}
+.grp h3{margin:14px 0 2px;font-size:15px;font-weight:700;color:var(--muted)}
+.grp .note{font-size:14px;color:var(--muted);margin:0 0 4px}
+.grp ul{list-style:none;margin:0;padding:0}
+.grp li{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;padding:4px 0;border-bottom:1px solid var(--line);font-size:15px}
+.grp li span{color:var(--muted);font-size:14px;text-align:right}
+.grp li.me{font-weight:700}
+.grp .who{display:flex;align-items:center;gap:12px}
+.nr{flex:none;width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:15px;font-weight:800;color:var(--val)}
+.nr.none{background:none}
+.pick{display:flex;align-items:center;gap:12px;margin:0;min-height:48px;border-bottom:1px solid var(--line);font-weight:400;cursor:pointer}
+.pick input{width:22px;height:22px;min-height:0;margin:0 0 0 auto;accent-color:var(--kit);flex:none}
+.pick.off{opacity:.45;cursor:not-allowed}
+.rt{width:100%;margin-top:4px;padding:10px 12px;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:12px;background:var(--field);color:var(--ink)}
+.cnt{font-size:20px;font-weight:800;margin:16px 0 4px}.cnt.full{color:var(--red)}
+/* ricerca nome */
+.ac{position:relative}
+.ac ul{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;list-style:none;margin:0;padding:6px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(15,22,51,.16);max-height:320px;overflow:auto}
+.ac li{display:flex;align-items:center;gap:12px;min-height:44px;padding:4px 8px;border-radius:10px;cursor:pointer;font-size:15px}
+.ac li[aria-selected=true]{background:var(--soft)}
+@media (hover:hover){.ac li:hover{background:var(--soft)}}
+.ac li small{margin-left:auto;color:var(--muted);font-size:13px}
+.ac li.none{color:var(--muted);cursor:default;background:none}
+/* colonna laterale */
+.sw{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;margin:28px 2px 10px}
+.swb{background:none;border:0;padding:0 0 4px;border-bottom:3px solid transparent;font-size:22px;font-weight:800;color:var(--muted);cursor:pointer}
+.swb[aria-selected=true]{color:var(--ink);border-color:var(--stripe)}
+@media (max-width:480px){.swb{font-size:19px}.sw{gap:14px}}
+.cal .rows{overflow:hidden}
+.cal button{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;min-height:56px;padding:8px 14px 8px 10px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;cursor:pointer}
+.cal button:last-child,.cal button:has(+ .calh){border-bottom:0}
+.cal button[aria-current=true]{background:var(--soft)}
+.cal .g{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:800;color:var(--muted);background:var(--soft)}
+.cal button[aria-current=true] .g{background:var(--kit);color:#fff}
+.cal b{display:block;font-size:15.5px;font-weight:700;line-height:1.25}
+.cal .t small{display:block;color:var(--muted);font-size:13.5px;margin-top:1px}
+.cal .r{font-size:21px;font-weight:800;color:var(--val);text-align:right;white-space:nowrap}
+.cal .r small{display:block;font-size:12.5px;font-weight:700;margin-top:1px}
+.r.w small{color:var(--green)}.r.l small{color:var(--red)}.r.d small{color:var(--muted)}
+.calh{margin:0;padding:10px 14px 4px;font-size:14px;font-weight:700;color:var(--muted)}
+.cal .calmore{display:flex;width:100%;justify-content:center;min-height:46px;margin:0;border:0;border-top:1px solid var(--line);background:none;font:700 15px var(--font);color:var(--val);cursor:pointer}
+.subs{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.subs a{flex:1 1 100%;justify-content:center}
+.subs svg{flex:none}
+.rank{list-style:none;margin:0;padding:2px 14px}
+.rank li{padding:10px 0 11px;border-bottom:1px solid var(--line)}
+.rank li:last-child{border-bottom:0}
+.rank h3{margin:0;font-size:15px;font-weight:500;color:var(--muted)}
+.rank h3 b{font-size:24px;font-weight:800;color:var(--val);margin-right:2px}
+.rank p{margin:2px 0 0;font-size:15.5px;font-weight:500;line-height:1.45}
+.rank p span{color:var(--muted)}
+.rank p i{font-style:normal;white-space:nowrap}
+.rank .empty{display:block;color:var(--muted);font-size:14.5px;padding:12px 0}
+/* come funziona */
+.help{margin-top:12px}
+.help summary{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:12px 16px;font-size:17px;font-weight:700;cursor:pointer;list-style:none}
+.help summary::-webkit-details-marker{display:none}
+.help summary::after{content:"";width:9px;height:9px;border:solid var(--ink);border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-4px;transition:transform .2s}
+.help[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.help dl{margin:0;padding:0 16px 10px}
+.help dt{margin-top:12px;font-weight:700;font-size:15px}
+.help dd{margin:2px 0 0;color:var(--muted);font-size:14.5px;text-wrap:pretty}
+/* blocco codice */
+.lock{max-width:440px;margin:24px auto 0;border:0;background:var(--kit);color:#fff;padding:20px 18px 18px}
+.lock h2{margin:0 0 8px;font-size:30px;font-weight:800;line-height:1.1}
+.lock p{margin:0;color:var(--kitmuted);text-wrap:pretty}
+.lock label{color:#fff}
+.lock input{letter-spacing:.3em;font-size:24px;font-weight:800;text-align:center;text-transform:uppercase;border:0;color:#253369;background:#fff}
+.lock .fmt{margin:6px 0 0;font-size:14px;color:var(--kitmuted)}
+.lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
+.lock .go{background:var(--stripe)}
+.lock :focus-visible{outline-color:#fff}
+/* finestra di conferma (al posto di confirm del browser) */
+#dlg{width:min(420px,calc(100vw - 32px));border:1px solid var(--line);border-radius:18px;padding:20px;background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(10,15,34,.35)}
+#dlg::backdrop{background:rgba(10,15,34,.6)}
+#dlg[open]{animation:dlg .2s cubic-bezier(.16,1,.3,1)}
+@keyframes dlg{from{transform:translateY(8px) scale(.98)}to{transform:none}}
+#dlg h2{margin:0 0 6px;font-size:20px;font-weight:800;line-height:1.25}
+#dlg p{margin:0;color:var(--muted);text-wrap:pretty}
+.dlg-b{display:flex;gap:10px;margin-top:18px}
+.dlg-b button{flex:1;justify-content:center;margin:0;min-height:48px}
+/* schermata del codice: tutta la pagina è la maglia, il modulo al centro */
+html.locked body{background:var(--kit)}
+html.locked main{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+html.locked .lock{width:100%;margin:auto;padding:0 0 8vh;background:none;border-radius:0}
+html.locked .top{margin:0;padding:0 0 10px;background:none;color:#fff}
+html.locked .top::before{display:none}
+html.locked .top small{color:var(--kitmuted)}
+html.locked .top .theme{background:rgba(255,255,255,.14);border-color:transparent;color:#fff}
+html.locked .top :focus-visible{outline-color:#fff}
+@media (max-width:899px){html.locked body::before{content:"";position:fixed;left:0;top:0;bottom:0;width:8px;background:var(--stripe)}html.locked main{padding-left:calc(var(--gut) + 8px)}}
+@media (min-width:900px){
+  main{max-width:1500px;padding:22px clamp(28px,3.5vw,56px) 72px}
+  .cols{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:clamp(28px,3vw,48px);align-items:start}
+  .side .sw:first-child{margin-top:0}
+  .side{position:sticky;top:16px}
+  #calrows,.rank{max-height:calc(100vh - 200px);overflow:auto;overscroll-behavior:contain}
+  .m3{grid-template-columns:minmax(0,1fr) 170px minmax(0,1fr)}
+  .goals.h{grid-column:1 / 2}.goals.a{grid-column:3 / 4}
+  .club{font-size:24px}
+}
+@media (max-width:380px){
+  .nextb .va{display:none}.nextb{text-transform:capitalize}
+  main{padding:10px 10px 48px}
+  .m3{grid-template-columns:minmax(0,1fr) 116px minmax(0,1fr)}
+  .body{padding:6px 10px 14px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+/* PROVA A · Essenziale: stessa struttura, meno ornamenti */
+.kitbg{padding:14px 16px 16px}
+.kitbg::before{display:none}
+.sheet{border-color:transparent}
+.match{border-radius:16px}
+.kitbg .stamp.ink{background:none;padding:0;font-weight:500;color:var(--kitmuted)}
+.pills{height:auto}
+.pills .stamp{height:auto;padding:0}
+.nextb{background:none;padding:0;height:auto;text-decoration:underline;text-underline-offset:3px;font-weight:500}
+.hnav button{background:none;border:1px solid rgba(255,255,255,.28)}
+.m4{padding:10px 16px 12px;border-top:0}
+.m4 .split{display:none}
+.tabs{margin:0;padding:0 8px;background:none;border-radius:0;border-bottom:1px solid var(--line);gap:0}
+.tab{border-radius:0;min-height:48px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab[aria-selected=true]{background:none;box-shadow:none;border-bottom-color:var(--ink)}
+.body{padding:14px 16px 18px}
+.num{color:var(--muted);font-weight:700}
+.step .stamp{display:none}
+.prev:last-child{display:none}
+.opt{border-radius:10px}
+.go{border-radius:10px}
+.cal .g{background:none;width:auto;color:var(--muted)}
+.cal button[aria-current=true] .g{background:none;color:var(--ink)}
+.cal .stamp.ink{background:none;color:var(--val);padding:0}
+.calh{display:none}
+.swb{font-size:19px;border-bottom-width:2px}
+.swb[aria-selected=true]{border-color:var(--ink)}
+.help{background:none}
+.help summary{padding-left:4px}
+@media (max-width:599px){.tabs{padding:0}.tab{font-size:14.5px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><div><h1 class="club">A.S.D. San Salvario</h1><span class="stamp test-chip">Test</span><small><i>“Ci entra prima in culo che in testa”</i><br><span id="season"></span></small></div><div class="top-r"><button class="theme" id="theme" type="button" aria-label="Tema scuro" aria-pressed="false"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><mask id="moon-cut"><rect x="-6" y="-6" width="36" height="36" fill="#fff"/><circle class="cut" cx="25" cy="2" r="6.5" fill="#000"/></mask><circle class="sun" cx="12" cy="12" r="5" fill="currentColor" mask="url(#moon-cut)"/><g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg></button><button class="theme" id="outbtn" type="button" data-out="1" aria-label="Esci da questo dispositivo" title="Esci da questo dispositivo" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg></button></div></div>
+  <form class="sheet lock" id="lock" hidden>
+    <h2>Inserisci il codice squadra</h2>
+    <p>Il codice squadra te lo dà lo staff. Te lo chiediamo una volta sola su questo dispositivo.</p>
+    <label for="code">Codice squadra</label>
+    <input id="code" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" required aria-describedby="fmt">
+    <p class="fmt" id="fmt">8 tra lettere e numeri; maiuscole o minuscole va bene.</p>
+    <button class="go" type="submit">Entra</button>
+    <div class="err" id="err" role="alert"></div>
+  </form>
+  <div class="cols" id="app" hidden><div class="main-col">
+  <section class="sheet match" id="hero" aria-label="Partita"></section>
+
+  <section class="sheet panel">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="t-me" aria-selected="true" aria-controls="body" data-tab="me">La tua presenza</button>
+      <button class="tab" role="tab" id="t-sq" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="sq">La squadra <em id="sqn">0</em></button>
+      <button class="tab" role="tab" id="t-ris" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="ris">Risultato</button>
+      <button class="tab" role="tab" id="t-conv" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="conv">Convocazioni</button>
+    </div>
+    <div class="body" id="body" role="tabpanel" aria-labelledby="t-me"></div>
+  </section>
+  <details class="sheet help" id="help">
+    <summary>Come funziona</summary>
+    <dl>
+      <dt>Come rispondo?</dt>
+      <dd>In “La tua presenza” cerchi il tuo nome, dici se ci sei e se resti a tavola, poi confermi. Il telefono si ricorda di te: la volta dopo bastano due tocchi.</dd>
+      <dt>Posso cambiare idea?</dt>
+      <dd>Sì, fino alla fine della partita: cambi le risposte e premi “Aggiorna risposta”. Subito dopo il salvataggio c’è anche “Annulla”.</dd>
+      <dt>A tavola anche se non gioco?</dt>
+      <dd>Sì: la cena del dopo partita è per tutti, anche per chi non scende in campo.</dd>
+      <dt>Chi è convocato?</dt>
+      <dd>Fino a 20 disponibili sono tutti convocati. Se sono di più, lo staff sceglie i 20 nella scheda “Convocazioni”, che si apre con il codice staff.</dd>
+      <dt>Chi inserisce il risultato?</dt>
+      <dd>Chiunque abbia il codice squadra, dal calcio d’inizio in poi, nella scheda “Risultato”. Lo vede tutta la squadra e si può correggere.</dd>
+      <dt>Come mando la partita nel gruppo?</dt>
+      <dd>Ogni partita ha il suo indirizzo: copia il link dalla barra del browser, oppure usa “Copia promemoria” nella scheda “La squadra”.</dd>
+    </dl>
+  </details>
+
+  </div>
+  <aside class="side">
+  <div class="sw" role="tablist">
+    <button class="swb" role="tab" id="s-cal" aria-controls="cal" data-side="cal" aria-selected="true">Calendario</button>
+    <button class="swb" role="tab" id="s-rank" aria-controls="rank" tabindex="-1" data-side="rank" aria-selected="false">Classifica marcatori</button>
+  </div>
+  <div class="cal" id="cal" role="tabpanel" aria-labelledby="s-cal"><div class="sheet rows" id="calrows"></div><div id="subs"></div></div>
+  <ol class="sheet rank" id="rank" role="tabpanel" aria-labelledby="s-rank" hidden></ol>
+  </aside></div>
+</main>
+<dialog id="dlg" aria-labelledby="dlg-t" aria-describedby="dlg-p"><form method="dialog"><h2 id="dlg-t"></h2><p id="dlg-p"></p><div class="dlg-b"><button class="btn2" value="no">Annulla</button><button class="go" id="dlg-ok" value="ok"></button></div></form></dialog>
+<div class="sr" id="sr" role="status" aria-live="polite"></div>
+
+<script>
+/* ============ DA MODIFICARE: i dati della squadra ============ */
+const CONFIG = {
+  season: "Stagione 2026/27",
+  // Calendario in abbonamento (file .ics). Se presente, il sito legge da qui le partite al posto dell’elenco MATCHES qui sotto.
+  icsUrl: "webcal://gist.githubusercontent.com/niccolovianello/ec59381245bb87a38118c26b932f14de/raw/san_salvario_2026-27.ics",
+  // Realtime Database Firebase: rosa e presenze stanno sotto /t/<codice squadra>/ (il codice non è scritto qui, lo sanno solo la squadra e le regole Firebase).
+  firebaseUrl: "https://asd-san-salvario-default-rtdb.europe-west1.firebasedatabase.app"
+};
+// date in formato AAAA-MM-GGTHH:MM (ora del calcio d’inizio).
+let MATCHES = [
+  {id:"262a2-2026-27-san-salvario-calendar",  date:"2026-10-03T12:45", ritrovo:"11:45", opp:"Orange 11 A.S.D.", home:false, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:"", giornata:"Andata, giornata 1"},
+  {id:"262a12-2026-27-san-salvario-calendar", date:"2026-10-09T21:00", ritrovo:"20:00", opp:"Automotive Lighting Italia Spa", home:true, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:"", giornata:"Andata, giornata 2"},
+  {id:"262a17-2026-27-san-salvario-calendar", date:"2026-10-16T21:00", ritrovo:"20:00", opp:"A.S.D. Oratorio Leini", home:true, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:""}
+];
+// I risultati stanno su Firebase (/t/<codice>/risultati/<id partita>): li inserisce lo staff dalla scheda "Risultato" del sito.
+// La rosa sta su Firebase (/t/<codice>/roster): si modifica dalla console Firebase, non qui. Ogni persona: {name, number, role:"calciatore"|"dirigente"}.
+let ROSTER = [];
+/* ============================================================ */
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const slug = s => s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const dDate = d => new Date(d).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const dShort = d => new Date(d).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'}) + ' · ' + new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+const hhmm = d => new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+const DB = CONFIG.firebaseUrl.replace(/\/$/,'');
+// Sito di test (…/sansalvario/dev/ o …/sansalvario-test/): salva codice e nome con un prefisso, per non mescolarli col sito vero sullo stesso indirizzo.
+const TEST = /-test\/|\/dev\//.test(location.pathname);
+const K = k => (TEST ? 'test-' : '') + k;
+function setTheme(dark, keep){
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  const b = document.getElementById('theme'); b.setAttribute('aria-pressed', dark);
+  document.querySelector('meta[name=theme-color]').content = dark ? '#0a0f22' : '#f3f4f8';
+  if(keep) try{ localStorage.setItem(K('tema'), dark ? 'dark' : 'light'); }catch(e){}
+}
+setTheme(document.documentElement.dataset.theme === 'dark');
+document.getElementById('theme').addEventListener('click', () => setTheme(document.documentElement.dataset.theme !== 'dark', true));
+document.getElementById('season').textContent = CONFIG.season.replace(/^stagione\s*/i, '');
+if(TEST){ document.title = '[TEST] ' + document.title; document.documentElement.classList.add('test'); }
+let BASE = '';   // DB + '/t/<codice>', impostato da unlock()
+let sorted = [];
+const nextMatch = () => sorted.find(m => new Date(m.date) > Date.now() - 3*3600e3);
+const kicked = m => new Date(m.date) <= Date.now();               // calcio d’inizio passato
+const over = m => new Date(m.date).getTime() + 2*3600e3 < Date.now();   // partita finita
+const pl = (n, one, many) => n + ' ' + (n === 1 ? one : many);
+const S = {sel:'', tab:'me', role:'calciatore', pick:'', typed:'', stato:'', tavola:'', done:'', bad:false, edit:false, fix:false};
+let LIVE = true;   // false se l’ultimo aggiornamento da Firebase non è riuscito
+let presences = {}, results = {}, callups = {};
+const MAX_CONV = 20;   // massimo convocati per partita
+let STAFF = '';   // codice staff, se questo dispositivo è entrato nell’area staff
+try{ const m = JSON.parse(localStorage.getItem(K('mio')) || '{}'); S.role = m.role || S.role; S.pick = m.pick || ''; STAFF = localStorage.getItem(K('staff')) || ''; }catch(e){}
+
+function useMatches(list){
+  MATCHES = list.map(m => Object.assign({}, m, {base:{score:m.score || '', scorers:m.scorers || ''}})); applyResults();
+  sorted = [...MATCHES].sort((a,b) => new Date(a.date) - new Date(b.date));
+  const f = nextMatch() || sorted[sorted.length-1], h = decodeURIComponent(location.hash.slice(1));
+  S.sel = MATCHES.some(m => m.id === h) ? h : f ? f.id : '';
+}
+// I risultati di Firebase valgono sopra a quelli scritti nel calendario
+function applyResults(){ MATCHES.forEach(m => { const r = results[m.id]; Object.assign(m, r ? {score:r.score, scorers:r.scorers} : m.base); }); }
+useMatches(MATCHES);
+
+/* ---- Lettura del calendario .ics ---- */
+function parseICS(txt){
+  const lines = txt.replace(/\r/g,'').replace(/\n[ \t]/g,'').split('\n'), out = []; let ev = null, al = false;
+  for(const l of lines){
+    if(l === 'BEGIN:VEVENT') ev = {};
+    else if(l === 'BEGIN:VALARM') al = true;
+    else if(l === 'END:VALARM') al = false;
+    else if(l === 'END:VEVENT'){ if(ev && ev.DTSTART && !/CANCELLED/i.test(ev.STATUS||'')) out.push(ev); ev = null; }
+    else if(ev && !al){
+      const i = l.indexOf(':'); if(i < 0) continue;
+      ev[l.slice(0,i).split(';')[0].toUpperCase()] = l.slice(i+1).replace(/\\n/gi,'\n').replace(/\\([,;\\])/g,'$1');
+    }
+  }
+  return out;
+}
+const p2 = n => String(n).padStart(2,'0');
+function icsToMatch(ev){
+  const m = ev.DTSTART.match(/^(\d{4})(\d\d)(\d\d)(?:T(\d\d)(\d\d)(\d\d)?(Z)?)?$/);
+  const d = m[7] ? new Date(Date.UTC(+m[1],m[2]-1,+m[3],+m[4],+m[5])) : new Date(+m[1],m[2]-1,+m[3],+(m[4]||0),+(m[5]||0));
+  const date = `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}T${p2(d.getHours())}:${p2(d.getMinutes())}`;
+  const sum = (ev.SUMMARY||'').replace(/^[^\p{L}\p{N}]+/u,'').trim(), desc = ev.DESCRIPTION||'';
+  const parts = sum.split(/\s+(?:-|–|—|vs\.?|v|contro)\s+/i);
+  let opp = sum, home = true;
+  if(parts.length >= 2){
+    const u = parts.findIndex(x => /salvario/i.test(x));
+    if(u === 1){ home = false; opp = parts[0]; } else { opp = parts[u === 0 ? 1 : 0]; }
+  }
+  if(/\bTrasferta\b/i.test(desc)) home = false; else if(/\bCasa\b/i.test(desc)) home = true;
+  const g = desc.match(/(andata|ritorno)\s+giornata\s+(\d+)/i);
+  const loc = (ev.LOCATION||'').trim(), c = loc.indexOf(',');
+  const r = desc.match(/ritrovo[^0-9]{0,15}(\d{1,2})[:.](\d\d)/i);
+  const rd = new Date(d.getTime() - 3600e3);
+  const mk = desc.match(/marcatori\s*:\s*([^\n]+)/i);
+  const sc = desc.match(/(?:risultato|finale)[^0-9]{0,10}(\d+\s*[-–]\s*\d+)/i);
+  return {id: slug(ev.UID || date + opp), date, opp: opp.trim(), home,
+    place: c > 0 ? loc.slice(0,c) : loc, address: c > 0 ? loc.slice(c+1).trim() : '',
+    ritrovo: r ? p2(r[1]) + ':' + r[2] : p2(rd.getHours()) + ':' + p2(rd.getMinutes()), score: sc ? sc[1].replace(/\s/g,'') : '',
+    scorers: mk ? mk[1].trim() : '',
+    giornata: g ? g[1][0].toUpperCase() + g[1].slice(1).toLowerCase() + ', giornata ' + g[2] : ''};
+}
+async function loadICS(){
+  if(!CONFIG.icsUrl) return;
+  try{
+    const r = await fetch(CONFIG.icsUrl.replace(/^webcal:/i,'https:'), {cache:'no-store'});
+    if(!r.ok) throw 0;
+    const list = parseICS(await r.text()).map(icsToMatch);
+    if(list.length) useMatches(list);
+  }catch(e){ /* se il file non è raggiungibile resta l’elenco MATCHES scritto qui sopra */ }
+}
+function outcome(m){
+  const x = String(m.score||'').match(/(\d+)\D+(\d+)/); if(!x) return null;
+  const a = +x[1], b = +x[2];
+  return {gf:a, gs:b, label: a>b ? 'Vittoria' : a<b ? 'Sconfitta' : 'Pareggio', cls: a>b ? 'w' : a<b ? 'l' : 'd'};
+}
+function scorerList(str){
+  return String(str||'').split(/[,;]/).map(x => x.trim()).filter(Boolean).map(x => {
+    const m = x.match(/^(.+?)\s*(?:\((\d+)\)|[x×]\s*(\d+)|\s(\d+))$/i);
+    return m ? {name:m[1].trim(), n:+(m[2]||m[3]||m[4])} : {name:x, n:1};
+  });
+}
+function scorerLabel(n){
+  const sur = r => r.name.split(' ').slice(1).join(' '), ini = r => r.name[0].toUpperCase() + '.';
+  const pl = ROSTER.filter(r => r.role === 'calciatore'), t = n.trim(), k = slug(t);
+  const mi = t.match(/^(\p{L})\.?\s+(.+)$/u);
+  let hits = pl.filter(r => slug(r.name) === k || slug(sur(r)) === k);
+  if(hits.length !== 1 && mi) hits = pl.filter(r => r.name[0].toLowerCase() === mi[1].toLowerCase() && slug(sur(r)) === slug(mi[2]));
+  if(hits.length !== 1) return t.charAt(0).toUpperCase() + t.slice(1);
+  const r = hits[0], same = pl.filter(x => ini(x) === ini(r) && slug(sur(x)) === slug(sur(r))).length > 1;
+  return same ? r.name : ini(r) + ' ' + sur(r);
+}
+const gName = g => scorerLabel(g.name) + (g.n > 1 ? ' ×' + g.n : '');
+function scorerBlock(m){
+  const sc = scorerList(m.scorers); if(!sc.length) return '';
+  // al massimo 10 righe (2 colonne da 5): oltre, l’ultima riga dice quanti altri
+  const rows = sc.length > 10 ? [...sc.slice(0, 9).map(g => esc(gName(g))), `+ altri ${sc.length - 9}`] : sc.map(g => esc(gName(g)));
+  return `<ul aria-label="Marcatori">${rows.map(t => `<li>${t}</li>`).join('')}</ul>`;
+}
+// "Andata, giornata 4" → numero e girone per le etichette brevi
+const gShort = m => { const x = String(m.giornata||'').match(/(andata|ritorno)\D*(\d+)/i); return x ? {n:x[2], p:x[1].slice(0,3).toUpperCase(), l:`Giornata ${x[2]} · ${x[1][0].toUpperCase() + x[1].slice(1).toLowerCase()}`} : {n:'–', p:'', l:'Partita'}; };
+// risultato nell’ordine casa–trasferta, come il titolo accanto
+const rBadge = m => { const o = outcome(m); return o ? `<span class="r ${o.cls}">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}<small>${o.label}</small></span>` : ''; };
+const stampHA = m => `<span class="stamp ink">${m.home ? 'In casa' : 'Trasferta'}</span>`;
+const stampO = o => `<span class="stamp ${o.cls === 'w' ? 'ok' : o.cls === 'd' ? 'd' : ''}">${o.label}</span>`;
+// "oggi", "domani", "tra 3 giorni", "3 giorni fa"
+function relDay(d){
+  const a = new Date(d); a.setHours(0,0,0,0); const b = new Date(); b.setHours(0,0,0,0);
+  const n = Math.round((a - b) / 864e5);
+  return n === 0 ? 'oggi' : n === 1 ? 'domani' : n === -1 ? 'ieri' : n > 1 ? `tra ${n} giorni` : `${-n} giorni fa`;
+}
+const placeName = m => String(m.place || '').replace(/\s+-\s+/g, ' – ');
+const mapUrl = m => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([m.place, m.address].filter(Boolean).join(', '));
+const vs = m => m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario';
+function subLinks(){
+  if(!CONFIG.icsUrl) return '';
+  const w = CONFIG.icsUrl.replace(/^https?:/i,'webcal:');
+  const apple = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>`;
+  const google = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M5.5 5.5h13v13h-13z"/><path fill="#4285F4" d="M2.5 0h16v5.5H0V2.5A2.5 2.5 0 0 1 2.5 0z"/><path fill="#FBBC04" d="M18.5 0h3A2.5 2.5 0 0 1 24 2.5v16h-5.5z"/><path fill="#1967D2" d="M0 5.5h5.5v13H0z"/><path fill="#188038" d="M0 18.5h5.5V24h-3A2.5 2.5 0 0 1 0 21.5z"/><path fill="#34A853" d="M5.5 18.5h13V24h-13z"/><path fill="#EA4335" d="M18.5 18.5H24L18.5 24z"/><text x="12" y="15.6" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="8.5" fill="#4285F4">31</text></svg>`;
+  return `<div class="subs"><a class="btn2" href="${esc(w)}">${apple}<span>Aggiungi a Calendario Apple</span></a><a class="btn2" href="https://calendar.google.com/calendar/render?cid=${esc(w)}" target="_blank" rel="noopener">${google}<span>Aggiungi a Google Calendar</span></a></div>`;
+}
+
+/* ---- Codice squadra: apre rosa e presenze su Firebase ---- */
+const normCode = c => String(c||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const surname = n => n.split(' ').slice(1).join(' ') || n;
+// true = codice giusto, false = codice sbagliato; lancia un errore se manca la connessione
+async function unlock(code){
+  const r = await fetch(`${DB}/t/${code}/roster.json`, {cache:'no-store'});
+  if(r.status === 401 || r.status === 403) return false;
+  if(!r.ok) throw new Error(r.status);
+  ROSTER = Object.values((await r.json()) || {}).sort((a,b) =>
+    (a.role === b.role ? 0 : a.role === 'calciatore' ? -1 : 1) || surname(a.name).localeCompare(surname(b.name),'it') || a.name.localeCompare(b.name,'it'));
+  BASE = `${DB}/t/${code}`;
+  return true;
+}
+// Carica presenze e risultati; restituisce true se i risultati sono cambiati
+async function load(){
+  let changed = false;
+  try{
+    const [p, r, c] = await Promise.all(['presenze','risultati','convocati'].map(k => fetch(`${BASE}/${k}.json`, {cache:'no-store'})));
+    LIVE = p.ok;
+    if(p.ok) presences = (await p.json()) || {};
+    if(c.ok) callups = (await c.json()) || {};
+    if(r.ok){
+      const next = (await r.json()) || {};
+      changed = JSON.stringify(next) !== JSON.stringify(results);
+      results = next; applyResults();
+    }
+  }catch(e){ LIVE = false; }
+  return changed;
+}
+async function save(matchId, rec){
+  const key = slug(rec.nome);
+  try{
+    const r = await fetch(`${BASE}/presenze/${matchId}/${key}.json`, {method:'PUT', body:JSON.stringify(rec)});
+    if(!r.ok) return false;
+    (presences[matchId] = presences[matchId] || {})[key] = rec;
+    return true;
+  }catch(e){ return false; }
+}
+/* ---- Area staff: il codice staff si verifica scrivendo una “prova” sotto proof/<codice staff> ---- */
+const TS = {'.sv':'timestamp'};
+const patch = body => fetch(BASE + '.json', {method:'PATCH', body:JSON.stringify(body)});
+// true = codice staff giusto, false = sbagliato; lancia un errore se manca la connessione
+async function staffCheck(code){
+  const r = await patch({[`proof/${code}/_check`]: TS});
+  if(r.status === 401 || r.status === 403) return false;
+  if(!r.ok) throw new Error(r.status);
+  return true;
+}
+// I risultati li può modificare chiunque abbia il codice squadra
+async function saveResult(id, score, scorers){
+  try{
+    const r = await fetch(`${BASE}/risultati/${id}.json`, {method:'PUT', body:JSON.stringify({score, scorers, ts:TS})});
+    if(!r.ok) return false;
+    results[id] = {score, scorers, ts:Date.now()}; applyResults();
+    return true;
+  }catch(e){ return false; }
+}
+const match = () => MATCHES.find(m => m.id === S.sel);
+const mine = () => S.pick ? (presences[S.sel] || {})[slug(S.pick)] : null;   // la risposta salvata di chi usa questo dispositivo
+const meR = () => ROSTER.find(r => r.name === S.pick);   // chi usa questo dispositivo, se è nella rosa
+// annuncia ai lettori di schermo con una regione fissa (quelle ridisegnate spesso non vengono lette)
+function announce(t){ const s = $('#sr'); s.textContent = ''; if(t) setTimeout(() => { s.textContent = t; }, 60); }
+const say = (t, bad) => { S.done = t; S.bad = !!bad; announce(t); };
+// a ogni cambio di partita o di nome riparti dalla risposta già salvata
+function syncForm(){
+  const fk = S.sel + '|' + S.pick;
+  if(S.fFor !== fk){ S.fFor = fk; const r = mine(); S.stato = r ? r.stato : ''; S.tavola = r ? r.tavola : ''; }
+}
+// Ridisegna senza perdere il focus: torna sullo stesso controllo, oppure su S.focus se il gestore l’ha indicato
+function keep(draw){
+  const a = document.activeElement, box = a && a.closest && a.closest('#hero,#body,#cal');
+  let key = '';
+  if(box && a !== box){
+    const lab = a.getAttribute('aria-label'), data = [...a.attributes].filter(x => x.name.startsWith('data-'));
+    key = a.id ? '#' + CSS.escape(a.id) : lab ? `[aria-label="${CSS.escape(lab)}"]` : data.map(x => `[${x.name}="${CSS.escape(x.value)}"]`).join('');
+  }
+  draw();
+  const want = S.focus; S.focus = '';
+  const lost = !document.activeElement || document.activeElement === document.body || !document.activeElement.isConnected;
+  let n = want ? document.querySelector(want) : null;
+  if(!n && box && lost) n = (key && box.querySelector(key + ':not(:disabled)')) || box.querySelector('button:not(:disabled),input,select');
+  if(n) n.focus({preventScroll:true});
+}
+function renderHero(){ keep(drawHero); }
+function renderBody(){ keep(drawBody); }
+function renderCal(){ keep(drawCal); }
+const WARN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>';
+const LOCK = '<svg class="lk" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const KEY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>';
+const COPY = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>';
+const CLOCK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok">${esc(S.done)}${S.undo && S.tab === 'me' ? `${S.done ? '' : 'Risposta salvata.'} <button type="button" class="link" data-undo="1">Annulla</button>` : ''}</div>`;
+// link alla partita: #<id> nell’indirizzo, così si può mandare nel gruppo
+const matchLink = m => location.origin + location.pathname + '#' + m.id;
+function remindText(){
+  const m = match(), names = new Set(answers().map(x => slug(x.nome)));
+  const miss = ROSTER.filter(r => r.role === 'calciatore' && !names.has(slug(r.name))).map(r => r.name);
+  return `${vs(m)}\n${dShort(m.date)} · ritrovo ${m.ritrovo} · ${placeName(m)}\n` +
+    (!miss.length ? 'Hanno risposto tutti i calciatori.\n' : miss.length <= 10 ? `Mancano ancora: ${miss.join(', ')}.\n` : `Mancano ancora ${miss.length} risposte.\n`) + `Rispondi qui: ${matchLink(m)}`;
+}
+
+// timbri della risposta salvata; S.thud li fa “battere” subito dopo il salvataggio
+const mineBox = r => `<div class="mine"><span class="fl">La tua risposta</span><span class="stamp ${r.stato === 'si' ? 'ok' : ''}">${r.stato === 'si' ? 'Presente' : 'Assente'}</span><span class="stamp ${r.tavola === 'si' ? 'ok' : 'd'}">${r.tavola === 'si' ? 'A tavola' : 'Non a tavola'}</span></div>`;
+const answerText = r => (r.stato === 'si' ? 'Ci sono' : 'Non ci sono') + ' · ' + (r.tavola === 'si' ? 'resto a tavola' : 'non resto a tavola');
+function renderLive(){
+  if(!$('#mode')) return;
+  $('.live').classList.toggle('bad', !LIVE);
+  $('#mode').innerHTML = LIVE ? 'in tempo reale' : 'Non aggiornati: controlla la connessione. <button type="button" class="link" data-retry="1">Riprova ora</button>';
+}
+const answers = () => Object.values(presences[S.sel] || {});
+// Convocati della partita selezionata: fino a 20 disponibili sono tutti convocati, oltre decide lo staff
+function callup(){
+  const av = answers().filter(x => x.ruolo === 'calciatore' && x.stato === 'si');
+  if(av.length <= MAX_CONV) return {auto:true, decided:true, av, list:av};
+  const c = callups[S.sel], sel = (c && c.giocatori) || {};
+  return {auto:false, decided:!!c, av, list:av.filter(x => sel[slug(x.nome)])};
+}
+// Solo lo staff può salvare: insieme ai convocati si scrive la prova sotto proof/<codice staff>
+async function saveCallup(id, keys){
+  try{
+    const giocatori = Object.fromEntries(keys.map(k => [k, true]));
+    const r = await patch({[`convocati/${id}`]: {giocatori, ts:TS}, [`proof/${STAFF}/${id}`]: TS});
+    if(!r.ok) return false;
+    callups[id] = {giocatori};
+    return true;
+  }catch(e){ return false; }
+}
+
+function drawHero(){
+  const m = match(), o = outcome(m), g = gShort(m);
+  const team = (name, me, lab) => `<div class="tm${me ? ' me' : ''}"><span class="sr">${lab}: </span><b>${esc(name)}</b></div>`;
+  const mid = o
+    ? `<div class="mid"><span class="sr">Risultato </span><b class="big${o.gf > 9 || o.gs > 9 ? ' long' : ''}">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</b>${stampO(o)}</div>`
+    : `<div class="mid"><span class="fl">calcio d’inizio</span><b>${hhmm(m.date)}</b><span class="r3">ritrovo ${esc(m.ritrovo)}</span></div>`;
+  const i = sorted.findIndex(x => x.id === m.id), prev = sorted[i-1], next = sorted[i+1], nx = nextMatch();
+  const arrow = (to, lab, d) => `<button type="button" ${to ? `data-match="${to.id}"` : 'disabled'} aria-label="${lab}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg></button>`;
+  const day = new Date(m.date).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
+  $('#hero').innerHTML = `<h2 class="sr">${esc(vs(m))}, ${esc(dShort(m.date))}</h2>
+    <div class="kitbg">
+    <div class="mh"><div class="lab"><span class="fl">${esc(day.charAt(0).toUpperCase() + day.slice(1))}${kicked(m) && !/^(oggi|ieri)$/.test(relDay(m.date)) ? '' : ' · ' + relDay(m.date)}${g.n !== '–' ? ' · ' + g.n + 'ª giornata' : ''}</span><span class="pills">${stampHA(m)}${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}"><span class="va">Vai alla </span>prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</span></div>
+    <div class="hnav">${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
+    <div class="m3">${team(m.home ? 'San Salvario' : m.opp, m.home, 'Casa')}${mid}${team(m.home ? m.opp : 'San Salvario', !m.home, 'Ospiti')}<div class="goals ${m.home ? 'h' : 'a'}">${o ? scorerBlock(m) : ''}</div></div>
+    <div class="m2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${m.place ? `<a href="${esc(mapUrl(m))}" target="_blank" rel="noopener">${esc(placeName(m))}</a>` : 'Campo da definire'}${m.address ? `<span class="addr"> · ${esc(m.address.replace(/,?\s*Italia$/i,''))}</span>` : ''}</span></div>
+    </div>
+    <div class="m4" aria-label="Conteggi"><span id="stats"></span><span class="foot"><span class="split" id="split"></span><span class="live"><span class="dot"></span><span id="mode"></span></span></span></div>`;
+  renderStats(); renderLive(); fitNames();
+}
+function renderStats(){
+  const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');
+  const np = yes.filter(x => x.ruolo === 'calciatore').length, dr = yes.length - np;
+  const tav = a.filter(x => x.tavola === 'si').length;   // anche chi non gioca può restare a tavola
+  const names = new Set(a.map(x => slug(x.nome)));
+  const wait = ROSTER.filter(r => !names.has(slug(r.name))).length;
+  const done = over(match());   // a partita finita “da confermare” diventa “senza risposta”
+  if(!$('#stats')) return;
+  $('#stats').outerHTML = `<span id="stats" style="display:contents"><span class="c"><b>${yes.length}</b>${yes.length === 1 ? 'disponibile' : 'disponibili'}</span><span class="c"><b>${tav}</b>a tavola</span><span class="c"><b>${wait}</b>${done ? 'senza risposta' : 'da confermare'}</span></span>`;
+  $('#split').textContent = `${pl(np, 'calciatore', 'calciatori')} · ${pl(dr, 'dirigente', 'dirigenti')} · ${pl(no.length, 'assente', 'assenti')}`;
+  $('#sqn').textContent = ROSTER.length;
+}
+function drawBody(){
+  const b = $('#body');
+  document.querySelectorAll('.tab').forEach(t => { const on = t.dataset.tab === S.tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; if(on) b.setAttribute('aria-labelledby', t.id); });
+  if(S.tab === 'conv'){
+    if(!STAFF){
+      b.innerHTML = `
+      <div class="step"><div class="num">${KEY}</div><div><h2>Convocazioni</h2><p>Riservato allo staff: inserisci il codice staff. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
+      <form id="staffform"><label for="staffcode">Codice staff</label>
+      <input id="staffcode" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false"${S.bad && S.done ? ' aria-invalid="true"' : ''}>
+      <button class="go" id="staffgo" type="submit">Sblocca le convocazioni</button></form>
+      ${okDiv()}`;
+      return;
+    }
+    renderConv(b);
+    b.insertAdjacentHTML('beforeend', '<p class="staffout"><button class="link" data-staffout="1">Esci dall’area staff</button></p>');
+    return;
+  }
+  if(S.tab === 'ris'){
+    const m = match();
+    if(S.rFor !== m.id){ const o = outcome(m); S.rFor = m.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = m.scorers || ''; S.done = ''; }
+    const head = `<div class="step"><div><h2>Risultato</h2><p>Lo vede tutta la squadra e si può correggere.</p></div></div>`;
+    if(!kicked(m)){ b.innerHTML = head + '<p class="prev">Il risultato si potrà inserire dal calcio d’inizio in poi.</p>'; return; }
+    b.innerHTML = head + `
+      <div class="seg">
+        <div><label for="rgf">Gol San Salvario</label><input id="rgf" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGf)}"></div>
+        <div><label for="rgs">Gol ${esc(m.opp)}</label><input id="rgs" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGs)}"></div>
+      </div>
+      <div class="step" style="margin-top:28px"><div><h2>Marcatori</h2><p>Solo San Salvario, per cognome, separati da virgola. Doppietta: Rossi (2).</p></div></div>
+      <label for="rsc">Chi ha segnato</label>
+      <input id="rsc" type="text" maxlength="300" autocomplete="off" value="${esc(S.rSc)}" placeholder="Es. Rossi (2), Bianchi">
+      <p class="prev" id="prev"></p><p class="prev warn" id="warn" role="status"></p>
+      <button class="go" id="rsave">Salva risultato</button>
+      ${results[m.id] && results[m.id].score && results[m.id].ts ? `<p class="prev">Ultimo salvataggio: ${esc(dShort(results[m.id].ts))}.</p>` : ''}
+      ${outcome(m) ? '<button class="link del" id="rclear">Elimina risultato</button>' : ''}
+      ${okDiv().replace('</div>', S.rUndo && S.rUndo.id === m.id ? ' <button type="button" class="link" data-rundo="1">Ripristina</button></div>' : '</div>')}`;
+    resultInputs();
+    return;
+  }
+  if(S.tab === 'sq'){
+    const a = answers(), names = new Set(a.map(x => slug(x.nome)));
+    const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}><div class="who">${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}</div><span>${x.tavola === 'si' ? 'A tavola' : ''}</span></li>`; };
+    const grp = (t, arr, keep) => !arr.length && !keep ? '' : `<div class="grp"><h3>${t} (${arr.length})</h3><ul>${arr.map(li).join('') || '<li><span>Ancora nessuno</span></li>'}</ul></div>`;
+    const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
+    const cu = callup(), inConv = new Set(cu.list.map(x => slug(x.nome)));
+    // “Convocati” solo quando lo staff ha scelto; prima sono “Disponibili” (a partita finita “Presenti”)
+    const avail = 'Disponibili';
+    const present = role => {
+      const yes = a.filter(x => x.ruolo === role && x.stato === 'si');
+      if(role !== 'calciatore') return grp(avail, yes, true);
+      if(cu.auto) return grp(avail, yes, true).replace('</h3>', over(match()) ? '</h3>' : `</h3><p class="note">Fino a ${MAX_CONV} disponibili sono tutti convocati.</p>`);
+      if(!cu.decided) return grp(avail, yes, true).replace('</h3>', `</h3><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
+      return grp('Convocati', cu.list, true) + grp('Disponibili non convocati', yes.filter(x => !inConv.has(slug(x.nome))));
+    };
+    const sec = (role, title) => {
+      const ra = a.filter(x => x.ruolo === role), rw = wait.filter(x => x.ruolo === role);
+      return `<h2 class="sqh">${title}<em>${ROSTER.filter(r => r.role === role).length}</em></h2>` +
+        present(role) + grp('Assenti', ra.filter(x => x.stato === 'no')) + grp('Da confermare', rw);
+    };
+    S.sqSig = sqSig();
+    const tools = over(match()) ? '' : `<div class="sqtools"><button type="button" class="btn2" data-remind="1">${COPY}Copia promemoria</button><p>Il messaggio per il gruppo WhatsApp: partita, ritrovo, quanti mancano (i nomi solo quando sono 10 o meno) e il link per rispondere.</p></div>${S.remindText ? `<label for="rtext">Testo del promemoria</label><textarea id="rtext" class="rt" readonly rows="6">${esc(S.remindText)}</textarea>` : ''}${okDiv()}`;
+    b.innerHTML = tools + sec('calciatore', 'Calciatori') + sec('dirigente', 'Dirigenti');
+    return;
+  }
+  const m = match(), me = meR();
+  syncForm();
+  const saved = mine();
+  if(over(m) && !S.fix){
+    b.innerHTML = `<div class="past"><div class="step"><div class="num">${CLOCK}</div><div><h2>Partita finita</h2><p>${esc(dShort(m.date))}</p></div></div>
+      ${me ? (saved ? mineBox(saved) : `<p class="mine">${esc(me.name)}, non avevi risposto.</p>`) : ''}
+      <p><button class="link" data-tab="sq">Vedi i disponibili</button>${me ? ` · <button class="link" data-fix="1">${saved ? 'Correggi la tua risposta' : 'Rispondi ora'}</button>` : ''}</p></div>`;
+    return;
+  }
+  const who = me && !S.edit
+    ? `<div class="step"><div class="num">1</div><div><h2>Sei ${esc(me.name)}</h2><p>${me.role === 'dirigente' ? 'Dirigente' : 'Calciatore'}${me.number ? ' · #' + me.number : ''} · <button class="link" data-edit="1">Cambia</button></p></div></div>`
+    : `<div class="step"><div class="num">1</div><div><h2>Chi sei?</h2><p>Cerca il tuo nome nella rosa.${me ? ' <button class="link" data-edit="0">Annulla</button>' : ''}</p></div></div>
+    <label for="typed">Nome, cognome o numero di maglia</label>
+    <div class="ac"><input id="typed" type="text" maxlength="30" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="acl" value="${esc(S.typed)}" placeholder="Es. Rossi oppure 16"><ul id="acl" role="listbox" aria-label="Nomi della rosa" hidden></ul></div>
+    <p class="hint" id="achint"></p>
+    ${S.list ? `<label for="pick">Tutta la rosa</label>
+    <select id="pick"><option value="">Seleziona il tuo nome</option>${[['calciatore','Calciatori'],['dirigente','Dirigenti']].map(([k, t]) => `<optgroup label="${t}">${ROSTER.filter(r => r.role === k).map(r => `<option value="${esc(r.name)}" ${r.name===S.pick?'selected':''}>${esc(r.name)}${r.number ? ' · #' + r.number : ''}</option>`).join('')}</optgroup>`).join('')}</select>`
+    : '<button class="link sub" data-list="1">Non ti trovi? Scegli dall’elenco</button>'}`;
+  const same = saved && saved.stato === S.stato && saved.tavola === S.tavola;
+  const why = !me ? 'Prima scegli il tuo nome.' : !S.stato ? 'Dicci se vieni.' : !S.tavola ? 'Rispondi a “Resti a tavola?”.' : '';
+  S.goOff = !!why || !!same;
+  b.innerHTML = who + `
+    <div class="step${me ? '' : ' wait'}"><div class="num">2</div><div><h2 id="h-ci">${over(m) ? 'C’eri?' : 'Vieni ' + esc(new Date(m.date).toLocaleDateString('it-IT',{weekday:'long'})) + '?'}</h2>${saved ? `<span class="stamp ${saved.stato === 'si' ? 'ok' : ''}${S.thud ? ' thud' : ''}" aria-hidden="true">${saved.stato === 'si' ? 'Presente' : 'Assente'}</span>` : ''}</div></div>
+    <div class="seg" role="group" aria-labelledby="h-ci"><button class="opt yes" data-stato="si" aria-pressed="${S.stato==='si'}"><span class="bx" aria-hidden="true"></span>Ci sono</button><button class="opt no" data-stato="no" aria-pressed="${S.stato==='no'}"><span class="bx" aria-hidden="true"></span>Non ci sono</button></div>
+    <div class="step${me ? '' : ' wait'}"><div class="num">3</div><div><h2 id="h-tav">${over(m) ? 'Sei rimasto a tavola?' : 'Resti a tavola?'}</h2>${saved ? `<span class="stamp ${saved.tavola === 'si' ? 'ok' : 'd'}${S.thud ? ' thud' : ''}" aria-hidden="true">${saved.tavola === 'si' ? 'A tavola' : 'Non a tavola'}</span>` : ''}<p>Anche se non giochi.</p></div></div>
+    <div class="seg" role="group" aria-labelledby="h-tav"><button class="opt yes" data-tavola="si" aria-pressed="${S.tavola==='si'}"><span class="bx" aria-hidden="true"></span>Sì</button><button class="opt" data-tavola="no" aria-pressed="${S.tavola==='no'}"><span class="bx" aria-hidden="true"></span>No</button></div>
+    ${same ? '' : `<button class="go" id="go" ${S.goOff ? 'disabled' : ''}>${saved ? 'Aggiorna risposta' : 'Conferma presenza'}</button>`}
+    ${okDiv()}
+    <p class="why" id="why">${why}</p>
+    <p class="prev">Dubbi? <button type="button" class="link" data-help="1">Come funziona</button></p>`;
+  if(S.typed) acRender();
+}
+function renderConv(b){
+  const m = match(), cu = callup();
+  if(S.cFor !== m.id){ S.cFor = m.id; S.cSel = new Set(cu.list.map(x => slug(x.nome))); S.done = ''; }
+  const head = `<div class="step"><div><h2>Convocazioni</h2><p>Fino a ${MAX_CONV} disponibili sono tutti convocati; oltre, scegli tu i ${MAX_CONV}.</p></div></div>`;
+  const who = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}`; };
+  if(!cu.av.length){ b.innerHTML = head + '<p class="prev">Nessun calciatore ha ancora dato disponibilità.</p>'; return; }
+  if(cu.auto){
+    b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Fino a ${MAX_CONV} sono tutti convocati automaticamente.</p>
+      <div class="grp"><ul>${cu.av.map(x => `<li><div class="who">${who(x)}</div></li>`).join('')}</ul></div>`;
+    return;
+  }
+  b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Scegli fino a ${MAX_CONV} convocati.</p>
+    <div class="cnt" id="cnt"></div>
+    <div>${cu.av.map(x => { const k = slug(x.nome); return `<label class="pick">${who(x)}<input type="checkbox" data-conv="${esc(k)}" ${S.cSel.has(k) ? 'checked' : ''}></label>`; }).join('')}</div>
+    <button class="go" id="csave">Salva convocazioni</button>
+    ${okDiv()}`;
+  callupInputs();
+}
+// Aggiorna anteprima marcatori e pulsante Salva senza ridisegnare il modulo
+function resultInputs(){
+  const sc = scorerList(S.rSc), ok = /^\d{1,2}$/.test(S.rGf) && /^\d{1,2}$/.test(S.rGs);
+  const goals = sc.reduce((n, g) => n + g.n, 0);
+  const known = n => { const k = slug(n.replace(/^\p{L}\.\s*/u, '')); return ROSTER.some(r => r.role === 'calciatore' && (slug(r.name) === slug(n) || slug(surname(r.name)) === k)); };
+  const odd = sc.filter(g => !known(g.name)).map(g => g.name);
+  $('#prev').textContent = sc.length ? 'Sul sito: ' + sc.map(gName).join(' · ') + '.' : 'Nessun marcatore.';
+  S.rWarn = (ok && goals > +S.rGf ? `${goals} marcatori ma ${S.rGf} gol. ` : '') + (odd.length ? `Non trovato nella rosa: ${odd.join(', ')}.` : '');
+  $('#warn').textContent = S.rWarn ? 'Attenzione: ' + S.rWarn : '';
+  $('#rsave').disabled = !ok;
+}
+// Aggiorna contatore e caselle dei convocati senza ridisegnare l’elenco
+function callupInputs(){
+  const n = S.cSel.size, full = n >= MAX_CONV;
+  $('#cnt').textContent = `Convocati: ${n}/${MAX_CONV}`;
+  $('#cnt').classList.toggle('full', full);
+  document.querySelectorAll('[data-conv]').forEach(c => { c.disabled = full && !c.checked; c.closest('.pick').classList.toggle('off', c.disabled); });
+}
+/* ---- Ricerca del nome: suggerisce solo persone della rosa ---- */
+function acMatches(q){
+  const words = slug(q).split('-').filter(Boolean); if(!words.length) return [];
+  return ROSTER.filter(r => { const parts = slug(r.name).split('-'); return words.every(w => parts.some(p => p.startsWith(w)) || String(r.number) === w); }).slice(0, 8);
+}
+function acRender(){
+  const ul = $('#acl'), inp = $('#typed'), items = acMatches(S.typed), open = !!S.typed.trim();
+  S.acList = items; S.acI = Math.min(S.acI || 0, Math.max(items.length - 1, 0));
+  ul.innerHTML = items.map((r, i) => `<li role="option" id="aco-${i}" data-ac="${esc(r.name)}" aria-selected="${i === S.acI}">${r.number ? `<b class="nr">${r.number}</b>` : '<b class="nr none"></b>'}<span>${esc(r.name)}</span><small>${r.role === 'dirigente' ? 'Dirigente' : 'Calciatore'}</small></li>`).join('')
+    || '<li class="none" role="option" aria-disabled="true">Nessuno con questo nome nella rosa: scegli dall’elenco qui sotto o chiedi allo staff di aggiungerti.</li>';
+  ul.hidden = !open; inp.setAttribute('aria-expanded', open);
+  if(items.length && open) inp.setAttribute('aria-activedescendant', 'aco-' + S.acI); else inp.removeAttribute('aria-activedescendant');
+  $('#achint').textContent = open ? 'Scegli il tuo nome tra quelli proposti.' : '';
+  const g = $('#go'); if(g) g.disabled = open || S.goOff;   // finché si sta cercando, il nome non è scelto
+}
+function acChoose(name){
+  const r = ROSTER.find(x => x.name === name); if(!r) return;
+  S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; S.edit = false; S.list = false; S.focus = '#body [data-stato="si"]'; renderBody();
+}
+// Scheda Convocazioni: sempre visibile, col lucchetto finché non si inserisce il codice staff
+function renderTop(){
+  $('#outbtn').hidden = false;
+  const t = $('#t-conv');
+  t.innerHTML = 'Convocazioni' + (STAFF ? '' : LOCK);
+  t.title = STAFF ? '' : 'Riservato allo staff';
+}
+// Gol per giocatore sommando i marcatori di tutte le partite con un risultato
+function renderRank(){
+  const tot = new Map();
+  sorted.filter(outcome).forEach(m => scorerList(m.scorers).forEach(g => { const k = scorerLabel(g.name); tot.set(k, (tot.get(k) || 0) + g.n); }));
+  // a pari gol, ordine alfabetico per cognome ("J. Varvello" → Varvello; nome completo → cognome dalla rosa)
+  const sur = l => { const i = l.match(/^\p{L}\.\s+(.+)$/u); if(i) return i[1]; const r = ROSTER.find(x => x.name === l); return r ? surname(r.name) : l; };
+  const rows = [...tot].sort((a,b) => b[1] - a[1] || sur(a[0]).localeCompare(sur(b[0]),'it') || a[0].localeCompare(b[0],'it'));
+  // raggruppa per numero di gol: "2 gol · 3 giocatori" e sotto i nomi
+  const groups = []; rows.forEach(([n, v]) => { const g = groups[groups.length - 1]; if(g && g.v === v) g.names.push(n); else groups.push({v, names:[n]}); });
+  $('#rank').innerHTML = groups.map(g => `<li class="rg"><h3><b>${g.v}</b> gol${g.names.length > 1 ? `<span> · ${g.names.length} giocatori</span>` : ''}</h3><p>${g.names.map(n => `<i>${esc(n)}</i>`).join('<span aria-hidden="true"> · </span>')}</p></li>`).join('')
+    || '<li class="none"><span class="empty">Nessun gol segnato finora.</span></li>';
+}
+function drawCal(){
+  renderRank();
+  const nx = nextMatch();
+  let last = '';
+  const ni = nx ? sorted.indexOf(nx) : sorted.length, show = S.allCal ? sorted : sorted.filter((m, i) => (i >= ni - 1 && i < ni + 3) || m.id === S.sel);
+  $('#calrows').innerHTML = show.map(m => { const g = gShort(m), sec = g.p === 'RIT' ? 'Ritorno' : g.p === 'AND' ? 'Andata' : 'Altre partite', head = sec !== last ? `<h3 class="calh">${sec}</h3>` : ''; last = sec; return head + `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span class="g" aria-hidden="true">${g.n}</span><span class="t"><b>${esc(vs(m))}</b><small>${esc(dShort(m.date))} · ${esc(placeName(m))}</small></span>${rBadge(m) || (nx && nx.id === m.id ? '<em class="stamp ink nx">Prossima</em>' : '')}</button>`; }).join('');
+  if(show.length < sorted.length || S.allCal) $('#calrows').insertAdjacentHTML('beforeend', `<button type="button" class="calmore" data-allcal="1" aria-expanded="${!!S.allCal}">${S.allCal ? 'Mostra solo le prossime' : `Tutte le partite (${sorted.length})`}</button>`);
+  $('#subs').innerHTML = subLinks();
+  const box = $('#calrows'), cur = box.querySelector('[aria-current=true]');
+  if(cur && box.scrollHeight > box.clientHeight + 4 && (cur.offsetTop < box.scrollTop || cur.offsetTop + cur.offsetHeight > box.scrollTop + box.clientHeight)) box.scrollTop = cur.offsetTop - box.clientHeight / 3;
+}
+function renderAll(){ renderHero(); renderStats(); renderBody(); renderCal(); }
+const sqSig = () => JSON.stringify([presences[S.sel], callups[S.sel], ROSTER.length]);   // la scheda La squadra si ridisegna solo se questo cambia
+// Salva la risposta di chi usa il dispositivo
+// Conferma con la finestra della pagina; risolve true solo se si preme il pulsante principale (Esc o Annulla = false)
+function ask(title, text, ok){
+  return new Promise(res => {
+    const d = $('#dlg');
+    $('#dlg-t').textContent = title; $('#dlg-p').textContent = text; $('#dlg-ok').textContent = ok;
+    d.returnValue = ''; d.onclose = () => res(d.returnValue === 'ok');
+    d.showModal();
+  });
+}
+// cambia partita: ridisegna, annuncia e aggiorna l’indirizzo (#id) per poterlo condividere
+function selectMatch(id){
+  if(!MATCHES.some(m => m.id === id)) return;
+  S.sel = id; S.done = ''; S.fix = false; S.undo = null; S.rUndo = null; S.remindText = ''; S.rFor = S.cFor = '';
+  try{ history.replaceState(null, '', '#' + id); }catch(x){}
+  renderAll(); announce(vs(match()) + ', ' + dShort(match().date));
+}
+async function submit(){
+  const r = meR(); if(!r || !S.stato || !S.tavola || S.busy) return null;
+  S.busy = true;
+  const prev = mine() || null, upd = !!prev, ok = await save(S.sel, {nome:r.name, ruolo:r.role, stato:S.stato, tavola:S.tavola});
+  S.busy = false;
+  S.undo = ok ? {id:S.sel, prev} : null;
+  if(ok) try{ localStorage.setItem(K('mio'), JSON.stringify({role:r.role, pick:r.name})); }catch(x){}
+  return {ok, upd};
+}
+const thanks = (res, m) => !res.ok ? 'Non sono riuscito a salvare. Controlla la connessione e riprova.'
+  : S.stato === 'si' ? `${res.upd ? 'Risposta aggiornata' : 'Presenza confermata'}. Ci vediamo alle ${m.ritrovo}!` : `${res.upd ? 'Risposta aggiornata' : 'Risposta salvata'}. Grazie per avvisare.`;
+
+
+document.addEventListener('click', async e => {
+  const t = e.target.closest('button'); if(!t) return;
+  const d = t.dataset;
+  if(d.side){ document.querySelectorAll('.swb').forEach(x => { x.setAttribute('aria-selected', x === t); x.tabIndex = x === t ? 0 : -1; }); $('#cal').hidden = d.side !== 'cal'; $('#rank').hidden = d.side !== 'rank'; }
+  else if(d.tab){ S.tab = d.tab; S.done = ''; renderBody(); }
+  else if(d.stato){ S.stato = d.stato; S.done = ''; renderBody(); }
+  else if(d.tavola){ S.tavola = d.tavola; renderBody(); }
+  else if(d.edit !== undefined){ S.edit = d.edit === '1'; S.typed = ''; S.list = false; S.focus = S.edit ? '#typed' : '[data-edit="1"]'; renderBody(); }
+  else if(d.list){ S.list = true; S.focus = '#pick'; renderBody(); }
+  else if(d.fix){ S.fix = true; S.focus = '[data-stato="si"]'; renderBody(); }
+  else if(d.out){ if(!await ask('Uscire da questo dispositivo?', 'Per rientrare servirà di nuovo il codice squadra.', 'Esci')) return; try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); }catch(x){} location.reload(); }
+  else if(d.staffout){ if(!await ask('Uscire dall’area staff?', 'Su questo dispositivo servirà di nuovo il codice staff per le convocazioni.', 'Esci')) return; STAFF = ''; S.done = ''; try{ localStorage.removeItem(K('staff')); }catch(x){} renderBody(); renderTop(); }
+  else if(t.id === 'staffgo'){
+    const code = normCode($('#staffcode').value);
+    try{ say(code && await staffCheck(code) ? '' : 'Codice staff errato. Riprova.', true); }
+    catch(x){ say('Non riesco a collegarmi. Controlla la connessione e riprova.', true); }
+    if(!S.done){ STAFF = code; try{ localStorage.setItem(K('staff'), code); }catch(x){} S.done = ''; S.tab = 'conv'; S.cFor = ''; renderTop(); }
+    renderBody();
+  }
+  else if(t.id === 'csave'){
+    t.disabled = true; t.textContent = 'Salvataggio…';
+    const keys = [...S.cSel].slice(0, MAX_CONV);
+    const ok = await saveCallup(S.sel, keys);
+    say(ok ? 'Convocazioni salvate.' : 'Non sono riuscito a salvare. Controlla la connessione o rientra nell’area staff.', !ok);
+    renderBody();
+  }
+  else if(t.id === 'rsave' || t.id === 'rclear'){
+    const clear = t.id === 'rclear', id = S.sel, m = match(), o = outcome(m);
+    const was = o ? `${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}` : '', now = m.home ? `${+S.rGf}–${+S.rGs}` : `${+S.rGs}–${+S.rGf}`;
+    if(!clear && S.rWarn && !await ask('Controlla il risultato', `${S.rWarn} Vuoi salvarlo comunque?`, 'Salva comunque')) return;
+    if(!clear && o && was !== now && !await ask('Sostituire il risultato?', `C’è già ${was}: diventerà ${now}.`, 'Sostituisci')) return;
+    if(clear && !await ask('Eliminare il risultato?', `${m.home ? `San Salvario ${o.gf}–${o.gs} ${m.opp}` : `${m.opp} ${o.gs}–${o.gf} San Salvario`}. Subito dopo puoi ancora ripristinarlo.`, 'Elimina')) return;
+    t.disabled = true; if(!clear) t.textContent = 'Salvataggio…';
+    const ok = await saveResult(id, clear ? '' : `${+S.rGf}-${+S.rGs}`, clear ? '' : scorerList(S.rSc).map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', '));
+    if(ok && clear){ S.rUndo = {id, score:m.score, scorers:m.scorers}; S.rGf = S.rGs = S.rSc = ''; } else S.rUndo = null;
+    say(ok ? (clear ? 'Risultato eliminato.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione e riprova.', !ok);
+    renderHero(); renderCal(); renderBody();
+  }
+  else if(d.rundo && S.rUndo){
+    const u = S.rUndo; S.rUndo = null;
+    const ok = await saveResult(u.id, u.score, u.scorers);
+    if(ok){ const o = outcome(match()); S.rFor = u.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = match().scorers || ''; }
+    say(ok ? 'Risultato ripristinato.' : 'Non sono riuscito a ripristinarlo. Controlla la connessione e riprova.', !ok);
+    renderHero(); renderCal(); renderBody();
+  }
+  else if(d.match){ const inHero = !!t.closest('#hero'); selectMatch(d.match); if(!inHero) window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(d.allcal){ S.allCal = !S.allCal; S.focus = '[data-allcal]'; renderCal(); }
+  else if(d.help){ const h = $('#help'); h.open = true; h.scrollIntoView({behavior:'smooth', block:'start'}); h.querySelector('summary').focus({preventScroll:true}); }
+  else if(d.retry){ t.disabled = true; await load(); renderLive(); renderStats(); if(S.tab === 'sq') renderBody(); }
+  else if(d.remind){
+    const text = remindText();
+    try{ if(navigator.share) await navigator.share({text}); else { await navigator.clipboard.writeText(text); say('Promemoria copiato: incollalo nel gruppo WhatsApp.'); } }
+    catch(x){ if(x && x.name !== 'AbortError') say('Non riesco a copiarlo. Tieni premuto sul testo qui sotto e copialo a mano.', true), S.remindText = text; }
+    renderBody();
+  }
+  else if(d.undo && S.undo){
+    const u = S.undo, r = meR(); S.undo = null; if(!r) return;
+    const key = slug(r.name);
+    try{
+      const res = await fetch(`${BASE}/presenze/${u.id}/${key}.json`, u.prev ? {method:'PUT', body:JSON.stringify(u.prev)} : {method:'DELETE'});
+      if(!res.ok) throw 0;
+      if(u.prev) presences[u.id][key] = u.prev; else delete presences[u.id][key];
+      S.fFor = ''; say(u.prev ? 'Ripristinata la risposta di prima.' : 'Risposta annullata.');
+    }catch(x){ say('Non sono riuscito ad annullare. Controlla la connessione e riprova.', true); }
+    S.focus = '#body [data-stato="si"]'; renderStats(); renderBody();
+  }
+  else if(t.id === 'go'){
+    if(!meR() || S.busy) return;   // solo nomi della rosa
+    t.disabled = true; t.textContent = 'Salvataggio…';
+    const m = match(), res = await submit(); if(!res) return;
+    say(thanks(res, m), !res.ok); S.thud = res.ok;
+    S.focus = `#body [data-stato="${S.stato}"]`;
+    renderStats(); renderBody(); S.thud = false;
+  }
+});
+document.addEventListener('change', e => {
+  const ck = e.target.dataset && e.target.dataset.conv;
+  if(ck){ e.target.checked ? S.cSel.add(ck) : S.cSel.delete(ck); $('#ok').textContent = ''; callupInputs(); return; }
+  if(e.target.id === 'pick'){ const r = ROSTER.find(x => x.name === e.target.value); if(!r) return; acChoose(r.name); }
+});
+document.addEventListener('input', e => {
+  const rk = {rgf:'rGf', rgs:'rGs', rsc:'rSc'}[e.target.id];
+  if(rk){ S[rk] = e.target.value.trim(); S.done = ''; $('#ok').textContent = ''; resultInputs(); return; }
+  if(e.target.id === 'typed'){ S.typed = e.target.value; S.acI = 0; S.done = ''; acRender(); }
+});
+
+document.addEventListener('keydown', e => {
+  if(e.target.id !== 'typed' || $('#acl').hidden) return;
+  const n = (S.acList || []).length;
+  if(e.key === 'ArrowDown' && n){ e.preventDefault(); S.acI = (S.acI + 1) % n; acRender(); }
+  else if(e.key === 'ArrowUp' && n){ e.preventDefault(); S.acI = (S.acI - 1 + n) % n; acRender(); }
+  else if(e.key === 'Enter' && n){ e.preventDefault(); acChoose(S.acList[S.acI].name); }
+  else if(e.key === 'Escape'){ $('#acl').hidden = true; e.target.setAttribute('aria-expanded', false); }
+});
+// Nomi delle squadre: si va a capo solo tra le parole; se una parola non entra, il nome si rimpicciolisce quanto basta
+function fitNames(){
+  document.querySelectorAll('#hero .tm b').forEach(b => {
+    b.style.fontSize = '';
+    let f = parseFloat(getComputedStyle(b).fontSize);
+    while((b.scrollWidth > b.clientWidth + 1 || b.offsetHeight > 124) && f > 12){ f -= 1; b.style.fontSize = f + 'px'; }   // la riga è alta 128px
+  });
+}
+window.addEventListener('resize', fitNames);
+if(document.fonts) document.fonts.ready.then(fitNames);
+window.addEventListener('hashchange', () => { const h = decodeURIComponent(location.hash.slice(1)); if(h && h !== S.sel && started) selectMatch(h); });
+// frecce, Home e Fine per muoversi tra le schede
+document.addEventListener('keydown', e => {
+  const t = e.target.closest && e.target.closest('[role=tab]'); if(!t || !['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+  const all = [...t.parentNode.querySelectorAll('[role=tab]:not([hidden])')], i = all.indexOf(t);
+  const n = e.key === 'Home' ? all[0] : e.key === 'End' ? all[all.length-1] : all[(i + (e.key === 'ArrowRight' ? 1 : -1) + all.length) % all.length];
+  e.preventDefault(); n.click(); n.focus();
+});
+document.addEventListener('focusout', e => { if(e.target.id === 'typed'){ $('#acl').hidden = true; e.target.setAttribute('aria-expanded', false); } });
+document.addEventListener('focusin', e => { if(e.target.id === 'typed' && S.typed) acRender(); });
+// pointerdown (non click) così il campo non perde il focus prima della scelta
+document.addEventListener('pointerdown', e => {
+  const o = e.target.closest('[data-ac]'); if(!o) return;
+  e.preventDefault(); acChoose(o.dataset.ac);
+});
+
+document.addEventListener('submit', async e => {
+  if(e.target.id === 'staffform'){ e.preventDefault(); return; }   // Invio “clicca” già il pulsante: lo gestisce il listener dei click
+  if(e.target.id !== 'lock') return;
+  e.preventDefault();
+  const code = normCode($('#code').value), err = $('#err');
+  err.textContent = '';
+  try{
+    if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Ricontrollalo o chiedilo allo staff.'; $('#code').setAttribute('aria-invalid', 'true'); $('#code').select(); return; }
+  }catch(x){ err.textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; return; }
+  try{ localStorage.setItem(K('codice'), code); }catch(x){}
+  start();
+});
+
+let started = false;
+async function start(){
+  if(started) return; started = true;
+  $('#lock').hidden = true; document.documentElement.classList.remove('locked'); setTheme(document.documentElement.dataset.theme === 'dark');
+  renderTop();
+  await loadICS(); await load(); renderAll(); renderLive();
+  $('#app').hidden = false;
+  setInterval(async () => { if(await load()){ renderHero(); renderCal(); } renderLive(); renderStats(); if(S.tab === 'sq' && sqSig() !== S.sqSig) renderBody(); }, 5000);
+}
+(async () => {
+  let saved = '';
+  try{ saved = localStorage.getItem(K('codice')) || ''; }catch(e){}
+  try{ if(saved && await unlock(saved)) return start(); }
+  catch(e){ $('#err').textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; }
+  $('#lock').hidden = false; document.documentElement.classList.add('locked'); document.querySelector('meta[name=theme-color]').content = '#253369';
+})();
+</script>
+</body>
+</html>
