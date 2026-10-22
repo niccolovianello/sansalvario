@@ -69,6 +69,10 @@ select,input{width:100%;min-height:52px;font:inherit;border:1px solid var(--line
 .nr{flex:none;width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font:700 15px var(--cond)}
 .nr.none{background:none}
 h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
+.sw{display:flex;gap:22px;align-items:baseline;flex-wrap:wrap;margin:34px 2px 12px}
+.swb{background:none;border:0;padding:0;font:700 28px var(--cond);color:var(--ink);opacity:.35;cursor:pointer;transition:opacity .15s}
+.swb[aria-selected=true]{opacity:1}
+@media (max-width:480px){.sw{gap:16px}.swb{font-size:24px}}
 .rank{list-style:none;margin:0;padding:6px 18px;background:var(--card);border:1px solid var(--line);border-radius:18px}
 .rank li{display:grid;grid-template-columns:26px minmax(0,1fr) 34px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .rank li:last-child{border-bottom:0}.rank li.none{display:block}
@@ -108,7 +112,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 @media (min-width:900px){
   main{max-width:1120px;padding:24px 28px 72px}
   .cols{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:32px;align-items:start}
-  .side h2.sec:first-child{margin-top:0}
+  .side h2.sec:first-child,.side .sw:first-child{margin-top:0}
   .top{font-size:26px}
 }
 @media (max-width:380px){
@@ -167,10 +171,12 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 
   </div>
   <aside class="side">
-  <h2 class="sec">Classifica marcatori</h2>
-  <ol class="rank" id="rank" aria-label="Classifica marcatori"></ol>
-  <h2 class="sec">Calendario</h2>
+  <div class="sw" role="tablist">
+    <button class="swb" role="tab" data-side="cal" aria-selected="true">Calendario</button>
+    <button class="swb" role="tab" data-side="rank" aria-selected="false">Classifica Marcatori</button>
+  </div>
   <div class="cal" id="cal"></div>
+  <ol class="rank" id="rank" aria-label="Classifica Marcatori" hidden></ol>
 
   <p class="note" id="foot"></p>
   </aside></div>
@@ -536,7 +542,8 @@ function renderAll(){ $('#season').textContent = CONFIG.season; renderHero(); re
 document.addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
   const d = t.dataset;
-  if(d.tab){ S.tab = d.tab; renderBody(); }
+  if(d.side){ document.querySelectorAll('.swb').forEach(x => x.setAttribute('aria-selected', x === t)); $('#cal').hidden = d.side !== 'cal'; $('#rank').hidden = d.side !== 'rank'; }
+  else if(d.tab){ S.tab = d.tab; renderBody(); }
   else if(d.role){ S.role = d.role; S.pick = ''; S.done = ''; renderBody(); }
   else if(d.stato){ S.stato = d.stato; S.done = ''; renderBody(); }
   else if(d.tavola){ S.tavola = d.tavola; renderBody(); }
