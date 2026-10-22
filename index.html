@@ -74,12 +74,11 @@ dt{font-weight:700}dd{margin:0}
 .res{display:flex;gap:14px;align-items:center;margin:0 0 16px;padding:14px 16px;background:rgba(255,255,255,.1);border-radius:14px}
 .res .big{font:700 46px/1 var(--cond)}
 .res b{font-size:17px}.res small{display:block;opacity:.75;font-size:13px}
-.goals{margin:0 0 18px;font-size:15px}
-.goals h4{margin:0 0 6px;font:600 13px var(--body);opacity:.7}
+.goals{grid-row:2;text-align:center;font-size:14px}
+.goals.c1{grid-column:1}.goals.c3{grid-column:3}
+.goals h4{margin:0 0 4px;font:600 11px var(--body);letter-spacing:.12em;text-transform:uppercase;opacity:.7}
 .goals ul{list-style:none;margin:0;padding:0}
-.goals li{padding:6px 0;border-top:1px solid rgba(255,255,255,.15);font-weight:500}
-.goals li:first-child{border-top:0}
-.cal .sc span{display:block;color:var(--ink);padding-left:10px}
+.goals li{padding:3px 0;font-weight:500}
 .cal .r{text-align:right}.cal .r small{font:500 12px var(--body)}
 .r.w{color:var(--green)}.r.l{color:var(--red)}.r.d{color:var(--muted)}
 .match3{display:grid;grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr);gap:8px;align-items:center;margin:28px 0 24px}
@@ -92,8 +91,6 @@ dt{font-weight:700}dd{margin:0}
 .mid span{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-top:4px}
 .mid .big{font:700 clamp(46px,13vw,64px)/1 var(--cond)}
 .mid .out{display:block;font-size:14px;margin-top:2px}
-.mid .goals{margin:14px 0 0;font-size:14px}
-.mid .goals h4{font-size:11px;line-height:1.3}
 .subs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .subs a span{white-space:nowrap}
 .subs a{flex:1 1 200px;display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:center;text-align:center;text-decoration:none;background:var(--navy);color:#fff;font-weight:700;border-radius:14px;padding:14px 16px}
@@ -280,10 +277,9 @@ function scorerLabel(n){
 const gName = g => scorerLabel(g.name) + (g.n > 1 ? ' ×' + g.n : '');
 function scorerBlock(m){
   const sc = scorerList(m.scorers); if(!sc.length) return '';
-  return `<div class="goals"><h4>Marcatori San Salvario</h4><ul>${sc.map(g => `<li>${esc(gName(g))}</li>`).join('')}</ul></div>`;
+  return `<div class="goals ${m.home ? 'c1' : 'c3'}"><h4>Marcatori</h4><ul>${sc.map(g => `<li>${esc(gName(g))}</li>`).join('')}</ul></div>`;
 }
 const rBadge = m => { const o = outcome(m); return o ? `<span class="r ${o.cls}">${o.gf}–${o.gs}<small>${o.label}</small></span>` : ''; };
-const scorerLine = m => { const sc = outcome(m) ? scorerList(m.scorers) : []; return sc.length ? `<small class="sc">Marcatori${sc.map(g => `<span>${esc(gName(g))}</span>`).join('')}</small>` : ''; };
 function subLinks(){
   if(!CONFIG.icsUrl) return '';
   const w = CONFIG.icsUrl.replace(/^https?:/i,'webcal:');
@@ -328,11 +324,11 @@ function renderHero(){
   const lg = n => n.split(/\s+/).some(w => w.length > 9) ? 'sm' : '';
   const home = m.home ? 'San Salvario' : m.opp, away = m.home ? m.opp : 'San Salvario';
   const mid = o
-    ? `<div class="mid"><div class="big">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</div><b class="out">${o.label}</b>${scorerBlock(m)}</div>`
+    ? `<div class="mid"><div class="big">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</div><b class="out">${o.label}</b></div>`
     : `<div class="mid"><div class="t1">${hhmm(m.date)}</div><span>Fischio d’inizio</span><div class="t2">${esc(m.ritrovo)}</div><span>Ritrovo</span></div>`;
   $('#hero').innerHTML = `
     <div class="chips"><span class="chip">${m.home?'IN CASA':'TRASFERTA'}</span><span>${esc(dDate(m.date))}</span>${m.giornata ? `<span>${esc(m.giornata)}</span>` : ''}</div>
-    <div class="match3"><div class="tm ${m.home ? 'me' : ''} ${lg(home)}">${esc(home)}</div>${mid}<div class="tm ${m.home ? '' : 'me'} ${lg(away)}">${esc(away)}</div></div>
+    <div class="match3"><div class="tm ${m.home ? 'me' : ''} ${lg(home)}">${esc(home)}</div>${mid}<div class="tm ${m.home ? '' : 'me'} ${lg(away)}">${esc(away)}</div>${o ? scorerBlock(m) : ''}</div>
     <div class="where"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${esc(m.place)}, ${esc(m.address)}</span></div>`;
 }
 function renderStats(){
@@ -375,7 +371,7 @@ function renderBody(){
     <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
 }
 function renderCal(){
-  $('#cal').innerHTML = subLinks() + sorted.map(m => `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span><b>${m.home?'San Salvario – '+esc(m.opp):esc(m.opp)+' – San Salvario'}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small>${scorerLine(m)}</span>${rBadge(m)}</button>`).join('');
+  $('#cal').innerHTML = subLinks() + sorted.map(m => `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span><b>${m.home?'San Salvario – '+esc(m.opp):esc(m.opp)+' – San Salvario'}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small></span>${rBadge(m)}</button>`).join('');
   $('#info').innerHTML = Object.entries(CONFIG.info).map(([k,v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
 }
 function renderAll(){ $('#season').textContent = CONFIG.season; renderHero(); renderStats(); renderBody(); renderCal(); }
