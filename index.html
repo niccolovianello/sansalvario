@@ -33,7 +33,7 @@ button{font:inherit;color:inherit}
 .thud{animation:thud .38s cubic-bezier(.2,.9,.3,1.2) both}
 @keyframes thud{from{opacity:0;transform:rotate(-14deg) scale(1.9)}to{opacity:1;transform:rotate(-6deg) scale(1)}}
 /* testata */
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 10px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 8px}
 .club{display:inline;margin:0;font:700 25px/1.05 var(--cond);letter-spacing:.03em;text-transform:uppercase}
 .top small{display:block;margin-top:3px;font-size:13px;line-height:1.35;color:var(--muted)}
 .top small i{font-style:italic}
@@ -57,7 +57,7 @@ button{font:inherit;color:inherit}
 .hnav button{width:44px;display:grid;place-items:center;padding:0}
 .hnav button:disabled{opacity:.35;cursor:default}
 .nextb{display:inline-flex;align-items:center;gap:4px;padding:0 10px;font:700 13px var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--pen)}
-.m3{display:grid;grid-template-columns:minmax(0,1fr) 108px minmax(0,1fr);border-bottom:1.5px solid var(--rule)}
+.m3{display:grid;grid-template-columns:minmax(0,1fr) 124px minmax(0,1fr);border-bottom:1.5px solid var(--rule)}
 .m3>div{padding:8px 10px 10px}
 .m3>div+div{border-left:1px solid var(--hair)}
 .tm b{display:block;margin-top:4px;font:700 clamp(19px,5.3vw,34px)/1.02 var(--cond);text-transform:uppercase;overflow-wrap:break-word;hyphens:manual}
@@ -66,10 +66,11 @@ button{font:inherit;color:inherit}
 .tm ul{list-style:none;margin:10px 0 0;padding:0;font-size:14px;font-weight:500;color:var(--pen)}
 .tm li{padding:1px 0}
 .mid{text-align:center}
-.mid b{display:block;font:600 clamp(32px,9vw,46px)/1 var(--cond);color:var(--pen);font-variant-numeric:tabular-nums;margin:2px 0 8px}
-.mid b.r2{font-size:clamp(24px,6.6vw,32px);margin-bottom:0}
+.mid b{display:block;font:600 clamp(32px,9vw,46px)/1 var(--cond);color:var(--pen);font-variant-numeric:tabular-nums;margin:2px 0 6px}
+.mid .fl{white-space:nowrap}
+.mid .r3{font:600 20px var(--cond);letter-spacing:0;vertical-align:-1px}
 .mid b.big{font-size:clamp(40px,11vw,56px)}
-.m2{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr)}
+.m2{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.5fr)}
 .m2>div{padding:7px 10px 9px}
 .m2>div+div{border-left:1px solid var(--hair)}
 .m2 span.pen{display:block;font-size:15px;font-weight:500;line-height:1.35}
@@ -77,23 +78,20 @@ button{font:inherit;color:inherit}
 .m2 .addr{}
 @media (max-width:599px){.m2 .addr{display:none}}
 .m2 small{display:block;color:var(--muted);font-size:13px;line-height:1.35}
-/* conteggi; prima della partita il modulo viene prima dei conteggi */
-.main-col{display:flex;flex-direction:column}
-.main-col.ahead .stats{order:3}.main-col.ahead .help{order:4}
-.stats{margin-top:12px}
-.nums{display:grid;grid-template-columns:repeat(3,1fr)}
-.stat{display:flex;flex-direction:column;justify-content:space-between;padding:9px 12px 10px}
-.stat+.stat{border-left:1px solid var(--hair)}
-.stat b{display:block;margin-top:2px;font:600 34px/1 var(--cond);color:var(--pen);font-variant-numeric:tabular-nums}
-.stat small{display:block;margin-top:3px;font-size:12.5px;line-height:1.3;color:var(--muted)}
-.live{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0;padding:8px 12px;border-top:1px solid var(--hair);font-size:13px;color:var(--muted)}
+/* conteggi: ultima riga della distinta della partita */
+.m4{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px;padding:6px 10px 7px;border-top:1.5px solid var(--rule)}
+.m4 .c{white-space:nowrap;font-size:14.5px}
+.m4 .c b{font:600 22px/1 var(--cond);color:var(--pen);font-variant-numeric:tabular-nums;margin-right:4px}
+.m4 .split{font-size:13px;color:var(--muted)}
+.m4 .foot{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px}
+.live{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0;font-size:13px;color:var(--muted)}
 .dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--green)}
 .live.bad{color:var(--stamp)}.live.bad .dot{background:var(--stamp)}
 .live .link{font-size:13px}
 /* schede */
 .panel{margin-top:12px}
 .tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1.5px solid var(--rule)}
-.tab{display:flex;gap:7px;align-items:center;justify-content:center;min-height:46px;padding:0 16px;background:none;border:0;border-right:1px solid var(--hair);box-shadow:inset 0 -3px 0 transparent;font:700 17px var(--cond);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab{display:flex;gap:7px;align-items:center;justify-content:center;min-height:44px;padding:0 16px;background:none;border:0;border-right:1px solid var(--hair);box-shadow:inset 0 -3px 0 transparent;font:700 17px var(--cond);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap}
 .tab:last-child{border-right:0}
 .tab[aria-selected=true]{color:var(--ink);background:var(--pentint);box-shadow:inset 0 -3px 0 var(--pen)}
 .tab em{font:600 13px var(--body);font-style:normal;color:var(--pen);border:1px solid var(--hair);padding:0 6px;border-radius:3px}
@@ -102,15 +100,15 @@ button{font:inherit;color:inherit}
 @media (max-width:599px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.tab{border-bottom:1px solid var(--hair)}.tab:nth-child(2n){border-right:0}.tab:nth-child(n+3){border-bottom:0}}
 .body{padding:12px 12px 16px}
 /* righe del modulo */
-.step{display:grid;grid-template-columns:44px minmax(0,1fr);border:1.5px solid var(--rule);margin:0}
+.step{display:grid;grid-template-columns:34px minmax(0,1fr);border-bottom:1.5px solid var(--rule);margin:0}
 .step:not(:has(.num)){grid-template-columns:minmax(0,1fr)}
 .step+.step,.seg+.step,.mine+.step,.ok+.step{margin-top:12px}
-.num{display:grid;place-items:center;border-right:1px solid var(--hair);font:700 19px var(--cond)}
-.step>div:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:2px 12px;padding:6px 12px 7px}
+.num{display:grid;place-items:center;align-self:stretch;font:700 19px var(--cond);color:var(--pen)}
+.step>div:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:0 12px;padding:4px 0 4px 4px}
 .step h2{margin:0;font:700 22px/1.1 var(--cond);letter-spacing:.02em;text-transform:uppercase}
 .step p{flex-basis:100%;margin:0;color:var(--muted);font-size:14.5px;text-wrap:pretty}
 .step .stamp{margin:2px 0 4px auto;font-size:12px;padding:3px 7px 2px}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 0}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 0}
 .opt{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border:1.5px solid var(--hair);border-radius:3px;background:var(--field);font:500 17px var(--body);text-align:left;cursor:pointer}
 .bx{flex:none;position:relative;width:22px;height:22px;border:1.5px solid var(--rule);border-radius:2px}
 .opt[aria-pressed=true]{border:2px solid var(--pen);background:var(--pentint);font-weight:700;padding:0 13.5px}
@@ -118,7 +116,8 @@ button{font:inherit;color:inherit}
 .opt[aria-pressed=true] .bx::after{content:"";position:absolute;left:6px;top:1px;width:6px;height:13px;border:solid var(--pen);border-width:0 3px 3px 0;transform:rotate(42deg)}
 label{display:block;font:700 12.5px var(--cond);letter-spacing:.07em;text-transform:uppercase;margin:16px 0 6px;color:var(--muted)}
 select,input{width:100%;min-height:50px;font:inherit;border:1.5px solid var(--rule);border-radius:3px;padding:0 12px;background:var(--field);color:var(--ink)}
-input[type=number]{color:var(--pen);font-weight:600}
+input[type=number]{color:var(--pen);font-weight:600;-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .go{display:block;width:100%;min-height:50px;margin-top:12px;border:0;border-radius:3px;background:var(--pen);color:var(--ontop);font:700 17px var(--body);cursor:pointer}
 .go:disabled{background:var(--hair);color:var(--muted);cursor:not-allowed}
 .btn2{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1.5px solid var(--rule);border-radius:3px;background:var(--sheet);font:700 15px var(--body);color:var(--pen);cursor:pointer;text-decoration:none}
@@ -131,7 +130,7 @@ input[type=number]{color:var(--pen);font-weight:600}
 .why{color:var(--muted);font-size:13.5px;min-height:20px;margin:8px 0 0}
 .hint{color:var(--muted);font-size:13.5px;min-height:20px;margin:6px 0 0}
 .prev{font-size:14.5px;color:var(--muted);margin:10px 0 0}
-.link{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--pen);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.link{background:none;border:0;padding:3px 0;font:inherit;font-weight:700;color:var(--pen);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .link.del{display:block;margin:18px auto 0;color:var(--stamp);font-weight:500}
 .sub{display:block;margin:6px 0 0;font-weight:500}
 .past p{margin:14px 0 0}
@@ -139,7 +138,7 @@ input[type=number]{color:var(--pen);font-weight:600}
 .staffout .link{font-weight:500;color:var(--muted)}
 /* elenco della squadra */
 .sqtools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:6px}
-.sqtools ~ .ok:empty{display:none}
+.ok:empty{display:none}
 .sqtools p{margin:0;font-size:13.5px;color:var(--muted);flex:1 1 200px}
 .sqh{display:flex;align-items:baseline;gap:10px;margin:28px 0 0;padding-bottom:6px;border-bottom:1.5px solid var(--rule);font:700 22px/1.1 var(--cond);letter-spacing:.04em;text-transform:uppercase}
 .sqh:first-child{margin-top:0}
@@ -175,6 +174,7 @@ input[type=number]{color:var(--pen);font-weight:600}
 .cal button:last-child,.cal button:has(+ .calh){border-bottom:0}
 .cal button[aria-current=true]{background:var(--pentint)}
 .cal .g{align-self:stretch;display:grid;place-content:center;text-align:center;border-right:1px solid var(--hair);font:700 18px/1 var(--cond);color:var(--muted)}
+.cal .calmore{display:flex;width:100%;justify-content:center;min-height:46px;margin:0;border:0;border-top:1.5px solid var(--rule);background:none;font:700 15px var(--body);color:var(--pen);cursor:pointer}
 .calh{margin:0;padding:8px 12px 6px;border-bottom:1.5px solid var(--rule);font:700 15px var(--cond);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:var(--sheet)}
 .calh:not(:first-child){border-top:1.5px solid var(--rule)}
 .cal button[aria-current=true] .g{color:var(--pen)}
@@ -221,9 +221,9 @@ input[type=number]{color:var(--pen);font-weight:600}
 @media (max-width:480px){.swb{font-size:20px}.sw{gap:14px}}
 @media (max-width:380px){
   main{padding:10px 10px 48px}
-  .m3{grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr)}.m3>div{padding:8px}
+  .m3{grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr)}.m3>div{padding:8px 6px}
   .m2{grid-template-columns:1fr}.m2>div+div{border-left:0;border-top:1px solid var(--hair)}
-  .stat b{font-size:28px}.body{padding:14px 10px}
+  .body{padding:14px 10px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
@@ -242,7 +242,6 @@ input[type=number]{color:var(--pen);font-weight:600}
   </form>
   <div class="cols" id="app" hidden><div class="main-col">
   <section class="sheet match" id="hero" aria-label="Partita"></section>
-  <section class="sheet stats" aria-label="Conteggi"><div class="nums" id="stats"></div><div class="live"><span class="dot"></span><span id="mode"></span></div></section>
 
   <section class="sheet panel">
     <div class="tabs" role="tablist">
@@ -321,7 +320,7 @@ function setTheme(dark, keep){
 }
 setTheme(document.documentElement.dataset.theme === 'dark');
 document.getElementById('theme').addEventListener('click', () => setTheme(document.documentElement.dataset.theme !== 'dark', true));
-document.getElementById('season').textContent = CONFIG.season;
+document.getElementById('season').textContent = CONFIG.season.replace(/^stagione\s*/i, '');
 if(TEST){ document.title = '[TEST] ' + document.title; document.documentElement.classList.add('test'); }
 let BASE = '';   // DB + '/t/<codice>', impostato da unlock()
 let sorted = [];
@@ -433,6 +432,7 @@ function relDay(d){
   const n = Math.round((a - b) / 864e5);
   return n === 0 ? 'oggi' : n === 1 ? 'domani' : n === -1 ? 'ieri' : n > 1 ? `tra ${n} giorni` : `${-n} giorni fa`;
 }
+const placeName = m => String(m.place || '').replace(/\s+-\s+/g, ' – ');
 const mapUrl = m => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([m.place, m.address].filter(Boolean).join(', '));
 const vs = m => m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario';
 function subLinks(){
@@ -548,8 +548,9 @@ function remindText(){
 const mineBox = r => `<div class="mine"><span class="fl">La tua risposta</span><span class="stamp ${r.stato === 'si' ? 'ok' : ''}">${r.stato === 'si' ? 'Presente' : 'Assente'}</span><span class="stamp ${r.tavola === 'si' ? 'ok' : 'd'}">${r.tavola === 'si' ? 'A tavola' : 'Non a tavola'}</span></div>`;
 const answerText = r => (r.stato === 'si' ? 'Ci sono' : 'Non ci sono') + ' · ' + (r.tavola === 'si' ? 'resto a tavola' : 'non resto a tavola');
 function renderLive(){
+  if(!$('#mode')) return;
   $('.live').classList.toggle('bad', !LIVE);
-  $('#mode').innerHTML = LIVE ? 'Conteggi condivisi · aggiornati ogni 5 secondi' : 'Non aggiornato: controlla la connessione. <button type="button" class="link" data-retry="1">Riprova ora</button>';
+  $('#mode').innerHTML = LIVE ? 'in tempo reale' : 'Non aggiornati: controlla la connessione. <button type="button" class="link" data-retry="1">Riprova ora</button>';
 }
 const answers = () => Object.values(presences[S.sel] || {});
 // Convocati della partita selezionata: fino a 20 disponibili sono tutti convocati, oltre decide lo staff
@@ -575,14 +576,16 @@ function drawHero(){
   const team = (name, me, lab) => `<div class="tm${me ? ' me' : ''}"><span class="fl">${lab}</span><b>${esc(name)}</b>${me && o ? scorerBlock(m) : ''}</div>`;
   const mid = o
     ? `<div class="mid"><span class="fl">Risultato</span><b class="big">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</b></div>`
-    : `<div class="mid"><span class="fl">Fischio</span><b>${hhmm(m.date)}</b><span class="fl">Ritrovo</span><b class="r2">${esc(m.ritrovo)}</b></div>`;
+    : `<div class="mid"><span class="fl">Fischio</span><b>${hhmm(m.date)}</b><span class="fl">Ritrovo <span class="pen r3">${esc(m.ritrovo)}</span></span></div>`;
   const i = sorted.findIndex(x => x.id === m.id), prev = sorted[i-1], next = sorted[i+1], nx = nextMatch();
   const arrow = (to, lab, d) => `<button type="button" ${to ? `data-match="${to.id}"` : 'disabled'} aria-label="${lab}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg></button>`;
-  $('#hero').innerHTML = `
+  $('#hero').innerHTML = `<h2 class="sr">${esc(vs(m))}, ${esc(dShort(m.date))}</h2>
     <div class="mh"><div class="lab"><span class="fl">${esc(g.l)}</span>${o ? stampO(o) : stampHA(m)}${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}">Vai alla prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</div>
     <div class="hnav">${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
     <div class="m3">${team(m.home ? 'San Salvario' : m.opp, m.home, 'Casa')}${mid}${team(m.home ? m.opp : 'San Salvario', !m.home, 'Ospiti')}</div>
-    <div class="m2"><div><span class="fl">Data</span><span class="pen">${esc(dDate(m.date).replace(/ \d{4}$/, ''))}</span><small>${relDay(m.date)}</small></div><div><span class="fl">Campo</span><span class="pen">${m.place ? `<a href="${esc(mapUrl(m))}" target="_blank" rel="noopener">${esc(m.place)}</a>` : '–'}</span>${m.address ? `<small class="addr">${esc(m.address.replace(/,?\s*Italia$/i,''))}</small>` : ''}</div></div>`;
+    <div class="m2"><div><span class="fl">Data</span><span class="pen">${esc(new Date(m.date).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'}))}</span><small>${relDay(m.date)}</small></div><div><span class="fl">Campo</span><span class="pen">${m.place ? `<a href="${esc(mapUrl(m))}" target="_blank" rel="noopener">${esc(placeName(m))}</a>` : '–'}</span>${m.address ? `<small class="addr">${esc(m.address.replace(/,?\s*Italia$/i,''))}</small>` : ''}</div></div>
+    <div class="m4" aria-label="Conteggi"><span id="stats"></span><span class="foot"><span class="split" id="split"></span><span class="live"><span class="dot"></span><span id="mode"></span></span></span></div>`;
+  renderStats(); renderLive();
 }
 function renderStats(){
   const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');
@@ -591,11 +594,9 @@ function renderStats(){
   const names = new Set(a.map(x => slug(x.nome)));
   const wait = ROSTER.filter(r => !names.has(slug(r.name))).length;
   const done = over(match());   // a partita finita i conteggi diventano “chi c’era”
-  $('#stats').innerHTML = `
-    <div class="stat"><span class="fl">${done ? 'C’erano' : 'Disponibili'}</span><b>${yes.length}</b><small>${pl(np, 'calciatore', 'calciatori')} · ${pl(dr, 'dirigente', 'dirigenti')}</small></div>
-    <div class="stat"><span class="fl">A tavola</span><b>${tav}</b><small>anche chi non gioca</small></div>
-    <div class="stat"><span class="fl">${done ? 'Senza risposta' : 'Da confermare'}</span><b>${wait}</b><small>${pl(no.length, 'assente', 'assenti')}</small></div>`;
-  $('.main-col').classList.toggle('ahead', !done);
+  if(!$('#stats')) return;
+  $('#stats').outerHTML = `<span id="stats" style="display:contents"><span class="c"><b>${yes.length}</b>${done ? (yes.length === 1 ? 'c’era' : 'c’erano') : (yes.length === 1 ? 'disponibile' : 'disponibili')}</span><span class="c"><b>${tav}</b>a tavola</span><span class="c"><b>${wait}</b>${done ? 'senza risposta' : 'da confermare'}</span></span>`;
+  $('#split').textContent = `${pl(np, 'calciatore', 'calciatori')} · ${pl(dr, 'dirigente', 'dirigenti')} · ${pl(no.length, 'assente', 'assenti')}`;
   $('#sqn').textContent = ROSTER.length;
 }
 function drawBody(){
@@ -618,7 +619,7 @@ function drawBody(){
   if(S.tab === 'ris'){
     const m = match();
     if(S.rFor !== m.id){ const o = outcome(m); S.rFor = m.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = m.scorers || ''; S.done = ''; }
-    const head = `<div class="step"><div><h2>Risultato</h2><p>${esc(vs(m))} · ${esc(dShort(m.date))}. Lo vede tutta la squadra. Per un’altra partita, usa le frecce in alto o il calendario.</p></div></div>`;
+    const head = `<div class="step"><div><h2>Risultato</h2><p>Lo vede tutta la squadra e si può correggere.</p></div></div>`;
     if(!kicked(m)){ b.innerHTML = head + '<p class="prev">Il risultato si potrà inserire dal fischio d’inizio in poi.</p>'; return; }
     b.innerHTML = head + `
       <div class="seg">
@@ -639,17 +640,17 @@ function drawBody(){
   if(S.tab === 'sq'){
     const a = answers(), names = new Set(a.map(x => slug(x.nome)));
     const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}><div class="who">${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}</div><span>${x.tavola === 'si' ? 'A tavola' : ''}</span></li>`; };
-    const grp = (t, arr) => `<div class="grp"><h3>${t} (${arr.length})</h3><ul>${arr.map(li).join('') || '<li><span>Nessuno</span></li>'}</ul></div>`;
+    const grp = (t, arr, keep) => !arr.length && !keep ? '' : `<div class="grp"><h3>${t} (${arr.length})</h3><ul>${arr.map(li).join('') || '<li><span>Ancora nessuno</span></li>'}</ul></div>`;
     const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
     const cu = callup(), inConv = new Set(cu.list.map(x => slug(x.nome)));
     // “Convocati” solo quando lo staff ha scelto; prima sono “Disponibili” (a partita finita “Presenti”)
     const avail = over(match()) ? 'C’erano' : 'Disponibili';
     const present = role => {
       const yes = a.filter(x => x.ruolo === role && x.stato === 'si');
-      if(role !== 'calciatore') return grp(avail, yes);
-      if(cu.auto) return grp(avail, yes).replace('</h3>', over(match()) ? '</h3>' : `</h3><p class="note">Fino a ${MAX_CONV} disponibili sono tutti convocati.</p>`);
-      if(!cu.decided) return grp(avail, yes).replace('</h3>', `</h3><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
-      return grp('Convocati', cu.list) + grp('Disponibili non convocati', yes.filter(x => !inConv.has(slug(x.nome))));
+      if(role !== 'calciatore') return grp(avail, yes, true);
+      if(cu.auto) return grp(avail, yes, true).replace('</h3>', over(match()) ? '</h3>' : `</h3><p class="note">Fino a ${MAX_CONV} disponibili sono tutti convocati.</p>`);
+      if(!cu.decided) return grp(avail, yes, true).replace('</h3>', `</h3><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
+      return grp('Convocati', cu.list, true) + grp('Disponibili non convocati', yes.filter(x => !inConv.has(slug(x.nome))));
     };
     const sec = (role, title) => {
       const ra = a.filter(x => x.ruolo === role), rw = wait.filter(x => x.ruolo === role);
@@ -667,7 +668,7 @@ function drawBody(){
   if(over(m) && !S.fix){
     b.innerHTML = `<div class="past"><div class="step"><div class="num">${CLOCK}</div><div><h2>Partita finita</h2><p>${esc(dShort(m.date))}</p></div></div>
       ${me ? (saved ? mineBox(saved) : `<p class="mine">${esc(me.name)}, non avevi risposto.</p>`) : ''}
-      <p><button class="link" data-tab="sq">Vedi chi c’era</button>${me ? ` · <button class="link" data-fix="1">Correggi la tua risposta</button>` : ''}</p></div>`;
+      <p><button class="link" data-tab="sq">Vedi chi c’era</button>${me ? ` · <button class="link" data-fix="1">${saved ? 'Correggi la tua risposta' : 'Rispondi ora'}</button>` : ''}</p></div>`;
     return;
   }
   const who = me && !S.edit
@@ -688,15 +689,15 @@ function drawBody(){
     <div class="step"><div class="num">3</div><div><h2 id="h-tav">Resti a tavola?</h2>${saved ? `<span class="stamp ${saved.tavola === 'si' ? 'ok' : 'd'}${S.thud ? ' thud' : ''}" aria-hidden="true">${saved.tavola === 'si' ? 'A tavola' : 'Non a tavola'}</span>` : ''}<p>Anche se non giochi.</p></div></div>
     <div class="seg" role="group" aria-labelledby="h-tav"><button class="opt yes" data-tavola="si" aria-pressed="${S.tavola==='si'}"><span class="bx" aria-hidden="true"></span>Sì</button><button class="opt" data-tavola="no" aria-pressed="${S.tavola==='no'}"><span class="bx" aria-hidden="true"></span>No</button></div>
     ${same ? '' : `<button class="go" id="go" ${S.goOff ? 'disabled' : ''}>${saved ? 'Aggiorna risposta' : 'Conferma presenza'}</button>`}
+    ${okDiv()}
     <p class="why" id="why">${why}</p>
-    <p class="prev">Dubbi? <button type="button" class="link" data-help="1">Come funziona</button></p>
-    ${okDiv()}`;
+    <p class="prev">Dubbi? <button type="button" class="link" data-help="1">Come funziona</button></p>`;
   if(S.typed) acRender();
 }
 function renderConv(b){
   const m = match(), cu = callup();
   if(S.cFor !== m.id){ S.cFor = m.id; S.cSel = new Set(cu.list.map(x => slug(x.nome))); S.done = ''; }
-  const head = `<div class="step"><div><h2>Convocazioni</h2><p>${esc(vs(m))} · ${esc(dShort(m.date))}. Per un’altra partita, usa le frecce in alto o il calendario.</p></div></div>`;
+  const head = `<div class="step"><div><h2>Convocazioni</h2><p>Fino a ${MAX_CONV} disponibili sono tutti convocati; oltre, scegli tu i ${MAX_CONV}.</p></div></div>`;
   const who = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}`; };
   if(!cu.av.length){ b.innerHTML = head + '<p class="prev">Nessun calciatore ha ancora dato disponibilità.</p>'; return; }
   if(cu.auto){
@@ -738,7 +739,7 @@ function acRender(){
   const ul = $('#acl'), inp = $('#typed'), items = acMatches(S.typed), open = !!S.typed.trim();
   S.acList = items; S.acI = Math.min(S.acI || 0, Math.max(items.length - 1, 0));
   ul.innerHTML = items.map((r, i) => `<li role="option" id="aco-${i}" data-ac="${esc(r.name)}" aria-selected="${i === S.acI}">${r.number ? `<b class="nr">${r.number}</b>` : '<b class="nr none"></b>'}<span>${esc(r.name)}</span><small>${r.role === 'dirigente' ? 'Dirigente' : 'Calciatore'}</small></li>`).join('')
-    || '<li class="none" role="option" aria-disabled="true">Nessuno con questo nome nella rosa</li>';
+    || '<li class="none" role="option" aria-disabled="true">Nessuno con questo nome nella rosa: scegli dall’elenco qui sotto o chiedi allo staff di aggiungerti.</li>';
   ul.hidden = !open; inp.setAttribute('aria-expanded', open);
   if(items.length && open) inp.setAttribute('aria-activedescendant', 'aco-' + S.acI); else inp.removeAttribute('aria-activedescendant');
   $('#achint').textContent = open ? 'Scegli il tuo nome tra quelli proposti.' : '';
@@ -771,7 +772,9 @@ function drawCal(){
   renderRank();
   const nx = nextMatch();
   let last = '';
-  $('#calrows').innerHTML = sorted.map(m => { const g = gShort(m), sec = g.p === 'RIT' ? 'Ritorno' : g.p === 'AND' ? 'Andata' : 'Altre partite', head = sec !== last ? `<h3 class="calh">${sec}</h3>` : ''; last = sec; return head + `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span class="g" aria-hidden="true">${g.n}</span><span class="t"><b>${esc(vs(m))}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small></span>${rBadge(m) || (nx && nx.id === m.id ? '<em class="stamp ink nx">Prossima</em>' : '')}</button>`; }).join('');
+  const ni = nx ? sorted.indexOf(nx) : sorted.length, show = S.allCal ? sorted : sorted.filter((m, i) => (i >= ni - 1 && i < ni + 3) || m.id === S.sel);
+  $('#calrows').innerHTML = show.map(m => { const g = gShort(m), sec = g.p === 'RIT' ? 'Ritorno' : g.p === 'AND' ? 'Andata' : 'Altre partite', head = sec !== last ? `<h3 class="calh">${sec}</h3>` : ''; last = sec; return head + `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span class="g" aria-hidden="true">${g.n}</span><span class="t"><b>${esc(vs(m))}</b><small>${esc(dShort(m.date))} · ${esc(placeName(m))}</small></span>${rBadge(m) || (nx && nx.id === m.id ? '<em class="stamp ink nx">Prossima</em>' : '')}</button>`; }).join('');
+  if(show.length < sorted.length || S.allCal) $('#calrows').insertAdjacentHTML('beforeend', `<button type="button" class="calmore" data-allcal="1" aria-expanded="${!!S.allCal}">${S.allCal ? 'Mostra solo le prossime' : `Tutte le partite (${sorted.length})`}</button>`);
   $('#subs').innerHTML = subLinks();
   const box = $('#calrows'), cur = box.querySelector('[aria-current=true]');
   if(cur && box.scrollHeight > box.clientHeight + 4 && (cur.offsetTop < box.scrollTop || cur.offsetTop + cur.offsetHeight > box.scrollTop + box.clientHeight)) box.scrollTop = cur.offsetTop - box.clientHeight / 3;
@@ -839,11 +842,12 @@ document.addEventListener('click', async e => {
   else if(d.rundo && S.rUndo){
     const u = S.rUndo; S.rUndo = null;
     const ok = await saveResult(u.id, u.score, u.scorers);
-    if(ok){ S.rFor = ''; }
+    if(ok){ const o = outcome(match()); S.rFor = u.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = match().scorers || ''; }
     say(ok ? 'Risultato ripristinato.' : 'Non sono riuscito a ripristinarlo. Controlla la connessione e riprova.', !ok);
     renderHero(); renderCal(); renderBody();
   }
   else if(d.match){ const inHero = !!t.closest('#hero'); selectMatch(d.match); if(!inHero) window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(d.allcal){ S.allCal = !S.allCal; S.focus = '[data-allcal]'; renderCal(); }
   else if(d.help){ const h = $('#help'); h.open = true; h.scrollIntoView({behavior:'smooth', block:'start'}); h.querySelector('summary').focus({preventScroll:true}); }
   else if(d.retry){ t.disabled = true; await load(); renderLive(); renderStats(); if(S.tab === 'sq') renderBody(); }
   else if(d.remind){
@@ -913,7 +917,7 @@ document.addEventListener('submit', async e => {
   const code = normCode($('#code').value), err = $('#err');
   err.textContent = '';
   try{
-    if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Ricontrollalo o chiedilo allo staff.'; $('#code').select(); return; }
+    if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Ricontrollalo o chiedilo allo staff.'; $('#code').setAttribute('aria-invalid', 'true'); $('#code').select(); return; }
   }catch(x){ err.textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; return; }
   try{ localStorage.setItem(K('codice'), code); }catch(x){}
   start();
