@@ -29,13 +29,14 @@ button{font:inherit;color:inherit}
 .fl{display:block;font:700 12px/1.2 var(--cond);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
 .pen{color:var(--pen)}
 .stamp{display:inline-block;flex:none;border:2px solid currentColor;color:var(--stamp);font:700 13px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;padding:4px 8px 3px;border-radius:3px;transform:rotate(-6deg)}
+.stamp.ok{color:var(--green)}.stamp.ink{color:var(--pen)}.stamp.d{color:var(--muted)}
 .thud{animation:thud .38s cubic-bezier(.2,.9,.3,1.2) both}
 @keyframes thud{from{opacity:0;transform:rotate(-14deg) scale(1.9)}to{opacity:1;transform:rotate(-6deg) scale(1)}}
 /* testata */
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 0 14px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 10px}
 .club{display:inline;margin:0;font:700 25px/1.05 var(--cond);letter-spacing:.03em;text-transform:uppercase}
-.top small{display:block;margin-top:3px;font-size:13px;color:var(--muted)}
-.motto{margin:1px 0 0;font:italic 400 14px/1.35 var(--body);color:var(--muted);text-wrap:balance}
+.top small{display:block;margin-top:3px;font-size:13px;line-height:1.35;color:var(--muted)}
+.top small i{font-style:italic}
 .test-chip{display:none;margin-left:8px;vertical-align:4px}
 .test .test-chip{display:inline-block}
 .top-r{display:flex;gap:8px}
@@ -48,16 +49,16 @@ button{font:inherit;color:inherit}
 [data-theme=dark] .theme .cut{transform:translate(-7px,5px)}
 [data-theme=dark] .theme .rays{transform:rotate(-90deg) scale(.4);opacity:0}
 /* distinta della partita */
-.mh{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 12px;border-bottom:1.5px solid var(--rule)}
+.mh{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 10px;border-bottom:1.5px solid var(--rule)}
 .mh .lab{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
 .hnav{flex:none;display:flex;gap:6px}
 .hnav>*{flex:none}
-.hnav button,.nextb{flex:none;height:40px;border:1.5px solid var(--rule);border-radius:3px;background:var(--sheet);cursor:pointer}
-.hnav button{width:40px;display:grid;place-items:center;padding:0}
+.hnav button,.nextb{flex:none;height:44px;border:1.5px solid var(--rule);border-radius:3px;background:var(--sheet);cursor:pointer}
+.hnav button{width:44px;display:grid;place-items:center;padding:0}
 .hnav button:disabled{opacity:.35;cursor:default}
 .nextb{display:inline-flex;align-items:center;gap:4px;padding:0 10px;font:700 13px var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--pen)}
 .m3{display:grid;grid-template-columns:minmax(0,1fr) 108px minmax(0,1fr);border-bottom:1.5px solid var(--rule)}
-.m3>div{padding:10px 12px 12px}
+.m3>div{padding:8px 10px 10px}
 .m3>div+div{border-left:1px solid var(--hair)}
 .tm b{display:block;margin-top:4px;font:700 clamp(19px,5.3vw,34px)/1.02 var(--cond);text-transform:uppercase;overflow-wrap:break-word;hyphens:manual}
 .tm.me b{color:var(--ink)}
@@ -69,44 +70,48 @@ button{font:inherit;color:inherit}
 .mid b.r2{font-size:clamp(24px,6.6vw,32px);margin-bottom:0}
 .mid b.big{font-size:clamp(40px,11vw,56px)}
 .m2{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr)}
-.m2>div{padding:9px 12px 11px}
+.m2>div{padding:7px 10px 9px}
 .m2>div+div{border-left:1px solid var(--hair)}
 .m2 span.pen{display:block;font-size:15px;font-weight:500;line-height:1.35}
+.m2 a{color:var(--pen);text-underline-offset:3px}
+.m2 .addr{}
+@media (max-width:599px){.m2 .addr{display:none}}
 .m2 small{display:block;color:var(--muted);font-size:13px;line-height:1.35}
-/* conteggi */
+/* conteggi; prima della partita il modulo viene prima dei conteggi */
+.main-col{display:flex;flex-direction:column}
+.main-col.ahead .stats{order:3}.main-col.ahead .help{order:4}
 .stats{margin-top:12px}
 .nums{display:grid;grid-template-columns:repeat(3,1fr)}
 .stat{display:flex;flex-direction:column;justify-content:space-between;padding:9px 12px 10px}
 .stat+.stat{border-left:1px solid var(--hair)}
 .stat b{display:block;margin-top:2px;font:600 34px/1 var(--cond);color:var(--pen);font-variant-numeric:tabular-nums}
+.stat small{display:block;margin-top:3px;font-size:12.5px;line-height:1.3;color:var(--muted)}
 .live{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0;padding:8px 12px;border-top:1px solid var(--hair);font-size:13px;color:var(--muted)}
 .dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--green)}
 .live.bad{color:var(--stamp)}.live.bad .dot{background:var(--stamp)}
 .live .link{font-size:13px}
 /* schede */
 .panel{margin-top:12px}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1.5px solid var(--rule)}
-.tab{display:flex;gap:7px;align-items:center;justify-content:center;min-height:50px;padding:0 16px;background:none;border:0;border-right:1px solid var(--hair);box-shadow:inset 0 -3px 0 transparent;font:700 17px var(--cond);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1.5px solid var(--rule)}
+.tab{display:flex;gap:7px;align-items:center;justify-content:center;min-height:46px;padding:0 16px;background:none;border:0;border-right:1px solid var(--hair);box-shadow:inset 0 -3px 0 transparent;font:700 17px var(--cond);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap}
 .tab:last-child{border-right:0}
 .tab[aria-selected=true]{color:var(--ink);background:var(--pentint);box-shadow:inset 0 -3px 0 var(--pen)}
 .tab em{font:600 13px var(--body);font-style:normal;color:var(--pen);border:1px solid var(--hair);padding:0 6px;border-radius:3px}
 .tab .lk{flex:none}
-@media (max-width:599px){.tabs{grid-template-columns:1fr 1fr}.tab{border-bottom:1px solid var(--hair)}.tab:nth-child(2n){border-right:0}.tab:nth-child(n+3){border-bottom:0}}
-.tabs.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
-.tabs.less{-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px);mask-image:linear-gradient(90deg,transparent,#000 44px)}
-.tabs.less.more{-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent)}
-.body{padding:16px 14px 18px}
+@media (max-width:399px){.tab{padding:0 6px;font-size:15px;gap:5px}}
+@media (max-width:599px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.tab{border-bottom:1px solid var(--hair)}.tab:nth-child(2n){border-right:0}.tab:nth-child(n+3){border-bottom:0}}
+.body{padding:12px 12px 16px}
 /* righe del modulo */
 .step{display:grid;grid-template-columns:44px minmax(0,1fr);border:1.5px solid var(--rule);margin:0}
 .step:not(:has(.num)){grid-template-columns:minmax(0,1fr)}
-.step+.step,.seg+.step,.mine+.step,.ok+.step{margin-top:20px}
+.step+.step,.seg+.step,.mine+.step,.ok+.step{margin-top:12px}
 .num{display:grid;place-items:center;border-right:1px solid var(--hair);font:700 19px var(--cond)}
-.step>div:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:8px 12px 9px}
+.step>div:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:2px 12px;padding:6px 12px 7px}
 .step h2{margin:0;font:700 22px/1.1 var(--cond);letter-spacing:.02em;text-transform:uppercase}
 .step p{flex-basis:100%;margin:0;color:var(--muted);font-size:14.5px;text-wrap:pretty}
 .step .stamp{margin:2px 0 4px auto;font-size:12px;padding:3px 7px 2px}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 0}
-.opt{display:flex;align-items:center;gap:12px;min-height:54px;padding:0 14px;border:1.5px solid var(--hair);border-radius:3px;background:var(--field);font:500 17px var(--body);text-align:left;cursor:pointer}
+.opt{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border:1.5px solid var(--hair);border-radius:3px;background:var(--field);font:500 17px var(--body);text-align:left;cursor:pointer}
 .bx{flex:none;position:relative;width:22px;height:22px;border:1.5px solid var(--rule);border-radius:2px}
 .opt[aria-pressed=true]{border:2px solid var(--pen);background:var(--pentint);font-weight:700;padding:0 13.5px}
 .opt[aria-pressed=true] .bx{border-color:var(--pen)}
@@ -114,7 +119,7 @@ button{font:inherit;color:inherit}
 label{display:block;font:700 12.5px var(--cond);letter-spacing:.07em;text-transform:uppercase;margin:16px 0 6px;color:var(--muted)}
 select,input{width:100%;min-height:50px;font:inherit;border:1.5px solid var(--rule);border-radius:3px;padding:0 12px;background:var(--field);color:var(--ink)}
 input[type=number]{color:var(--pen);font-weight:600}
-.go{display:block;width:100%;min-height:54px;margin-top:20px;border:0;border-radius:3px;background:var(--pen);color:var(--ontop);font:700 17px var(--body);cursor:pointer}
+.go{display:block;width:100%;min-height:50px;margin-top:12px;border:0;border-radius:3px;background:var(--pen);color:var(--ontop);font:700 17px var(--body);cursor:pointer}
 .go:disabled{background:var(--hair);color:var(--muted);cursor:not-allowed}
 .btn2{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1.5px solid var(--rule);border-radius:3px;background:var(--sheet);font:700 15px var(--body);color:var(--pen);cursor:pointer;text-decoration:none}
 .ok{margin-top:12px;color:var(--green);font-weight:700;min-height:24px}
@@ -180,7 +185,7 @@ input[type=number]{color:var(--pen);font-weight:600}
 .r.w small{color:var(--green)}.r.l small{color:var(--stamp)}.r.d small{color:var(--muted)}
 .cal .nx{font-size:11.5px;padding:3px 6px 2px}
 .subs{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.subs a{flex:1 1 200px;justify-content:center}
+.subs a{flex:1 1 100%;justify-content:center}
 .subs svg{flex:none}
 .rank{list-style:none;margin:0;padding:0 12px}
 .rank li{display:grid;grid-template-columns:28px minmax(0,1fr) 36px;gap:10px;align-items:center;min-height:46px;border-bottom:1px solid var(--hair)}
@@ -203,6 +208,7 @@ input[type=number]{color:var(--pen);font-weight:600}
 .lock h2{margin:0 0 8px;font:700 32px/1.05 var(--cond);text-transform:uppercase}
 .lock p{margin:0;color:var(--muted);text-wrap:pretty}
 .lock input{text-transform:uppercase;letter-spacing:.3em;font:600 26px var(--cond);color:var(--pen);text-align:center}
+.lock .fmt{margin:6px 0 0;font-size:13.5px;color:var(--muted)}
 .lock .err{min-height:24px;margin-top:12px;font-weight:700;color:var(--stamp)}
 @media (min-width:900px){
   main{max-width:1500px;padding:22px clamp(28px,3.5vw,56px) 72px}
@@ -217,19 +223,20 @@ input[type=number]{color:var(--pen);font-weight:600}
   main{padding:10px 10px 48px}
   .m3{grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr)}.m3>div{padding:8px}
   .m2{grid-template-columns:1fr}.m2>div+div{border-left:0;border-top:1px solid var(--hair)}
-  .stat b{font-size:28px}.tabs{gap:16px;padding:0 10px}.body{padding:14px 10px}
+  .stat b{font-size:28px}.body{padding:14px 10px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 <main>
-  <div class="top"><div><h1 class="club">A.S.D. San Salvario</h1><span class="stamp test-chip">Test</span><small id="season"></small><p class="motto">“Ci entra prima in culo che in testa”</p></div><div class="top-r"><button class="theme" id="theme" type="button" aria-label="Tema scuro" aria-pressed="false"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><mask id="moon-cut"><rect x="-6" y="-6" width="36" height="36" fill="#fff"/><circle class="cut" cx="25" cy="2" r="6.5" fill="#000"/></mask><circle class="sun" cx="12" cy="12" r="5" fill="currentColor" mask="url(#moon-cut)"/><g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg></button><button class="theme" id="outbtn" type="button" data-out="1" aria-label="Esci da questo dispositivo" title="Esci da questo dispositivo" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg></button></div></div>
+  <div class="top"><div><h1 class="club">A.S.D. San Salvario</h1><span class="stamp test-chip">Test</span><small><span id="season"></span> · <i>“Ci entra prima in culo che in testa”</i></small></div><div class="top-r"><button class="theme" id="theme" type="button" aria-label="Tema scuro" aria-pressed="false"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><mask id="moon-cut"><rect x="-6" y="-6" width="36" height="36" fill="#fff"/><circle class="cut" cx="25" cy="2" r="6.5" fill="#000"/></mask><circle class="sun" cx="12" cy="12" r="5" fill="currentColor" mask="url(#moon-cut)"/><g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg></button><button class="theme" id="outbtn" type="button" data-out="1" aria-label="Esci da questo dispositivo" title="Esci da questo dispositivo" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg></button></div></div>
   <form class="sheet lock" id="lock" hidden>
     <h2>Inserisci il codice squadra</h2>
     <p>Il codice squadra te lo dà lo staff. Te lo chiediamo una volta sola su questo dispositivo.</p>
     <label for="code">Codice squadra</label>
-    <input id="code" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+    <input id="code" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" required aria-describedby="fmt">
+    <p class="fmt" id="fmt">8 tra lettere e numeri; maiuscole o minuscole va bene.</p>
     <button class="go" type="submit">Entra</button>
     <div class="err" id="err" role="alert"></div>
   </form>
@@ -314,6 +321,7 @@ function setTheme(dark, keep){
 }
 setTheme(document.documentElement.dataset.theme === 'dark');
 document.getElementById('theme').addEventListener('click', () => setTheme(document.documentElement.dataset.theme !== 'dark', true));
+document.getElementById('season').textContent = CONFIG.season;
 if(TEST){ document.title = '[TEST] ' + document.title; document.documentElement.classList.add('test'); }
 let BASE = '';   // DB + '/t/<codice>', impostato da unlock()
 let sorted = [];
@@ -417,7 +425,15 @@ function scorerBlock(m){
 const gShort = m => { const x = String(m.giornata||'').match(/(andata|ritorno)\D*(\d+)/i); return x ? {n:x[2], p:x[1].slice(0,3).toUpperCase(), l:`Giornata ${x[2]} · ${x[1][0].toUpperCase() + x[1].slice(1).toLowerCase()}`} : {n:'–', p:'', l:'Partita'}; };
 // risultato nell’ordine casa–trasferta, come il titolo accanto
 const rBadge = m => { const o = outcome(m); return o ? `<span class="r ${o.cls}">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}<small>${o.label}</small></span>` : ''; };
-const stampHA = m => `<span class="stamp">${m.home ? 'In casa' : 'Trasferta'}</span>`;
+const stampHA = m => `<span class="stamp ink">${m.home ? 'In casa' : 'Trasferta'}</span>`;
+const stampO = o => `<span class="stamp ${o.cls === 'w' ? 'ok' : o.cls === 'd' ? 'd' : ''}">${o.label}</span>`;
+// "oggi", "domani", "tra 3 giorni", "3 giorni fa"
+function relDay(d){
+  const a = new Date(d); a.setHours(0,0,0,0); const b = new Date(); b.setHours(0,0,0,0);
+  const n = Math.round((a - b) / 864e5);
+  return n === 0 ? 'oggi' : n === 1 ? 'domani' : n === -1 ? 'ieri' : n > 1 ? `tra ${n} giorni` : `${-n} giorni fa`;
+}
+const mapUrl = m => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([m.place, m.address].filter(Boolean).join(', '));
 const vs = m => m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario';
 function subLinks(){
   if(!CONFIG.icsUrl) return '';
@@ -518,7 +534,7 @@ const LOCK = '<svg class="lk" width="16" height="16" viewBox="0 0 24 24" fill="n
 const KEY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>';
 const COPY = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>';
 const CLOCK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok">${esc(S.done)}${S.undo && S.done && S.tab === 'me' ? ' <button type="button" class="link" data-undo="1">Annulla</button>' : ''}</div>`;
+const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok">${esc(S.done)}${S.undo && S.tab === 'me' ? `${S.done ? '' : 'Risposta salvata.'} <button type="button" class="link" data-undo="1">Annulla</button>` : ''}</div>`;
 // link alla partita: #<id> nell’indirizzo, così si può mandare nel gruppo
 const matchLink = m => location.origin + location.pathname + '#' + m.id;
 function remindText(){
@@ -529,7 +545,7 @@ function remindText(){
 }
 
 // timbri della risposta salvata; S.thud li fa “battere” subito dopo il salvataggio
-const mineBox = r => `<div class="mine"><span class="fl">La tua risposta</span><span class="stamp">${r.stato === 'si' ? 'Presente' : 'Assente'}</span><span class="stamp">${r.tavola === 'si' ? 'A tavola' : 'Non a tavola'}</span></div>`;
+const mineBox = r => `<div class="mine"><span class="fl">La tua risposta</span><span class="stamp ${r.stato === 'si' ? 'ok' : ''}">${r.stato === 'si' ? 'Presente' : 'Assente'}</span><span class="stamp ${r.tavola === 'si' ? 'ok' : 'd'}">${r.tavola === 'si' ? 'A tavola' : 'Non a tavola'}</span></div>`;
 const answerText = r => (r.stato === 'si' ? 'Ci sono' : 'Non ci sono') + ' · ' + (r.tavola === 'si' ? 'resto a tavola' : 'non resto a tavola');
 function renderLive(){
   $('.live').classList.toggle('bad', !LIVE);
@@ -563,22 +579,23 @@ function drawHero(){
   const i = sorted.findIndex(x => x.id === m.id), prev = sorted[i-1], next = sorted[i+1], nx = nextMatch();
   const arrow = (to, lab, d) => `<button type="button" ${to ? `data-match="${to.id}"` : 'disabled'} aria-label="${lab}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg></button>`;
   $('#hero').innerHTML = `
-    <div class="mh"><div class="lab"><span class="fl">${esc(g.l)}</span>${o ? `<span class="stamp">${o.label}</span>` : stampHA(m)}${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}">Vai alla prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</div>
+    <div class="mh"><div class="lab"><span class="fl">${esc(g.l)}</span>${o ? stampO(o) : stampHA(m)}${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}">Vai alla prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</div>
     <div class="hnav">${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
     <div class="m3">${team(m.home ? 'San Salvario' : m.opp, m.home, 'Casa')}${mid}${team(m.home ? m.opp : 'San Salvario', !m.home, 'Ospiti')}</div>
-    <div class="m2"><div><span class="fl">Data</span><span class="pen">${esc(dDate(m.date))}</span></div><div><span class="fl">Campo</span><span class="pen">${esc(m.place || '–')}</span>${m.address ? `<small>${esc(m.address.replace(/,?\s*Italia$/i,''))}</small>` : ''}</div></div>`;
+    <div class="m2"><div><span class="fl">Data</span><span class="pen">${esc(dDate(m.date).replace(/ \d{4}$/, ''))}</span><small>${relDay(m.date)}</small></div><div><span class="fl">Campo</span><span class="pen">${m.place ? `<a href="${esc(mapUrl(m))}" target="_blank" rel="noopener">${esc(m.place)}</a>` : '–'}</span>${m.address ? `<small class="addr">${esc(m.address.replace(/,?\s*Italia$/i,''))}</small>` : ''}</div></div>`;
 }
 function renderStats(){
-  const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');   // il dettaglio sta nel title e nella scheda La squadra
+  const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');
   const np = yes.filter(x => x.ruolo === 'calciatore').length, dr = yes.length - np;
   const tav = a.filter(x => x.tavola === 'si').length;   // anche chi non gioca può restare a tavola
   const names = new Set(a.map(x => slug(x.nome)));
   const wait = ROSTER.filter(r => !names.has(slug(r.name))).length;
   const done = over(match());   // a partita finita i conteggi diventano “chi c’era”
   $('#stats').innerHTML = `
-    <div class="stat" title="${pl(np, 'calciatore', 'calciatori')} · ${pl(dr, 'dirigente', 'dirigenti')}"><span class="fl">${done ? 'C’erano' : 'Presenti'}</span><b>${yes.length}</b></div>
-    <div class="stat"><span class="fl">A tavola</span><b>${tav}</b></div>
-    <div class="stat" title="${pl(no.length, 'assente', 'assenti')} · ${pl(a.length, 'risposta', 'risposte')}"><span class="fl">${done ? 'Senza risposta' : 'Da confermare'}</span><b>${wait}</b></div>`;
+    <div class="stat"><span class="fl">${done ? 'C’erano' : 'Disponibili'}</span><b>${yes.length}</b><small>${pl(np, 'calciatore', 'calciatori')} · ${pl(dr, 'dirigente', 'dirigenti')}</small></div>
+    <div class="stat"><span class="fl">A tavola</span><b>${tav}</b><small>anche chi non gioca</small></div>
+    <div class="stat"><span class="fl">${done ? 'Senza risposta' : 'Da confermare'}</span><b>${wait}</b><small>${pl(no.length, 'assente', 'assenti')}</small></div>`;
+  $('.main-col').classList.toggle('ahead', !done);
   $('#sqn').textContent = ROSTER.length;
 }
 function drawBody(){
@@ -615,7 +632,7 @@ function drawBody(){
       <button class="go" id="rsave">Salva risultato</button>
       ${results[m.id] && results[m.id].score && results[m.id].ts ? `<p class="prev">Ultimo salvataggio: ${esc(dShort(results[m.id].ts))}.</p>` : ''}
       ${outcome(m) ? '<button class="link del" id="rclear">Elimina risultato</button>' : ''}
-      ${okDiv()}`;
+      ${okDiv().replace('</div>', S.rUndo && S.rUndo.id === m.id ? ' <button type="button" class="link" data-rundo="1">Ripristina</button></div>' : '</div>')}`;
     resultInputs();
     return;
   }
@@ -626,11 +643,11 @@ function drawBody(){
     const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
     const cu = callup(), inConv = new Set(cu.list.map(x => slug(x.nome)));
     // “Convocati” solo quando lo staff ha scelto; prima sono “Disponibili” (a partita finita “Presenti”)
-    const avail = over(match()) ? 'Presenti' : 'Disponibili';
+    const avail = over(match()) ? 'C’erano' : 'Disponibili';
     const present = role => {
       const yes = a.filter(x => x.ruolo === role && x.stato === 'si');
-      if(role !== 'calciatore') return grp('Presenti', yes);
-      if(cu.auto) return grp(avail, yes);
+      if(role !== 'calciatore') return grp(avail, yes);
+      if(cu.auto) return grp(avail, yes).replace('</h3>', over(match()) ? '</h3>' : `</h3><p class="note">Fino a ${MAX_CONV} disponibili sono tutti convocati.</p>`);
       if(!cu.decided) return grp(avail, yes).replace('</h3>', `</h3><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
       return grp('Convocati', cu.list) + grp('Disponibili non convocati', yes.filter(x => !inConv.has(slug(x.nome))));
     };
@@ -663,12 +680,12 @@ function drawBody(){
     <select id="pick"><option value="">Seleziona il tuo nome</option>${[['calciatore','Calciatori'],['dirigente','Dirigenti']].map(([k, t]) => `<optgroup label="${t}">${ROSTER.filter(r => r.role === k).map(r => `<option value="${esc(r.name)}" ${r.name===S.pick?'selected':''}>${esc(r.name)}${r.number ? ' · #' + r.number : ''}</option>`).join('')}</optgroup>`).join('')}</select>`
     : '<button class="link sub" data-list="1">Non ti trovi? Scegli dall’elenco</button>'}`;
   const same = saved && saved.stato === S.stato && saved.tavola === S.tavola;
-  const why = !me ? 'Prima scegli il tuo nome.' : !S.stato ? 'Rispondi a “Ci sei?”.' : !S.tavola ? 'Rispondi a “Resti a tavola?”.' : '';
+  const why = !me ? 'Prima scegli il tuo nome.' : !S.stato ? 'Dicci se vieni.' : !S.tavola ? 'Rispondi a “Resti a tavola?”.' : '';
   S.goOff = !!why || !!same;
   b.innerHTML = who + `
-    <div class="step"><div class="num">2</div><div><h2 id="h-ci">Ci sei?</h2>${saved ? `<span class="stamp${S.thud ? ' thud' : ''}">${saved.stato === 'si' ? 'Presente' : 'Assente'}</span>` : ''}</div></div>
+    <div class="step"><div class="num">2</div><div><h2 id="h-ci">Vieni ${esc(new Date(m.date).toLocaleDateString('it-IT',{weekday:'long'}))}?</h2>${saved ? `<span class="stamp ${saved.stato === 'si' ? 'ok' : ''}${S.thud ? ' thud' : ''}" aria-hidden="true">${saved.stato === 'si' ? 'Presente' : 'Assente'}</span>` : ''}</div></div>
     <div class="seg" role="group" aria-labelledby="h-ci"><button class="opt yes" data-stato="si" aria-pressed="${S.stato==='si'}"><span class="bx" aria-hidden="true"></span>Ci sono</button><button class="opt no" data-stato="no" aria-pressed="${S.stato==='no'}"><span class="bx" aria-hidden="true"></span>Non ci sono</button></div>
-    <div class="step"><div class="num">3</div><div><h2 id="h-tav">Resti a tavola?</h2>${saved ? `<span class="stamp${S.thud ? ' thud' : ''}">${saved.tavola === 'si' ? 'A tavola' : 'Non a tavola'}</span>` : ''}<p>Per il dopo partita, anche se non giochi.</p></div></div>
+    <div class="step"><div class="num">3</div><div><h2 id="h-tav">Resti a tavola?</h2>${saved ? `<span class="stamp ${saved.tavola === 'si' ? 'ok' : 'd'}${S.thud ? ' thud' : ''}" aria-hidden="true">${saved.tavola === 'si' ? 'A tavola' : 'Non a tavola'}</span>` : ''}<p>Anche se non giochi.</p></div></div>
     <div class="seg" role="group" aria-labelledby="h-tav"><button class="opt yes" data-tavola="si" aria-pressed="${S.tavola==='si'}"><span class="bx" aria-hidden="true"></span>Sì</button><button class="opt" data-tavola="no" aria-pressed="${S.tavola==='no'}"><span class="bx" aria-hidden="true"></span>No</button></div>
     ${same ? '' : `<button class="go" id="go" ${S.goOff ? 'disabled' : ''}>${saved ? 'Aggiorna risposta' : 'Conferma presenza'}</button>`}
     <p class="why" id="why">${why}</p>
@@ -698,8 +715,11 @@ function renderConv(b){
 function resultInputs(){
   const sc = scorerList(S.rSc), ok = /^\d{1,2}$/.test(S.rGf) && /^\d{1,2}$/.test(S.rGs);
   const goals = sc.reduce((n, g) => n + g.n, 0);
-  $('#prev').textContent = (sc.length ? 'Sul sito: ' + sc.map(gName).join(' · ') : 'Nessun marcatore.') +
-    (ok && goals > +S.rGf ? ` Attenzione: ${goals} marcatori ma ${S.rGf} gol.` : '');
+  const known = n => { const k = slug(n.replace(/^\p{L}\.\s*/u, '')); return ROSTER.some(r => r.role === 'calciatore' && (slug(r.name) === slug(n) || slug(surname(r.name)) === k)); };
+  const odd = sc.filter(g => !known(g.name)).map(g => g.name);
+  $('#prev').textContent = (sc.length ? 'Sul sito: ' + sc.map(gName).join(' · ') + '.' : 'Nessun marcatore.') +
+    (ok && goals > +S.rGf ? ` Attenzione: ${goals} marcatori ma ${S.rGf} gol.` : '') +
+    (odd.length ? ` Non trovato nella rosa: ${odd.join(', ')}. Controlla come è scritto.` : '');
   $('#rsave').disabled = !ok;
 }
 // Aggiorna contatore e caselle dei convocati senza ridisegnare l’elenco
@@ -751,18 +771,18 @@ function drawCal(){
   renderRank();
   const nx = nextMatch();
   let last = '';
-  $('#calrows').innerHTML = sorted.map(m => { const g = gShort(m), sec = g.p === 'RIT' ? 'Ritorno' : g.p === 'AND' ? 'Andata' : 'Altre partite', head = sec !== last ? `<h3 class="calh">${sec}</h3>` : ''; last = sec; return head + `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span class="g" aria-hidden="true">${g.n}</span><span class="t"><b>${esc(vs(m))}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small></span>${rBadge(m) || (nx && nx.id === m.id ? '<em class="stamp nx">Prossima</em>' : '')}</button>`; }).join('');
+  $('#calrows').innerHTML = sorted.map(m => { const g = gShort(m), sec = g.p === 'RIT' ? 'Ritorno' : g.p === 'AND' ? 'Andata' : 'Altre partite', head = sec !== last ? `<h3 class="calh">${sec}</h3>` : ''; last = sec; return head + `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span class="g" aria-hidden="true">${g.n}</span><span class="t"><b>${esc(vs(m))}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small></span>${rBadge(m) || (nx && nx.id === m.id ? '<em class="stamp ink nx">Prossima</em>' : '')}</button>`; }).join('');
   $('#subs').innerHTML = subLinks();
   const box = $('#calrows'), cur = box.querySelector('[aria-current=true]');
   if(cur && box.scrollHeight > box.clientHeight + 4 && (cur.offsetTop < box.scrollTop || cur.offsetTop + cur.offsetHeight > box.scrollTop + box.clientHeight)) box.scrollTop = cur.offsetTop - box.clientHeight / 3;
 }
-function renderAll(){ $('#season').textContent = CONFIG.season; renderHero(); renderStats(); renderBody(); renderCal(); }
+function renderAll(){ renderHero(); renderStats(); renderBody(); renderCal(); }
 const sqSig = () => JSON.stringify([presences[S.sel], callups[S.sel], ROSTER.length]);   // la scheda La squadra si ridisegna solo se questo cambia
 // Salva la risposta di chi usa il dispositivo
 // cambia partita: ridisegna, annuncia e aggiorna l’indirizzo (#id) per poterlo condividere
 function selectMatch(id){
   if(!MATCHES.some(m => m.id === id)) return;
-  S.sel = id; S.done = ''; S.fix = false; S.undo = null; S.remindText = ''; S.rFor = S.cFor = '';
+  S.sel = id; S.done = ''; S.fix = false; S.undo = null; S.rUndo = null; S.remindText = ''; S.rFor = S.cFor = '';
   try{ history.replaceState(null, '', '#' + id); }catch(x){}
   renderAll(); announce(vs(match()) + ', ' + dShort(match().date));
 }
@@ -812,8 +832,15 @@ document.addEventListener('click', async e => {
     if(clear && !confirm(`Eliminare il risultato ${m.home ? `San Salvario ${o.gf}–${o.gs} ${m.opp}` : `${m.opp} ${o.gs}–${o.gf} San Salvario`}?`)) return;
     t.disabled = true; if(!clear) t.textContent = 'Salvataggio…';
     const ok = await saveResult(id, clear ? '' : `${+S.rGf}-${+S.rGs}`, clear ? '' : scorerList(S.rSc).map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', '));
-    if(ok && clear){ S.rGf = S.rGs = S.rSc = ''; }
+    if(ok && clear){ S.rUndo = {id, score:m.score, scorers:m.scorers}; S.rGf = S.rGs = S.rSc = ''; } else S.rUndo = null;
     say(ok ? (clear ? 'Risultato eliminato.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione e riprova.', !ok);
+    renderHero(); renderCal(); renderBody();
+  }
+  else if(d.rundo && S.rUndo){
+    const u = S.rUndo; S.rUndo = null;
+    const ok = await saveResult(u.id, u.score, u.scorers);
+    if(ok){ S.rFor = ''; }
+    say(ok ? 'Risultato ripristinato.' : 'Non sono riuscito a ripristinarlo. Controlla la connessione e riprova.', !ok);
     renderHero(); renderCal(); renderBody();
   }
   else if(d.match){ const inHero = !!t.closest('#hero'); selectMatch(d.match); if(!inHero) window.scrollTo({top:0,behavior:'smooth'}); }
@@ -886,7 +913,7 @@ document.addEventListener('submit', async e => {
   const code = normCode($('#code').value), err = $('#err');
   err.textContent = '';
   try{
-    if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Ricontrollalo o chiedilo allo staff.'; return; }
+    if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Ricontrollalo o chiedilo allo staff.'; $('#code').select(); return; }
   }catch(x){ err.textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; return; }
   try{ localStorage.setItem(K('codice'), code); }catch(x){}
   start();
