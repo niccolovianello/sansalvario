@@ -66,13 +66,13 @@ button{font:inherit;color:inherit}
 .hnav button{height:44px;border:0;border-radius:99px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
 .hnav button{width:44px;display:grid;place-items:center;padding:0}
 .hnav button:disabled{opacity:.35;cursor:default}
-.nextb{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 12px;border:0;border-radius:99px;background:rgba(255,255,255,.16);color:#fff;font:700 13px var(--font);cursor:pointer}
+.nextb{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 12px;white-space:nowrap;border:0;border-radius:99px;background:rgba(255,255,255,.16);color:#fff;font:700 13px var(--font);cursor:pointer}
 .mid .stamp{margin-top:8px}
-.m3{display:grid;grid-template-columns:minmax(0,1fr) 128px minmax(0,1fr);grid-template-rows:128px 54px;align-items:start;gap:4px;margin-top:8px}
+.m3{display:grid;grid-template-columns:minmax(0,1fr) 116px minmax(0,1fr);grid-template-rows:128px 54px;align-items:start;gap:4px;margin-top:8px}
 .m3>.tm,.m3>.mid{grid-row:1;overflow:hidden;max-height:128px}
 .tm{text-align:center}
 .tm .fl{display:none}
-.tm b{display:block;font-size:clamp(18px,5vw,30px);font-weight:800;line-height:1.08;letter-spacing:-.01em;overflow-wrap:break-word;padding-top:14px}
+.tm b{display:block;font-size:clamp(18px,5vw,30px);font-weight:800;line-height:1.08;letter-spacing:-.01em;overflow-wrap:normal;hyphens:none;padding-top:14px}
 .tm:not(.me) b{color:var(--kitmuted)}
 .goals{grid-row:2;align-self:stretch}
 .goals.h{grid-column:1 / 3}.goals.a{grid-column:2 / 4}
@@ -273,6 +273,7 @@ html.locked .top :focus-visible{outline-color:#fff}
   .club{font-size:24px}
 }
 @media (max-width:380px){
+  .nextb .va{display:none}.nextb{text-transform:capitalize}
   main{--gut:10px;padding:10px 10px 48px}
   .m3{grid-template-columns:minmax(0,1fr) 116px minmax(0,1fr)}
   .body{padding:6px 10px 14px}
@@ -637,13 +638,13 @@ function drawHero(){
   const day = new Date(m.date).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
   $('#hero').innerHTML = `<h2 class="sr">${esc(vs(m))}, ${esc(dShort(m.date))}</h2>
     <div class="kitbg">
-    <div class="mh"><div class="lab"><span class="fl">${esc(day.charAt(0).toUpperCase() + day.slice(1))}${kicked(m) && !/^(oggi|ieri)$/.test(relDay(m.date)) ? '' : ' · ' + relDay(m.date)}${g.n !== '–' ? ' · ' + g.n + 'ª giornata' : ''}</span><span class="pills">${stampHA(m)}${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}">Vai alla prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</span></div>
+    <div class="mh"><div class="lab"><span class="fl">${esc(day.charAt(0).toUpperCase() + day.slice(1))}${kicked(m) && !/^(oggi|ieri)$/.test(relDay(m.date)) ? '' : ' · ' + relDay(m.date)}${g.n !== '–' ? ' · ' + g.n + 'ª giornata' : ''}</span><span class="pills">${stampHA(m)}${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}"><span class="va">Vai alla </span>prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</span></div>
     <div class="hnav">${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
     <div class="m3">${team(m.home ? 'San Salvario' : m.opp, m.home, 'Casa')}${mid}${team(m.home ? m.opp : 'San Salvario', !m.home, 'Ospiti')}<div class="goals ${m.home ? 'h' : 'a'}">${o ? scorerBlock(m) : ''}</div></div>
     <div class="m2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${m.place ? `<a href="${esc(mapUrl(m))}" target="_blank" rel="noopener">${esc(placeName(m))}</a>` : 'Campo da definire'}${m.address ? `<span class="addr"> · ${esc(m.address.replace(/,?\s*Italia$/i,''))}</span>` : ''}</span></div>
     </div>
     <div class="m4" aria-label="Conteggi"><span id="stats"></span><span class="foot"><span class="split" id="split"></span><span class="live"><span class="dot"></span><span id="mode"></span></span></span></div>`;
-  renderStats(); renderLive();
+  renderStats(); renderLive(); fitNames();
 }
 function renderStats(){
   const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');
@@ -962,6 +963,16 @@ document.addEventListener('keydown', e => {
   else if(e.key === 'Enter' && n){ e.preventDefault(); acChoose(S.acList[S.acI].name); }
   else if(e.key === 'Escape'){ $('#acl').hidden = true; e.target.setAttribute('aria-expanded', false); }
 });
+// Nomi delle squadre: si va a capo solo tra le parole; se una parola non entra, il nome si rimpicciolisce quanto basta
+function fitNames(){
+  document.querySelectorAll('#hero .tm b').forEach(b => {
+    b.style.fontSize = '';
+    let f = parseFloat(getComputedStyle(b).fontSize);
+    while((b.scrollWidth > b.clientWidth + 1 || b.offsetHeight > 112) && f > 12){ f -= 1; b.style.fontSize = f + 'px'; }   // 112 = riga da 128px meno il margine sopra
+  });
+}
+window.addEventListener('resize', fitNames);
+if(document.fonts) document.fonts.ready.then(fitNames);
 window.addEventListener('hashchange', () => { const h = decodeURIComponent(location.hash.slice(1)); if(h && h !== S.sel && started) selectMatch(h); });
 // frecce, Home e Fine per muoversi tra le schede
 document.addEventListener('keydown', e => {
