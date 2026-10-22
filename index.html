@@ -527,7 +527,9 @@ function renderFoot(){
 function renderRank(){
   const tot = new Map();
   sorted.filter(outcome).forEach(m => scorerList(m.scorers).forEach(g => { const k = scorerLabel(g.name); tot.set(k, (tot.get(k) || 0) + g.n); }));
-  const rows = [...tot].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0],'it'));
+  // a pari gol, ordine alfabetico per cognome ("J. Varvello" → Varvello; nome completo → cognome dalla rosa)
+  const sur = l => { const i = l.match(/^\p{L}\.\s+(.+)$/u); if(i) return i[1]; const r = ROSTER.find(x => x.name === l); return r ? surname(r.name) : l; };
+  const rows = [...tot].sort((a,b) => b[1] - a[1] || sur(a[0]).localeCompare(sur(b[0]),'it') || a[0].localeCompare(b[0],'it'));
   $('#rank').innerHTML = rows.map(([n, v], i) => {
     const pos = i && v === rows[i-1][1] ? '' : i + 1;   // a pari gol stessa posizione, mostrata una volta
     return `<li title="${esc(n)}: ${v} gol"><span class="pos">${pos}</span><span class="nm">${esc(n)}</span><b class="val">${v}</b></li>`;
