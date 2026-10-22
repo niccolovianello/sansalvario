@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,700;0,800;1,400;1,800&display=swap" rel="stylesheet">
 <style>
 /* Mondo “maglia da gara”: campi pieni nei colori dello stemma (blu #253369, rosso #e30613), numeri da maglia, schede bianche arrotondate */
 :root{--kit:#253369;--kit2:#2f3f7d;--stripe:#e30613;--ground:#f3f4f8;--card:#fff;--line:#e2e5ee;--ink:#0f1633;--muted:#4a5170;--val:#253369;--sel:#253369;--onsel:#fff;--soft:#eef0f7;--red:#c8102e;--rfill:#c8102e;--green:#1b7d52;--gfill:#1b7d52;--field:#fff;--focus:#253369;--onkit:#fff;--kitmuted:#c9d0ea;--font:'Rubik',system-ui,sans-serif;color-scheme:light}
@@ -232,7 +232,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .help dd{margin:2px 0 0;color:var(--muted);font-size:14.5px;text-wrap:pretty}
 /* blocco codice */
 .lock{max-width:440px;margin:24px auto 0;border:0;background:var(--kit);color:#fff;padding:20px 18px 18px}
-.lock-crest{display:block;width:clamp(120px,38vw,160px);height:auto;margin:0 0 20px;animation:crest .8s cubic-bezier(.16,1,.3,1) both}
+.lock-crest{display:block;width:clamp(120px,38vw,160px);height:auto;margin:0 auto 20px;animation:crest .8s cubic-bezier(.16,1,.3,1) both}
 @keyframes crest{from{opacity:0;transform:scale(.86) rotate(-12deg)}to{opacity:1;transform:none}}
 .lock h2{margin:0 0 8px;font-size:30px;font-weight:800;line-height:1.1}
 .lock p{margin:0;color:var(--kitmuted);text-wrap:pretty}
@@ -242,6 +242,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
 .lock .go{background:var(--stripe)}
 .lock :focus-visible{outline-color:#fff}
+.lock .lock-motto{margin:28px 0 0;font-size:clamp(30px,9.4vw,46px);font-weight:800;font-style:italic;line-height:1.05;letter-spacing:-.02em;color:#fff;text-align:center;text-wrap:balance}
 /* finestra di conferma (al posto di confirm del browser) */
 #dlg{width:min(420px,calc(100vw - 32px));border:1px solid var(--line);border-radius:18px;padding:20px;background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(10,15,34,.35)}
 #dlg::backdrop{background:rgba(10,15,34,.6)}
@@ -260,6 +261,13 @@ html.locked .top::before{display:none}
 html.locked .top small{color:var(--kitmuted)}
 html.locked .top .theme{background:rgba(255,255,255,.14);border-color:transparent;color:#fff}
 html.locked .top :focus-visible{outline-color:#fff}
+/* testata centrata, più grande; il motto scende sotto il pulsante */
+html.locked .top{position:relative;justify-content:center;padding:4px 52px 10px;text-align:center}
+html.locked .top .brand{justify-content:center}
+html.locked .top .club{font-size:clamp(22px,6.6vw,30px)}
+html.locked .top small{font-size:14px;margin-top:4px}
+html.locked .top .motto{display:none}
+html.locked .top-r{position:absolute;right:0;top:0}
 @media (max-width:899px){html.locked body::before{content:"";position:fixed;left:0;top:0;bottom:0;width:8px;background:var(--stripe)}html.locked main{padding-left:calc(var(--gut) + 8px)}}
 @media (min-width:900px){
   main{max-width:1500px;padding:22px clamp(28px,3.5vw,56px) 72px}
@@ -282,7 +290,7 @@ html.locked .top :focus-visible{outline-color:#fff}
 </head>
 <body>
 <main>
-  <div class="top"><div class="brand"><img class="crest" src="crest-96.webp" alt="" width="40" height="40"><div><h1 class="club">A.S.D. San Salvario</h1><span class="stamp test-chip">Test</span><small><i>“Ci entra prima in culo che in testa”</i><br><span id="season"></span></small></div></div><div class="top-r"><button class="theme" id="theme" type="button" aria-label="Tema scuro" aria-pressed="false"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><mask id="moon-cut"><rect x="-6" y="-6" width="36" height="36" fill="#fff"/><circle class="cut" cx="25" cy="2" r="6.5" fill="#000"/></mask><circle class="sun" cx="12" cy="12" r="5" fill="currentColor" mask="url(#moon-cut)"/><g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg></button><button class="theme" id="outbtn" type="button" data-out="1" aria-label="Esci da questo dispositivo" title="Esci da questo dispositivo" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg></button></div></div>
+  <div class="top"><div class="brand"><img class="crest" src="crest-96.webp" alt="" width="40" height="40"><div><h1 class="club">A.S.D. San Salvario</h1><span class="stamp test-chip">Test</span><small><span class="motto"><i>“Ci entra prima in culo che in testa”</i><br></span><span id="season"></span></small></div></div><div class="top-r"><button class="theme" id="theme" type="button" aria-label="Tema scuro" aria-pressed="false"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><mask id="moon-cut"><rect x="-6" y="-6" width="36" height="36" fill="#fff"/><circle class="cut" cx="25" cy="2" r="6.5" fill="#000"/></mask><circle class="sun" cx="12" cy="12" r="5" fill="currentColor" mask="url(#moon-cut)"/><g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg></button><button class="theme" id="outbtn" type="button" data-out="1" aria-label="Esci da questo dispositivo" title="Esci da questo dispositivo" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg></button></div></div>
   <form class="sheet lock" id="lock" hidden>
     <img class="lock-crest" src="crest-320.webp" alt="Stemma A.S.D. San Salvario" width="160" height="160">
     <h2>Inserisci il codice squadra</h2>
@@ -292,6 +300,7 @@ html.locked .top :focus-visible{outline-color:#fff}
     <p class="fmt" id="fmt">8 tra lettere e numeri; maiuscole o minuscole va bene.</p>
     <button class="go" type="submit">Entra</button>
     <div class="err" id="err" role="alert"></div>
+    <p class="lock-motto">“Ci entra prima in culo che in testa”</p>
   </form>
   <div class="cols" id="app" hidden><div class="main-col">
   <section class="sheet match" id="hero" aria-label="Partita"></section>
