@@ -12,13 +12,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#17255a;--ink:#12204f;--red:#dc143c;--rfill:#dc143c;--bg:#f6f7fa;--card:#fff;--line:#e2e5ee;--muted:#646c8a;--green:#1b7d52;--gfill:#1b7d52;--cond:'Barlow Condensed','Arial Narrow','Liberation Sans Narrow',sans-serif;--body:'DM Sans',system-ui,sans-serif;--field:#fff;color-scheme:light}
-:root[data-theme=dark]{--navy:#24387f;--ink:#e6eaf6;--red:#ff5c7a;--rfill:#dc143c;--bg:#0c1229;--card:#151d3d;--line:#283361;--muted:#98a1c2;--green:#35b07c;--gfill:#1b7d52;--field:#101836;color-scheme:dark}
+:root{--navy:#17255a;--ink:#12204f;--red:#dc143c;--rfill:#dc143c;--bg:#f6f7fa;--card:#fff;--line:#e2e5ee;--muted:#646c8a;--green:#1b7d52;--gfill:#1b7d52;--cond:'Barlow Condensed','Arial Narrow','Liberation Sans Narrow',sans-serif;--body:'DM Sans',system-ui,sans-serif;--field:#fff;--focus:#17255a;--dis:#4b5270;color-scheme:light}
+:root[data-theme=dark]{--navy:#24387f;--ink:#e6eaf6;--red:#ff5c7a;--rfill:#dc143c;--bg:#0c1229;--card:#151d3d;--line:#283361;--muted:#98a1c2;--green:#35b07c;--gfill:#1b7d52;--field:#101836;--focus:#9fb0f0;--dis:#98a1c2;color-scheme:dark}
 body,.stat,.panel,.cal button,.rank,.opt,select,input{transition:background-color .35s,border-color .35s,color .35s}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--body)}
-:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 main{max-width:860px;margin:0 auto;padding:16px clamp(16px,4vw,32px) 56px}
 .top{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 14px;font:700 22px var(--cond);letter-spacing:.06em;text-transform:uppercase}
 .test-chip{display:none;margin-left:8px;padding:2px 8px;border-radius:99px;background:var(--rfill);color:#fff;font:700 12px var(--body);letter-spacing:.06em;vertical-align:middle}
@@ -32,21 +33,22 @@ main{max-width:860px;margin:0 auto;padding:16px clamp(16px,4vw,32px) 56px}
 .hnav{flex:none;display:flex;gap:8px}
 .hnav button{width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
 .hnav button:disabled{opacity:.3;cursor:default}
-.chip.go-next{border:0;color:#fff;font-family:var(--body);cursor:pointer;text-transform:uppercase}
+.chip.go-next{display:inline-flex;gap:6px;align-items:center;border:0;background:#fff;color:#12204f;font-family:var(--body);cursor:pointer;text-transform:uppercase}
 .hero :focus-visible{outline-color:#fff}
 [data-theme=dark] .hero{box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
-.chips{display:flex;gap:12px;align-items:center;font-size:15px;flex-wrap:wrap}
+.chips{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.when{margin:10px 0 0;font-size:15px;opacity:.92}
 .chip{background:rgba(255,255,255,.14);padding:4px 12px;border-radius:8px;font-weight:700;font-size:12px;letter-spacing:.15em}
 .where{display:flex;gap:12px;border-top:1px solid rgba(255,255,255,.2);padding-top:18px;font-size:15px;opacity:.95}
 .where svg{flex:none;margin-top:2px}
-.live{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px;margin:14px 2px}
+.live{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:13px;margin:0;padding:10px 14px;border-top:1px solid var(--line)}
 .dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(31,138,91,.15)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
-.stat p{margin:0;color:var(--muted);font-size:14px}
-.stat b{display:block;font:700 46px/1.1 var(--cond);margin:4px 0}
-.stat.red b{color:var(--red)}
-.stat small{color:var(--muted);font-size:12px;line-height:1.3;display:block}
+.stats{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:18px}
+.nums{display:grid;grid-template-columns:repeat(3,1fr)}
+.stat{padding:12px 14px}
+.stat+.stat{border-left:1px solid var(--line)}
+.stat b{display:block;font:700 34px/1 var(--cond);font-variant-numeric:tabular-nums}
+.stat p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.25}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:22px;margin-top:16px;overflow:hidden}
 .tabs{display:flex;gap:26px;padding:0 22px;border-bottom:1px solid var(--line)}
 .tab{background:none;border:0;border-bottom:4px solid transparent;font:700 21px var(--cond);padding:18px 0 14px;color:var(--muted);cursor:pointer;display:flex;gap:10px;align-items:center}
@@ -65,7 +67,7 @@ main{max-width:860px;margin:0 auto;padding:16px clamp(16px,4vw,32px) 56px}
 label{display:block;font-weight:700;font-size:15px;margin:16px 0 8px}
 select,input{width:100%;min-height:52px;font:inherit;border:1px solid var(--line);border-radius:14px;padding:0 14px;background:var(--field);color:var(--ink)}
 .go{width:100%;min-height:56px;margin-top:22px;border:0;border-radius:14px;background:var(--rfill);color:#fff;font:700 18px var(--body);cursor:pointer}
-.go:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+.go:disabled{background:var(--line);color:var(--dis);cursor:not-allowed}
 .ok{margin-top:12px;color:var(--green);font-weight:700;min-height:24px}
 .grp h3{font:700 20px var(--cond);margin:18px 0 6px;letter-spacing:.03em}
 .sqh{font:700 28px/1.1 var(--cond);text-transform:uppercase;letter-spacing:.04em;margin:36px 0 0;padding-bottom:10px;border-bottom:4px solid var(--red)}
@@ -75,8 +77,8 @@ select,input{width:100%;min-height:52px;font:inherit;border:1px solid var(--line
 .grp li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
 .grp li span{color:var(--muted);font-size:13px;text-align:right}
 .grp .who{display:flex;align-items:center;gap:14px}
-.nr{flex:none;width:30px;height:30px;border-radius:50%;background:var(--rfill);color:#fff;display:grid;place-items:center;font:700 15px var(--cond)}
-.nr.none{background:none}
+.nr{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);color:var(--ink);display:grid;place-items:center;font:700 15px var(--cond)}
+.nr.none{border-color:transparent}
 h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .sw{display:flex;gap:22px;align-items:baseline;flex-wrap:wrap;margin:34px 2px 12px}
 .swb{background:none;border:0;padding:0;font:700 28px var(--cond);color:var(--ink);opacity:.55;cursor:pointer;transition:opacity .15s}
@@ -90,8 +92,8 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .rank .val{font:700 26px/1 var(--cond);text-align:right}
 .rank .empty{display:block;color:var(--muted);font-size:14px;padding:8px 0}
 .cal button{display:flex;width:100%;justify-content:space-between;gap:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px;font:inherit;color:inherit;cursor:pointer}
-.cal button[aria-current=true]{border:2px solid var(--navy)}
-[data-theme=dark] .cal button[aria-current=true]{border-color:#6a7fd6}
+.cal button[aria-current=true]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy)}
+[data-theme=dark] .cal button[aria-current=true]{border-color:#6a7fd6;box-shadow:inset 0 0 0 1px #6a7fd6}
 .cal b{font:700 20px var(--cond);text-transform:uppercase}
 .cal small{color:var(--muted);display:block}
 .cal .r{font:700 22px var(--cond);white-space:nowrap;text-align:right}
@@ -102,7 +104,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .goals li{padding:3px 0;font-weight:500}
 .cal .r small{font:500 12px var(--body)}
 .r.w{color:var(--green)}.r.l{color:var(--red)}.r.d{color:var(--muted)}
-.match3{display:grid;grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr);gap:8px;align-items:center;margin:28px 0 24px}
+.match3{display:grid;grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr);gap:8px;align-items:center;margin:24px 0 22px}
 .tm{font:700 clamp(22px,6vw,38px)/1.02 var(--cond);text-transform:uppercase;text-align:center;overflow-wrap:break-word;opacity:.85}
 .tm.sm{font-size:clamp(18px,4.9vw,32px)}
 .tm.me{opacity:1}
@@ -115,7 +117,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .mid .out.w{background:var(--gfill)}.mid .out.l{background:var(--rfill)}
 .subs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .subs a span{white-space:nowrap}
-.subs a{flex:1 1 200px;display:flex;justify-content:center;gap:12px;align-items:center;text-align:left;text-decoration:none;background:var(--navy);color:#fff;font-weight:700;border-radius:14px;padding:14px 16px}
+.subs a{flex:1 1 200px;display:flex;justify-content:center;gap:12px;align-items:center;text-align:left;text-decoration:none;background:var(--card);color:var(--ink);border:1px solid var(--line);font-weight:700;border-radius:14px;padding:12px 16px}
 @media (min-width:900px){
   main{max-width:1760px;padding:24px clamp(28px,3.5vw,56px) 72px}
   .cols{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(32px,3vw,56px);align-items:start}
@@ -125,14 +127,14 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 @media (max-width:380px){
   main{padding:12px 12px 48px}
   .hero{padding:18px}
-  .stat{padding:10px}.stat b{font-size:38px}
+  .stat{padding:10px}.stat b{font-size:30px}
   .tabs{gap:18px;padding:0 16px}.body{padding:16px}
 }
 @media (min-width:900px){.match3{grid-template-columns:minmax(0,1fr) 150px minmax(0,1fr)}}
 @media (min-width:1400px){.match3{grid-template-columns:minmax(0,1fr) 180px minmax(0,1fr)}}
 .lock{max-width:440px;margin:0 auto}
 .lock h2{font:700 clamp(40px,12vw,56px)/.95 var(--cond);text-transform:uppercase;margin:18px 0 10px}
-.lock p{margin:0;opacity:.8}
+.lock p{margin:0;opacity:.8;text-wrap:pretty}
 .lock label{color:#fff;margin-top:26px}
 .lock input{text-transform:uppercase;letter-spacing:.3em;font:700 24px var(--cond);text-align:center;border:0}
 .lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
@@ -143,7 +145,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 @media (hover:hover){.ac li:hover{background:var(--bg)}}
 .ac li small{margin-left:auto;color:var(--muted);font-size:12px}
 .ac li.none{color:var(--muted);cursor:default;background:none}
-.hint{color:var(--red);font-size:13px;min-height:18px;margin:6px 0 0}
+.hint{color:var(--muted);font-size:13px;min-height:18px;margin:6px 0 0}
 .pick{display:flex;align-items:center;gap:14px;margin:0;padding:9px 0;border-bottom:1px solid var(--line);font-weight:400;cursor:pointer}
 .pick input{width:22px;height:22px;min-height:0;margin:0 0 0 auto;accent-color:var(--rfill);flex:none}
 .pick.off{opacity:.45;cursor:not-allowed}
@@ -159,9 +161,9 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .top-r{display:flex;align-items:center;gap:8px}
 .theme{flex:none;width:44px;height:44px;display:grid;place-items:center;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink);cursor:pointer;transition:background-color .35s,border-color .35s,color .35s}
 .theme svg{overflow:visible}
-.theme .sun{transform-box:fill-box;transform-origin:center;transition:transform .5s cubic-bezier(.5,1.6,.4,.9)}
-.theme .cut{transition:transform .5s cubic-bezier(.5,1.6,.4,.9)}
-.theme .rays{transform-origin:12px 12px;transition:transform .5s cubic-bezier(.5,1.6,.4,.9),opacity .3s}
+.theme .sun{transform-box:fill-box;transform-origin:center;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.theme .cut{transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.theme .rays{transform-origin:12px 12px;transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .3s}
 [data-theme=dark] .theme .sun{transform:scale(1.75)}
 [data-theme=dark] .theme .cut{transform:translate(-7px,5px)}
 [data-theme=dark] .theme .rays{transform:rotate(-90deg) scale(.4);opacity:0}
@@ -177,10 +179,26 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .link{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .link.del{display:block;margin:18px auto 0;color:var(--red);font-weight:500}
 .past p{margin:14px 0 0}
-@media (max-width:480px){.stat p{min-height:2.5em;line-height:1.25}}
 .tab .lk{flex:none;opacity:.8}
 .staffout{margin:22px 0 0;text-align:center}
 .staffout .link{font-weight:500;color:var(--muted)}
+.sub{display:block;margin:4px 0 0;font-weight:500;color:var(--muted)}
+.quick{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.2)}
+.quick h3{font:700 24px/1.1 var(--cond);margin:0 0 10px}
+.quick h3+.qseg{margin-bottom:14px}
+.qseg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qopt,.qcta{min-height:52px;border-radius:14px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font:500 17px var(--body);cursor:pointer}
+.qopt[aria-pressed=true]{background:#fff;border-color:#fff;color:#12204f;font-weight:700}
+.qopt:disabled{opacity:.6;cursor:default}
+.qcta{width:100%;background:#fff;border-color:#fff;color:#12204f;font-weight:700}
+.qdone{display:flex;gap:14px;align-items:center}
+.qdone .ck{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--gfill)}
+.qdone .ck.no{background:rgba(255,255,255,.18)}
+.qdone b{display:block;font-size:17px}
+.qdone p{margin:2px 0 0;font-size:14px;opacity:.85}
+.quick .link{color:#fff}
+.qmsg{margin:12px 0 0;font-size:14px;font-weight:700}
+.qmsg.bad{color:#ffb3c1}
 </style>
 </head>
 <body>
@@ -189,7 +207,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
   <form class="hero lock" id="lock" hidden>
     <span class="chip">AREA SQUADRA</span>
     <h2>Inserisci il codice</h2>
-    <p>Te lo chiediamo una volta sola su questo dispositivo.</p>
+    <p>Il codice squadra te lo dà lo staff. Te lo chiediamo una volta sola su questo dispositivo.</p>
     <label for="code">Codice squadra</label>
     <input id="code" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
     <button class="go" type="submit">Entra</button>
@@ -197,8 +215,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
   </form>
   <div class="cols" id="app" hidden><div class="main-col">
   <section class="hero" id="hero" aria-label="Partita"></section>
-  <div class="live"><span class="dot"></span><span id="mode"></span></div>
-  <section class="stats" id="stats"></section>
+  <section class="stats" aria-label="Conteggi"><div class="nums" id="stats"></div><div class="live"><span class="dot"></span><span id="mode"></span></div></section>
 
   <section class="panel">
     <div class="tabs" role="tablist">
@@ -221,6 +238,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 
   </aside></div>
 </main>
+<div class="sr" id="sr" role="status" aria-live="polite"></div>
 
 <script>
 /* ============ DA MODIFICARE: i dati della squadra ============ */
@@ -359,11 +377,13 @@ function scorerBlock(m){
   const sc = scorerList(m.scorers); if(!sc.length) return '';
   return `<div class="goals ${m.home ? 'c1' : 'c3'}"><ul aria-label="Marcatori">${sc.map(g => `<li>${esc(gName(g))}</li>`).join('')}</ul></div>`;
 }
-const rBadge = m => { const o = outcome(m); return o ? `<span class="r ${o.cls}">${o.gf}–${o.gs}<small>${o.label}</small></span>` : ''; };
+// risultato nell’ordine casa–trasferta, come il titolo accanto
+const rBadge = m => { const o = outcome(m); return o ? `<span class="r ${o.cls}">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}<small>${o.label}</small></span>` : ''; };
+const vs = m => m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario';
 function subLinks(){
   if(!CONFIG.icsUrl) return '';
   const w = CONFIG.icsUrl.replace(/^https?:/i,'webcal:');
-  const apple = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>`;
+  const apple = `<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>`;
   const google = `<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M5.5 5.5h13v13h-13z"/><path fill="#4285F4" d="M2.5 0h16v5.5H0V2.5A2.5 2.5 0 0 1 2.5 0z"/><path fill="#FBBC04" d="M18.5 0h3A2.5 2.5 0 0 1 24 2.5v16h-5.5z"/><path fill="#1967D2" d="M0 5.5h5.5v13H0z"/><path fill="#188038" d="M0 18.5h5.5V24h-3A2.5 2.5 0 0 1 0 21.5z"/><path fill="#34A853" d="M5.5 18.5h13V24h-13z"/><path fill="#EA4335" d="M18.5 18.5H24L18.5 24z"/><text x="12" y="15.6" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="8.5" fill="#4285F4">31</text></svg>`;
   return `<div class="subs"><a href="${esc(w)}">${apple}<span>Aggiungi a<br>Calendario Apple</span></a><a href="https://calendar.google.com/calendar/render?cid=${esc(w)}" target="_blank" rel="noopener">${google}<span>Aggiungi a<br>Google Calendar</span></a></div>`;
 }
@@ -427,12 +447,40 @@ async function saveResult(id, score, scorers){
 }
 const match = () => MATCHES.find(m => m.id === S.sel);
 const mine = () => S.pick ? (presences[S.sel] || {})[slug(S.pick)] : null;   // la risposta salvata di chi usa questo dispositivo
-const say = (t, bad) => { S.done = t; S.bad = !!bad; };
+const meR = () => ROSTER.find(r => r.name === S.pick);   // chi usa questo dispositivo, se è nella rosa
+// annuncia ai lettori di schermo con una regione fissa (quelle ridisegnate spesso non vengono lette)
+function announce(t){ const s = $('#sr'); s.textContent = ''; if(t) setTimeout(() => { s.textContent = t; }, 60); }
+const say = (t, bad) => { S.done = t; S.bad = !!bad; announce(t); };
+// a ogni cambio di partita o di nome riparti dalla risposta già salvata
+function syncForm(){
+  const fk = S.sel + '|' + S.pick;
+  if(S.fFor !== fk){ S.fFor = fk; const r = mine(); S.stato = r ? r.stato : ''; S.tavola = r ? r.tavola : ''; S.qEdit = false; S.qMsg = ''; }
+}
+// Ridisegna senza perdere il focus: torna sullo stesso controllo, oppure su S.focus se il gestore l’ha indicato
+function keep(draw){
+  const a = document.activeElement, box = a && a.closest && a.closest('#hero,#body,#cal');
+  let key = '';
+  if(box && a !== box){
+    const lab = a.getAttribute('aria-label'), data = [...a.attributes].filter(x => x.name.startsWith('data-'));
+    key = a.id ? '#' + CSS.escape(a.id) : lab ? `[aria-label="${CSS.escape(lab)}"]` : data.map(x => `[${x.name}="${CSS.escape(x.value)}"]`).join('');
+  }
+  draw();
+  const want = S.focus; S.focus = '';
+  const lost = !document.activeElement || document.activeElement === document.body || !document.activeElement.isConnected;
+  let n = want ? document.querySelector(want) : null;
+  if(!n && box && lost) n = (key && box.querySelector(key + ':not(:disabled)')) || box.querySelector('button:not(:disabled),input,select');
+  if(n) n.focus({preventScroll:true});
+}
+function renderHero(){ keep(drawHero); }
+function renderBody(){ keep(drawBody); }
+function renderCal(){ keep(drawCal); }
 const WARN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>';
 const LOCK = '<svg class="lk" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const KEY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>';
 const CLOCK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok" role="alert">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok">${esc(S.done)}</div>`;
+const CHECK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const CROSS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const answerText = r => (r.stato === 'si' ? 'Ci sono' : 'Non ci sono') + ' · ' + (r.tavola === 'si' ? 'resto a tavola' : 'non resto a tavola');
 function renderLive(){
   $('.live').classList.toggle('bad', !LIVE);
@@ -457,7 +505,23 @@ async function saveCallup(id, keys){
   }catch(e){ return false; }
 }
 
-function renderHero(){
+// Risposta veloce nel riquadro partita: per chi è già riconosciuto, prima del fischio d’inizio
+function quick(m){
+  if(outcome(m) || kicked(m)) return '';
+  const me = meR();
+  if(!me) return `<div class="quick"><button type="button" class="qcta" data-goform="1">Ci sei? Rispondi</button></div>`;
+  syncForm();
+  const saved = mine(), msg = S.qMsg ? `<p class="qmsg${S.qBad ? ' bad' : ''}">${esc(S.qMsg)}</p>` : '';
+  if(saved && !S.qEdit) return `<div class="quick"><div class="qdone"><span class="ck${saved.stato === 'si' ? '' : ' no'}">${saved.stato === 'si' ? CHECK : CROSS}</span><div><b>${esc(answerText(saved))}</b><p>La tua risposta · <button type="button" class="link" data-qedit="1">Cambia</button></p></div></div>${msg}</div>`;
+  const opt = (k, v, t, on) => `<button type="button" class="qopt" data-${k}="${v}" aria-pressed="${on}" ${S.qSaving ? 'disabled' : ''}>${t}</button>`;
+  return `<div class="quick">
+    <h3 id="q-ci">Ci sei, ${esc(me.name.split(' ')[0])}?</h3>
+    <div class="qseg" role="group" aria-labelledby="q-ci">${opt('qs', 'si', 'Ci sono', S.stato === 'si')}${opt('qs', 'no', 'Non ci sono', S.stato === 'no')}</div>
+    ${S.stato || saved ? `<h3 id="q-tav">Resti a tavola?</h3>
+    <div class="qseg" role="group" aria-labelledby="q-tav">${opt('qt', 'si', 'Sì', S.tavola === 'si')}${opt('qt', 'no', 'No', S.tavola === 'no')}</div>` : ''}
+    ${saved ? '<p class="qmsg"><button type="button" class="link" data-qedit="0">Lascia così</button></p>' : ''}${msg}</div>`;
+}
+function drawHero(){
   const m = match(), o = outcome(m);
   const lg = n => n.split(/\s+/).some(w => w.length > 9) ? 'sm' : '';
   const home = m.home ? 'San Salvario' : m.opp, away = m.home ? m.opp : 'San Salvario';
@@ -467,22 +531,23 @@ function renderHero(){
   const i = sorted.findIndex(x => x.id === m.id), prev = sorted[i-1], next = sorted[i+1], nx = nextMatch();
   const arrow = (to, lab, d) => `<button type="button" ${to ? `data-match="${to.id}"` : 'disabled'} aria-label="${lab}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg></button>`;
   $('#hero').innerHTML = `
-    <div class="hhead"><div class="chips"><span class="chip">${m.home?'IN CASA':'TRASFERTA'}</span><span>${esc(dDate(m.date))}</span>${m.giornata ? `<span>${esc(m.giornata)}</span>` : ''}${nx && nx.id !== m.id ? `<button type="button" class="chip go-next" data-match="${nx.id}">Vai alla prossima</button>` : ''}</div>
+    <div class="hhead"><div class="chips"><span class="chip">${m.home?'IN CASA':'TRASFERTA'}</span>${nx && nx.id !== m.id ? `<button type="button" class="chip go-next" data-match="${nx.id}">Vai alla prossima <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</div>
     <div class="hnav">${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
+    <p class="when">${esc(dDate(m.date))}${m.giornata ? ' · ' + esc(m.giornata) : ''}</p>
     <div class="match3"><div class="tm ${m.home ? 'me' : ''} ${lg(home)}">${esc(home)}</div>${mid}<div class="tm ${m.home ? '' : 'me'} ${lg(away)}">${esc(away)}</div>${o ? scorerBlock(m) : ''}</div>
-    <div class="where"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${esc([m.place, m.address].filter(Boolean).join(', '))}</span></div>`;
+    <div class="where"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${esc([m.place, m.address].filter(Boolean).join(', '))}</span></div>${quick(m)}`;
 }
 function renderStats(){
-  const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');
+  const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');   // il dettaglio sta nel title e nella scheda La squadra
   const np = yes.filter(x => x.ruolo === 'calciatore').length, dr = yes.length - np;
   const tav = a.filter(x => x.tavola === 'si').length;   // anche chi non gioca può restare a tavola
   const names = new Set(a.map(x => slug(x.nome)));
   const wait = ROSTER.filter(r => !names.has(slug(r.name))).length;
   const done = over(match());   // a partita finita i conteggi diventano “chi c’era”
   $('#stats').innerHTML = `
-    <div class="stat"><p>${done ? 'C’erano' : 'Presenti'}</p><b>${yes.length}</b><small>${pl(np, 'calciatore', 'calciatori')} · ${pl(dr, 'dirigente', 'dirigenti')}</small></div>
-    <div class="stat red"><p>A tavola</p><b>${tav}</b><small>Per il dopo partita</small></div>
-    <div class="stat"><p>${done ? 'Senza risposta' : 'Da confermare'}</p><b>${wait}</b><small>${pl(no.length, 'assente', 'assenti')} · ${pl(a.length, 'risposta', 'risposte')}</small></div>`;
+    <div class="stat" title="${pl(np, 'calciatore', 'calciatori')} · ${pl(dr, 'dirigente', 'dirigenti')}"><b>${yes.length}</b><p>${done ? 'C’erano' : 'Presenti'}</p></div>
+    <div class="stat"><b>${tav}</b><p>A tavola</p></div>
+    <div class="stat" title="${pl(no.length, 'assente', 'assenti')} · ${pl(a.length, 'risposta', 'risposte')}"><b>${wait}</b><p>${done ? 'Senza risposta' : 'Da confermare'}</p></div>`;
   $('#sqn').textContent = ROSTER.length;
 }
 // sfuma il bordo della barra schede dove ci sono altre schede da scorrere
@@ -491,7 +556,7 @@ function tabFade(){
   tb.classList.toggle('more', tb.scrollLeft + tb.clientWidth < tb.scrollWidth - 4);
   tb.classList.toggle('less', tb.scrollLeft > 4);
 }
-function renderBody(){
+function drawBody(){
   const b = $('#body');
   document.querySelectorAll('.tab').forEach(t => { const on = t.dataset.tab === S.tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; if(on) b.setAttribute('aria-labelledby', t.id); });
   // con 4 schede su telefono la barra scorre: tieni visibile quella selezionata
@@ -516,14 +581,14 @@ function renderBody(){
   if(S.tab === 'ris'){
     const m = match();
     if(S.rFor !== m.id){ const o = outcome(m); S.rFor = m.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = m.scorers || ''; S.done = ''; }
-    const head = `<div class="step"><div class="num">01</div><div><h2>Risultato</h2><p>${esc(m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario')} · ${esc(dShort(m.date))}. Per un’altra partita, usa le frecce in alto o il calendario.</p></div></div>`;
+    const head = `<div class="step"><div><h2>Risultato</h2><p>${esc(vs(m))} · ${esc(dShort(m.date))}. Lo vede tutta la squadra. Per un’altra partita, usa le frecce in alto o il calendario.</p></div></div>`;
     if(!kicked(m)){ b.innerHTML = head + '<p class="prev">Il risultato si potrà inserire dal fischio d’inizio in poi.</p>'; return; }
     b.innerHTML = head + `
       <div class="seg">
         <div><label for="rgf">Gol San Salvario</label><input id="rgf" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGf)}"></div>
         <div><label for="rgs">Gol ${esc(m.opp)}</label><input id="rgs" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGs)}"></div>
       </div>
-      <div class="step" style="margin-top:28px"><div class="num">02</div><div><h2>Marcatori</h2><p>Solo San Salvario, per cognome, separati da virgola. Doppietta: Rossi (2).</p></div></div>
+      <div class="step" style="margin-top:28px"><div><h2>Marcatori</h2><p>Solo San Salvario, per cognome, separati da virgola. Doppietta: Rossi (2).</p></div></div>
       <label for="rsc">Marcatori</label>
       <input id="rsc" type="text" maxlength="300" autocomplete="off" value="${esc(S.rSc)}" placeholder="Es. Rossi (2), Bianchi">
       <p class="prev" id="prev"></p>
@@ -539,24 +604,26 @@ function renderBody(){
     const grp = (t, arr) => `<div class="grp"><h3>${t} (${arr.length})</h3><ul>${arr.map(li).join('') || '<li><span>Nessuno</span></li>'}</ul></div>`;
     const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
     const cu = callup(), inConv = new Set(cu.list.map(x => slug(x.nome)));
+    // “Convocati” solo quando lo staff ha scelto; prima sono “Disponibili” (a partita finita “Presenti”)
+    const avail = over(match()) ? 'Presenti' : 'Disponibili';
     const present = role => {
       const yes = a.filter(x => x.ruolo === role && x.stato === 'si');
       if(role !== 'calciatore') return grp('Presenti', yes);
-      if(!cu.decided) return grp('Presenti', yes).replace('</h3>', `</h3><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
-      return grp('Convocati', cu.list) + (cu.auto ? '' : grp('Disponibili non convocati', yes.filter(x => !inConv.has(slug(x.nome)))));
+      if(cu.auto) return grp(avail, yes);
+      if(!cu.decided) return grp(avail, yes).replace('</h3>', `</h3><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
+      return grp('Convocati', cu.list) + grp('Disponibili non convocati', yes.filter(x => !inConv.has(slug(x.nome))));
     };
     const sec = (role, title) => {
       const ra = a.filter(x => x.ruolo === role), rw = wait.filter(x => x.ruolo === role);
       return `<h2 class="sqh">${title}<em>${ROSTER.filter(r => r.role === role).length}</em></h2>` +
         present(role) + grp('Assenti', ra.filter(x => x.stato === 'no')) + grp('Da confermare', rw);
     };
+    S.sqSig = sqSig();
     b.innerHTML = sec('calciatore', 'Calciatori') + sec('dirigente', 'Dirigenti');
     return;
   }
-  const m = match(), list = ROSTER.filter(r => r.role === S.role), me = ROSTER.find(r => r.name === S.pick);
-  // a ogni cambio di partita o di nome riparti dalla risposta già salvata
-  const fk = S.sel + '|' + S.pick;
-  if(S.fFor !== fk){ S.fFor = fk; const r = mine(); S.stato = r ? r.stato : ''; S.tavola = r ? r.tavola : ''; }
+  const m = match(), me = meR();
+  syncForm();
   const saved = mine();
   if(over(m) && !S.fix){
     b.innerHTML = `<div class="past"><div class="step"><div class="num">${CLOCK}</div><div><h2>Partita finita</h2><p>${esc(dShort(m.date))}</p></div></div>
@@ -566,13 +633,13 @@ function renderBody(){
   }
   const who = me && !S.edit
     ? `<div class="step"><div class="num">01</div><div><h2>Sei ${esc(me.name)}</h2><p>${me.role === 'dirigente' ? 'Dirigente' : 'Calciatore'}${me.number ? ' · #' + me.number : ''} · <button class="link" data-edit="1">Cambia</button></p></div></div>`
-    : `<div class="step"><div class="num">01</div><div><h2>Chi sei?</h2><p>Scegli il tuo nome dall’elenco o cercalo.</p></div></div>
-    <div class="seg" role="group" aria-label="Ruolo"><button class="opt" data-role="calciatore" aria-pressed="${S.role==='calciatore'}">Calciatore</button><button class="opt" data-role="dirigente" aria-pressed="${S.role==='dirigente'}">Dirigente</button></div>
-    <label for="pick">Scegli dall’elenco</label>
-    <select id="pick"><option value="">Seleziona il tuo nome</option>${list.map(r => `<option value="${esc(r.name)}" ${r.name===S.pick?'selected':''}>${esc(r.name)}${r.number ? ' · #' + r.number : ''}</option>`).join('')}</select>
-    <label for="typed">Oppure cerca il tuo nome</label>
-    <div class="ac"><input id="typed" type="text" maxlength="30" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="acl" value="${esc(S.typed)}" placeholder="Scrivi nome, cognome o numero"><ul id="acl" role="listbox" aria-label="Nomi della rosa" hidden></ul></div>
-    <p class="hint" id="achint"></p>`;
+    : `<div class="step"><div class="num">01</div><div><h2>Chi sei?</h2><p>Cerca il tuo nome nella rosa.${me ? ' <button class="link" data-edit="0">Annulla</button>' : ''}</p></div></div>
+    <label for="typed">Nome, cognome o numero di maglia</label>
+    <div class="ac"><input id="typed" type="text" maxlength="30" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="acl" value="${esc(S.typed)}" placeholder="Es. Rossi oppure 16"><ul id="acl" role="listbox" aria-label="Nomi della rosa" hidden></ul></div>
+    <p class="hint" id="achint"></p>
+    ${S.list ? `<label for="pick">Tutta la rosa</label>
+    <select id="pick"><option value="">Seleziona il tuo nome</option>${[['calciatore','Calciatori'],['dirigente','Dirigenti']].map(([k, t]) => `<optgroup label="${t}">${ROSTER.filter(r => r.role === k).map(r => `<option value="${esc(r.name)}" ${r.name===S.pick?'selected':''}>${esc(r.name)}${r.number ? ' · #' + r.number : ''}</option>`).join('')}</optgroup>`).join('')}</select>`
+    : '<button class="link sub" data-list="1">Non ti trovi? Scegli dall’elenco</button>'}`;
   const same = saved && saved.stato === S.stato && saved.tavola === S.tavola;
   const why = !me ? 'Prima scegli il tuo nome.' : !S.stato ? 'Rispondi a “Ci sei?”.' : !S.tavola ? 'Rispondi a “Resti a tavola?”.' : '';
   S.goOff = !!why || !!same;
@@ -590,7 +657,7 @@ function renderBody(){
 function renderConv(b){
   const m = match(), cu = callup();
   if(S.cFor !== m.id){ S.cFor = m.id; S.cSel = new Set(cu.list.map(x => slug(x.nome))); S.done = ''; }
-  const head = `<div class="step"><div class="num">01</div><div><h2>Convocazioni</h2><p>${esc(m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario')} · ${esc(dShort(m.date))}. Per un’altra partita, sceglila dal calendario.</p></div></div>`;
+  const head = `<div class="step"><div><h2>Convocazioni</h2><p>${esc(vs(m))} · ${esc(dShort(m.date))}. Per un’altra partita, usa le frecce in alto o il calendario.</p></div></div>`;
   const who = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}`; };
   if(!cu.av.length){ b.innerHTML = head + '<p class="prev">Nessun calciatore ha ancora dato disponibilità.</p>'; return; }
   if(cu.auto){
@@ -633,11 +700,11 @@ function acRender(){
   ul.hidden = !open; inp.setAttribute('aria-expanded', open);
   if(items.length && open) inp.setAttribute('aria-activedescendant', 'aco-' + S.acI); else inp.removeAttribute('aria-activedescendant');
   $('#achint').textContent = open ? 'Scegli il tuo nome tra quelli proposti.' : '';
-  const g = $('#go'); if(g) g.disabled = open || S.goOff;   // finché si sta cercando, il nome non è scelto   // finché si sta cercando, il nome non è scelto
+  const g = $('#go'); if(g) g.disabled = open || S.goOff;   // finché si sta cercando, il nome non è scelto
 }
 function acChoose(name){
   const r = ROSTER.find(x => x.name === name); if(!r) return;
-  S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; S.edit = false; renderBody();
+  S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; S.edit = false; S.list = false; S.focus = '#body [data-stato="si"]'; renderBody(); renderHero();
 }
 // Scheda Convocazioni: sempre visibile, col lucchetto finché non si inserisce il codice staff
 function renderTop(){
@@ -654,27 +721,52 @@ function renderRank(){
   const sur = l => { const i = l.match(/^\p{L}\.\s+(.+)$/u); if(i) return i[1]; const r = ROSTER.find(x => x.name === l); return r ? surname(r.name) : l; };
   const rows = [...tot].sort((a,b) => b[1] - a[1] || sur(a[0]).localeCompare(sur(b[0]),'it') || a[0].localeCompare(b[0],'it'));
   $('#rank').innerHTML = rows.map(([n, v], i) => {
-    const pos = i && v === rows[i-1][1] ? '' : i + 1;   // a pari gol stessa posizione, mostrata una volta
+    const pos = rows.findIndex(r => r[1] === v) + 1;   // a pari gol stessa posizione
     return `<li title="${esc(n)}: ${v} gol"><span class="pos">${pos}</span><span class="nm">${esc(n)}</span><b class="val">${v}</b></li>`;
   }).join('') || '<li class="none"><span class="empty">Nessun gol segnato finora.</span></li>';
 }
-function renderCal(){
+function drawCal(){
   renderRank();
   const nx = nextMatch();
-  $('#cal').innerHTML = subLinks() + sorted.map(m => `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span><b>${m.home?'San Salvario – '+esc(m.opp):esc(m.opp)+' – San Salvario'}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small></span>${rBadge(m) || (nx && nx.id === m.id ? '<em class="nx">Prossima</em>' : '')}</button>`).join('');
+  $('#cal').innerHTML = subLinks() + sorted.map(m => `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span><b>${esc(vs(m))}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small></span>${rBadge(m) || (nx && nx.id === m.id ? '<em class="nx">Prossima</em>' : '')}</button>`).join('');
 }
 function renderAll(){ $('#season').textContent = CONFIG.season; renderHero(); renderStats(); renderBody(); renderCal(); }
+const sqSig = () => JSON.stringify([presences[S.sel], callups[S.sel], ROSTER.length]);   // la scheda La squadra si ridisegna solo se questo cambia
+// Salva la risposta di chi usa il dispositivo (dal riquadro partita o dal modulo)
+async function submit(){
+  const r = meR(); if(!r || !S.stato || !S.tavola || S.busy) return null;
+  S.busy = true;
+  const upd = !!mine(), ok = await save(S.sel, {nome:r.name, ruolo:r.role, stato:S.stato, tavola:S.tavola});
+  S.busy = false;
+  if(ok) try{ localStorage.setItem(K('mio'), JSON.stringify({role:r.role, pick:r.name})); }catch(x){}
+  return {ok, upd};
+}
+const thanks = (res, m) => !res.ok ? 'Non sono riuscito a salvare. Controlla la connessione e riprova.'
+  : S.stato === 'si' ? `${res.upd ? 'Risposta aggiornata' : 'Presenza confermata'}. Ci vediamo alle ${m.ritrovo}!` : `${res.upd ? 'Risposta aggiornata' : 'Risposta salvata'}. Grazie per avvisare.`;
+async function quickSave(){
+  if(!S.stato || !S.tavola) return;
+  S.qSaving = true; renderHero();   // pulsanti disattivati durante il salvataggio
+  const m = match(), res = await submit(); S.qSaving = false; if(!res) return renderHero();
+  S.qMsg = thanks(res, m); S.qBad = !res.ok; announce(S.qMsg);
+  S.focus = res.ok ? '#hero [data-qedit]' : `#hero [data-qt="${S.tavola}"]`;
+  if(res.ok){ S.qEdit = false; S.done = ''; }
+  renderHero(); renderStats(); renderBody();
+}
 
 document.addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
   const d = t.dataset;
   if(d.side){ document.querySelectorAll('.swb').forEach(x => { x.setAttribute('aria-selected', x === t); x.tabIndex = x === t ? 0 : -1; }); $('#cal').hidden = d.side !== 'cal'; $('#rank').hidden = d.side !== 'rank'; }
   else if(d.tab){ S.tab = d.tab; renderBody(); }
-  else if(d.role){ S.role = d.role; S.pick = ''; S.done = ''; renderBody(); }
-  else if(d.stato){ S.stato = d.stato; S.done = ''; renderBody(); }
-  else if(d.tavola){ S.tavola = d.tavola; renderBody(); }
-  else if(d.edit){ S.edit = true; renderBody(); }
-  else if(d.fix){ S.fix = true; renderBody(); }
+  else if(d.stato){ S.stato = d.stato; S.done = ''; S.qMsg = ''; renderBody(); renderHero(); }
+  else if(d.tavola){ S.tavola = d.tavola; S.qMsg = ''; renderBody(); renderHero(); }
+  else if(d.edit !== undefined){ S.edit = d.edit === '1'; S.typed = ''; S.list = false; S.focus = S.edit ? '#typed' : '[data-edit="1"]'; renderBody(); }
+  else if(d.list){ S.list = true; S.focus = '#pick'; renderBody(); }
+  else if(d.fix){ S.fix = true; S.focus = '[data-stato="si"]'; renderBody(); }
+  else if(d.qs){ S.stato = d.qs; S.qMsg = ''; if(mine() && !S.tavola) S.tavola = mine().tavola; if(S.tavola) quickSave(); else { S.focus = '#hero [data-qt="si"]'; renderHero(); renderBody(); } }
+  else if(d.qt){ S.tavola = d.qt; S.qMsg = ''; if(S.stato) quickSave(); else renderHero(); }
+  else if(d.qedit !== undefined){ S.qEdit = d.qedit === '1'; S.qMsg = ''; if(!S.qEdit){ const r = mine(); if(r){ S.stato = r.stato; S.tavola = r.tavola; } } S.focus = S.qEdit ? '#hero [data-qs]' : '#hero [data-qedit]'; renderHero(); renderBody(); }
+  else if(d.goform){ S.tab = 'me'; S.edit = false; renderBody(); $('.panel').scrollIntoView({behavior:'smooth', block:'start'}); const f = $('#typed') || $('[data-stato="si"]'); if(f) f.focus({preventScroll:true}); }
   else if(d.out){ if(!confirm('Uscire da questo dispositivo? Per rientrare servirà di nuovo il codice squadra.')) return; try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); }catch(x){} location.reload(); }
   else if(d.staffout){ if(!confirm('Uscire dall’area staff su questo dispositivo?')) return; STAFF = ''; S.done = ''; try{ localStorage.removeItem(K('staff')); }catch(x){} renderBody(); renderTop(); }
   else if(t.id === 'staffgo'){
@@ -685,6 +777,7 @@ document.addEventListener('click', async e => {
     renderBody();
   }
   else if(t.id === 'csave'){
+    t.disabled = true; t.textContent = 'Salvataggio…';
     const keys = [...S.cSel].slice(0, MAX_CONV);
     const ok = await saveCallup(S.sel, keys);
     say(ok ? 'Convocazioni salvate.' : 'Non sono riuscito a salvare. Controlla la connessione o rientra nell’area staff.', !ok);
@@ -693,25 +786,26 @@ document.addEventListener('click', async e => {
   else if(t.id === 'rsave' || t.id === 'rclear'){
     const clear = t.id === 'rclear', id = S.sel, m = match(), o = outcome(m);
     if(clear && !confirm(`Eliminare il risultato ${m.home ? `San Salvario ${o.gf}–${o.gs} ${m.opp}` : `${m.opp} ${o.gs}–${o.gf} San Salvario`}?`)) return;
+    t.disabled = true; if(!clear) t.textContent = 'Salvataggio…';
     const ok = await saveResult(id, clear ? '' : `${+S.rGf}-${+S.rGs}`, clear ? '' : scorerList(S.rSc).map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', '));
     if(ok && clear){ S.rGf = S.rGs = S.rSc = ''; }
     say(ok ? (clear ? 'Risultato eliminato.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione e riprova.', !ok);
     renderHero(); renderCal(); renderBody();
   }
-  else if(d.match){ const inHero = !!t.closest('#hero'); S.sel = d.match; S.done = ''; S.fix = false; S.rFor = S.cFor = ''; renderAll(); if(!inHero) window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(d.match){ const inHero = !!t.closest('#hero'); S.sel = d.match; S.done = ''; S.fix = false; S.rFor = S.cFor = ''; renderAll(); announce(vs(match()) + ', ' + dShort(match().date)); if(!inHero) window.scrollTo({top:0,behavior:'smooth'}); }
   else if(t.id === 'go'){
-    const r = ROSTER.find(x => x.name === S.pick); if(!r) return;   // solo nomi della rosa
-    const upd = !!mine();
-    const ok = await save(S.sel, {nome:r.name, ruolo:r.role, stato:S.stato, tavola:S.tavola});
-    say(ok ? (upd ? 'Risposta aggiornata. Grazie!' : 'Presenza confermata. Grazie!') : 'Non sono riuscito a salvare. Controlla la connessione e riprova.', !ok);
-    if(ok){ localStorage.setItem(K('mio'), JSON.stringify({role:S.role, pick:S.pick})); }
-    renderStats(); renderBody();
+    if(!meR() || S.busy) return;   // solo nomi della rosa
+    t.disabled = true; t.textContent = 'Salvataggio…';
+    const m = match(), res = await submit(); if(!res) return;
+    say(thanks(res, m), !res.ok);
+    S.qMsg = ''; S.qEdit = false; S.focus = `#body [data-stato="${S.stato}"]`;
+    renderStats(); renderBody(); renderHero();
   }
 });
 document.addEventListener('change', e => {
   const ck = e.target.dataset && e.target.dataset.conv;
   if(ck){ e.target.checked ? S.cSel.add(ck) : S.cSel.delete(ck); $('#ok').textContent = ''; callupInputs(); return; }
-  if(e.target.id === 'pick'){ S.pick = e.target.value; S.typed = ''; S.done = ''; S.edit = false; renderBody(); }
+  if(e.target.id === 'pick'){ const r = ROSTER.find(x => x.name === e.target.value); if(!r) return; acChoose(r.name); }
 });
 document.addEventListener('input', e => {
   const rk = {rgf:'rGf', rgs:'rGs', rsc:'rSc'}[e.target.id];
@@ -750,7 +844,7 @@ document.addEventListener('submit', async e => {
   const code = normCode($('#code').value), err = $('#err');
   err.textContent = '';
   try{
-    if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Riprova.'; return; }
+    if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Ricontrollalo o chiedilo allo staff.'; return; }
   }catch(x){ err.textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; return; }
   try{ localStorage.setItem(K('codice'), code); }catch(x){}
   start();
@@ -763,7 +857,7 @@ async function start(){
   renderTop();
   await loadICS(); await load(); renderAll(); renderLive();
   $('#app').hidden = false;
-  setInterval(async () => { if(await load()){ renderHero(); renderCal(); } renderLive(); renderStats(); if(S.tab === 'sq') renderBody(); }, 5000);
+  setInterval(async () => { if(await load()){ renderHero(); renderCal(); } renderLive(); renderStats(); if(S.tab === 'sq' && sqSig() !== S.sqSig) renderBody(); }, 5000);
 }
 (async () => {
   let saved = '';
