@@ -231,6 +231,15 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
 .lock .go{background:var(--stripe)}
 .lock :focus-visible{outline-color:#fff}
+/* finestra di conferma (al posto di confirm del browser) */
+#dlg{width:min(420px,calc(100vw - 32px));border:1px solid var(--line);border-radius:18px;padding:20px;background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(10,15,34,.35)}
+#dlg::backdrop{background:rgba(10,15,34,.6)}
+#dlg[open]{animation:dlg .2s cubic-bezier(.16,1,.3,1)}
+@keyframes dlg{from{transform:translateY(8px) scale(.98)}to{transform:none}}
+#dlg h2{margin:0 0 6px;font-size:20px;font-weight:800;line-height:1.25}
+#dlg p{margin:0;color:var(--muted);text-wrap:pretty}
+.dlg-b{display:flex;gap:10px;margin-top:18px}
+.dlg-b button{flex:1;justify-content:center;margin:0;min-height:48px}
 /* schermata del codice: tutta la pagina è la maglia, il modulo al centro */
 html.locked body{background:var(--kit)}
 html.locked main{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
@@ -323,6 +332,7 @@ html.locked .top :focus-visible{outline-color:#fff}
   <ol class="sheet rank" id="rank" role="tabpanel" aria-labelledby="s-rank" hidden></ol>
   </aside></div>
 </main>
+<dialog id="dlg" aria-labelledby="dlg-t" aria-describedby="dlg-p"><form method="dialog"><h2 id="dlg-t"></h2><p id="dlg-p"></p><div class="dlg-b"><button class="btn2" value="no">Annulla</button><button class="go" id="dlg-ok" value="ok"></button></div></form></dialog>
 <div class="sr" id="sr" role="status" aria-live="polite"></div>
 
 <script>
@@ -829,6 +839,15 @@ function drawCal(){
 function renderAll(){ renderHero(); renderStats(); renderBody(); renderCal(); }
 const sqSig = () => JSON.stringify([presences[S.sel], callups[S.sel], ROSTER.length]);   // la scheda La squadra si ridisegna solo se questo cambia
 // Salva la risposta di chi usa il dispositivo
+// Conferma con la finestra della pagina; risolve true solo se si preme il pulsante principale (Esc o Annulla = false)
+function ask(title, text, ok){
+  return new Promise(res => {
+    const d = $('#dlg');
+    $('#dlg-t').textContent = title; $('#dlg-p').textContent = text; $('#dlg-ok').textContent = ok;
+    d.returnValue = ''; d.onclose = () => res(d.returnValue === 'ok');
+    d.showModal();
+  });
+}
 // cambia partita: ridisegna, annuncia e aggiorna l’indirizzo (#id) per poterlo condividere
 function selectMatch(id){
   if(!MATCHES.some(m => m.id === id)) return;
@@ -859,8 +878,8 @@ document.addEventListener('click', async e => {
   else if(d.edit !== undefined){ S.edit = d.edit === '1'; S.typed = ''; S.list = false; S.focus = S.edit ? '#typed' : '#body [data-stato="si"]'; renderBody(); }
   else if(d.list){ S.list = true; S.focus = '#pick'; renderBody(); }
   else if(d.fix){ S.fix = true; S.focus = '[data-stato="si"]'; renderBody(); }
-  else if(d.out){ if(!confirm('Uscire da questo dispositivo? Per rientrare servirà di nuovo il codice squadra.')) return; try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); }catch(x){} location.reload(); }
-  else if(d.staffout){ if(!confirm('Uscire dall’area staff su questo dispositivo?')) return; STAFF = ''; S.done = ''; try{ localStorage.removeItem(K('staff')); }catch(x){} renderBody(); renderTop(); }
+  else if(d.out){ if(!await ask('Uscire da questo dispositivo?', 'Per rientrare servirà di nuovo il codice squadra.', 'Esci')) return; try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); }catch(x){} location.reload(); }
+  else if(d.staffout){ if(!await ask('Uscire dall’area staff?', 'Su questo dispositivo servirà di nuovo il codice staff per le convocazioni.', 'Esci')) return; STAFF = ''; S.done = ''; try{ localStorage.removeItem(K('staff')); }catch(x){} renderBody(); renderTop(); }
   else if(t.id === 'staffgo'){
     const code = normCode($('#staffcode').value);
     try{ say(code && await staffCheck(code) ? '' : 'Codice staff errato. Riprova.', true); }
@@ -878,9 +897,9 @@ document.addEventListener('click', async e => {
   else if(t.id === 'rsave' || t.id === 'rclear'){
     const clear = t.id === 'rclear', id = S.sel, m = match(), o = outcome(m);
     const was = o ? `${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}` : '', now = m.home ? `${+S.rGf}–${+S.rGs}` : `${+S.rGs}–${+S.rGf}`;
-    if(!clear && S.rWarn && !confirm(`Attenzione: ${S.rWarn} Salvare comunque?`)) return;
-    if(!clear && o && was !== now && !confirm(`C’è già un risultato (${was}). Sostituirlo con ${now}?`)) return;
-    if(clear && !confirm(`Eliminare il risultato ${m.home ? `San Salvario ${o.gf}–${o.gs} ${m.opp}` : `${m.opp} ${o.gs}–${o.gf} San Salvario`}?`)) return;
+    if(!clear && S.rWarn && !await ask('Controlla il risultato', `${S.rWarn} Vuoi salvarlo comunque?`, 'Salva comunque')) return;
+    if(!clear && o && was !== now && !await ask('Sostituire il risultato?', `C’è già ${was}: diventerà ${now}.`, 'Sostituisci')) return;
+    if(clear && !await ask('Eliminare il risultato?', `${m.home ? `San Salvario ${o.gf}–${o.gs} ${m.opp}` : `${m.opp} ${o.gs}–${o.gf} San Salvario`}. Subito dopo puoi ancora ripristinarlo.`, 'Elimina')) return;
     t.disabled = true; if(!clear) t.textContent = 'Salvataggio…';
     const ok = await saveResult(id, clear ? '' : `${+S.rGf}-${+S.rGs}`, clear ? '' : scorerList(S.rSc).map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', '));
     if(ok && clear){ S.rUndo = {id, score:m.score, scorers:m.scorers}; S.rGf = S.rGs = S.rSc = ''; } else S.rUndo = null;
