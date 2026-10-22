@@ -31,7 +31,7 @@ MATCHES = [
     ("262A25", "Andata giornata 4",  "23/10/26", "21:00", TEAM, "Dinamo Torino", "nitti"),
     ("262A32", "Andata giornata 5",  "31/10/26", "14:30", "Andromeda", TEAM, "cus"),
     ("262A38", "Andata giornata 6",  "06/11/26", "21:00", TEAM, "Don Bosco Caselle", "nitti"),
-    ("262A47", "Andata giornata 7",  "15/11/26", "15:00", "San Martino Rivoli", TEAM, "ghilardi"),
+    ("262A47", "Andata giornata 7",  "15/11/26", "11:00", "San Martino Rivoli", TEAM, "ghilardi"),
     ("262A51", "Andata giornata 8",  "20/11/26", "21:00", TEAM, "Sampigandia", "nitti"),
     ("262A62", "Andata giornata 9",  "28/11/26", "14:30", "G.S. Rivese", TEAM, "riva"),
     ("262A64", "Andata giornata 10", "11/12/26", "21:00", TEAM, "Real Benny", "nitti"),
