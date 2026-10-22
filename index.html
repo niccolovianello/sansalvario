@@ -4,43 +4,46 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A.S.D. San Salvario</title>
-<meta name="theme-color" content="#e9edf3">
+<meta name="theme-color" content="#f3f4f8">
 <script>/* tema prima del render, niente lampo */try{var t=localStorage.getItem((/-test\//.test(location.pathname)?'test-':'')+'tema');if(t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}</script>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
-/* Mondo “distinta gara”: fogli bianchi rigati, etichette dei campi, valori a penna blu, timbri rossi */
-:root{--desk:#e9edf3;--sheet:#fff;--rule:#141821;--hair:#cdd3de;--ink:#141821;--muted:#4b5263;--pen:#1d3f9a;--pentint:#eef2fb;--stamp:#c8102e;--green:#1b7d52;--field:#fff;--focus:#1d3f9a;--ontop:#fff;--cond:'Archivo Narrow','Arial Narrow',sans-serif;--body:'Public Sans',system-ui,sans-serif;color-scheme:light}
-:root[data-theme=dark]{--desk:#0d1017;--sheet:#161b25;--rule:#7d879b;--hair:#2e3647;--ink:#e8ecf4;--muted:#a6afc2;--pen:#9db8ff;--pentint:#1c2640;--stamp:#ff6b7f;--green:#4cc38a;--field:#10141c;--focus:#9db8ff;--ontop:#0d1017;color-scheme:dark}
+/* Mondo “maglia da gara”: campi pieni nei colori del club, numeri da maglia, schede bianche arrotondate */
+:root{--kit:#17255a;--kit2:#22337a;--stripe:#dc143c;--ground:#f3f4f8;--card:#fff;--line:#e2e5ee;--ink:#0f1633;--muted:#4a5170;--val:#17255a;--sel:#17255a;--onsel:#fff;--soft:#eef0f7;--red:#c8102e;--rfill:#c8102e;--green:#1b7d52;--gfill:#1b7d52;--field:#fff;--focus:#17255a;--onkit:#fff;--kitmuted:#c9d0ea;--font:'Rubik',system-ui,sans-serif;color-scheme:light}
+:root[data-theme=dark]{--kit:#1d2b6b;--kit2:#26388a;--stripe:#ff4d6d;--ground:#0a0f22;--card:#141b36;--line:#27305a;--ink:#e7eaf6;--muted:#a3abc9;--val:#b9c6ff;--sel:#b9c6ff;--onsel:#0a0f22;--soft:#1b2347;--red:#ff6b81;--rfill:#c8102e;--green:#4cc38a;--gfill:#1b7d52;--field:#0f1530;--focus:#b9c6ff;--onkit:#fff;--kitmuted:#c3cbef;color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{margin:0;background:var(--desk);color:var(--ink);font:400 16px/1.5 var(--body);transition:background-color .3s,color .3s}
-::selection{background:var(--pen);color:var(--ontop)}
+body{margin:0;background:var(--ground);color:var(--ink);font:400 16px/1.5 var(--font);font-variant-numeric:tabular-nums;transition:background-color .3s,color .3s}
+::selection{background:var(--sel);color:var(--onsel)}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.kitbg :focus-visible{outline-color:#fff}
 ::placeholder{color:var(--muted);opacity:1}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 main{max-width:860px;margin:0 auto;padding:14px clamp(14px,4vw,32px) 56px}
 button{font:inherit;color:inherit}
-/* foglio e campi */
-.sheet{position:relative;background:var(--sheet);border:1.5px solid var(--rule);transition:background-color .3s,border-color .3s}
-.fl{display:block;font:700 12px/1.2 var(--cond);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-.pen{color:var(--pen)}
-.stamp{display:inline-block;flex:none;border:2px solid currentColor;color:var(--stamp);font:700 13px/1 var(--cond);letter-spacing:.12em;text-transform:uppercase;padding:4px 8px 3px;border-radius:3px;transform:rotate(-6deg)}
-.stamp.ok{color:var(--green)}.stamp.ink{color:var(--pen)}.stamp.d{color:var(--muted)}
-.thud{animation:thud .38s cubic-bezier(.2,.9,.3,1.2) both}
-@keyframes thud{from{opacity:0;transform:rotate(-14deg) scale(1.9)}to{opacity:1;transform:rotate(-6deg) scale(1)}}
+.fl{display:block;font-size:13px;font-weight:500;line-height:1.3;color:var(--muted)}
+.pen{color:var(--val)}
+/* etichette: piccole pastiglie piene */
+.stamp{display:inline-block;flex:none;padding:3px 10px;border-radius:99px;background:var(--soft);color:var(--val);font:700 13px/1.3 var(--font)}
+.stamp.ok{background:var(--gfill);color:#fff}
+.stamp:not(.ok):not(.ink):not(.d){background:var(--rfill);color:#fff}
+.stamp.d{background:var(--soft);color:var(--muted)}
+.stamp.ink{background:var(--kit);color:#fff}
+.kitbg .stamp.ink{background:rgba(255,255,255,.16);color:#fff}
+.thud{animation:pop .3s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
 /* testata */
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 8px}
-.club{display:inline;margin:0;font:700 25px/1.05 var(--cond);letter-spacing:.03em;text-transform:uppercase}
-.top small{display:block;margin-top:3px;font-size:13px;line-height:1.35;color:var(--muted)}
-.top small i{font-style:italic}
-.test-chip{display:none;margin-left:8px;vertical-align:4px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 0 10px}
+.club{display:inline;margin:0;font-size:21px;font-weight:800;line-height:1.15;letter-spacing:-.01em}
+.top small{display:block;margin-top:2px;font-size:12.5px;line-height:1.35;color:var(--muted)}
+.test-chip{display:none;margin-left:8px;vertical-align:3px}
 .test .test-chip{display:inline-block}
 .top-r{display:flex;gap:8px}
-.theme{flex:none;width:44px;height:44px;display:grid;place-items:center;padding:0;border:1.5px solid var(--rule);border-radius:3px;background:var(--sheet);cursor:pointer}
+.theme{flex:none;width:44px;height:44px;display:grid;place-items:center;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--card);cursor:pointer}
 .theme svg{overflow:visible}
 .theme .sun{transform-box:fill-box;transform-origin:center;transition:transform .5s cubic-bezier(.16,1,.3,1)}
 .theme .cut{transition:transform .5s cubic-bezier(.16,1,.3,1)}
@@ -48,182 +51,187 @@ button{font:inherit;color:inherit}
 [data-theme=dark] .theme .sun{transform:scale(1.75)}
 [data-theme=dark] .theme .cut{transform:translate(-7px,5px)}
 [data-theme=dark] .theme .rays{transform:rotate(-90deg) scale(.4);opacity:0}
-/* distinta della partita */
-.mh{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 10px;border-bottom:1.5px solid var(--rule)}
-.mh .lab{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+/* la maglia: scheda della partita */
+.sheet{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px}
+.match{overflow:hidden;border:0}
+.kitbg{position:relative;background:var(--kit);color:var(--onkit);padding:12px 14px 14px 20px}
+.kitbg::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--stripe)}
+.kitbg .fl{color:var(--kitmuted)}
+.mh{display:flex;align-items:center;gap:10px}
+.mh .lab{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.mh .lab .fl{font-size:14px;font-weight:500;color:var(--onkit)}
 .hnav{flex:none;display:flex;gap:6px}
 .hnav>*{flex:none}
-.hnav button,.nextb{flex:none;height:44px;border:1.5px solid var(--rule);border-radius:3px;background:var(--sheet);cursor:pointer}
+.hnav button,.nextb{height:44px;border:0;border-radius:99px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
 .hnav button{width:44px;display:grid;place-items:center;padding:0}
 .hnav button:disabled{opacity:.35;cursor:default}
-.nextb{display:inline-flex;align-items:center;gap:4px;padding:0 10px;font:700 13px var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--pen)}
-.m3{display:grid;grid-template-columns:minmax(0,1fr) 124px minmax(0,1fr);border-bottom:1.5px solid var(--rule)}
-.m3>div{padding:8px 10px 10px}
-.m3>div+div{border-left:1px solid var(--hair)}
-.tm b{display:block;margin-top:4px;font:700 clamp(19px,5.3vw,34px)/1.02 var(--cond);text-transform:uppercase;overflow-wrap:break-word;hyphens:manual}
-.tm.me b{color:var(--ink)}
-.tm:not(.me) b{color:var(--muted)}
-.tm ul{list-style:none;margin:10px 0 0;padding:0;font-size:14px;font-weight:500;color:var(--pen)}
+.nextb{display:inline-flex;align-items:center;gap:4px;height:34px;padding:0 12px;background:#fff;color:var(--kit);font:700 13px var(--font)}
+[data-theme=dark] .nextb{color:#17255a}
+.m3{display:grid;grid-template-columns:minmax(0,1fr) 128px minmax(0,1fr);align-items:start;gap:4px;margin-top:8px}
+.tm{text-align:center}
+.tm .fl{display:none}
+.tm b{display:block;font-size:clamp(18px,5vw,30px);font-weight:800;line-height:1.08;letter-spacing:-.01em;overflow-wrap:break-word;padding-top:14px}
+.tm:not(.me) b{color:var(--kitmuted)}
+.tm ul{list-style:none;margin:10px 0 0;padding:0;font-size:14.5px;font-weight:500;color:#fff}
 .tm li{padding:1px 0}
 .mid{text-align:center}
-.mid b{display:block;font:600 clamp(32px,9vw,46px)/1 var(--cond);color:var(--pen);font-variant-numeric:tabular-nums;margin:2px 0 6px}
-.mid .fl{white-space:nowrap}
-.mid .r3{font:600 20px var(--cond);letter-spacing:0;vertical-align:-1px}
-.mid b.big{font-size:clamp(40px,11vw,56px)}
-.m2{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.5fr)}
-.m2>div{padding:7px 10px 9px}
-.m2>div+div{border-left:1px solid var(--hair)}
-.m2 span.pen{display:block;font-size:15px;font-weight:500;line-height:1.35}
-.m2 a{color:var(--pen);text-underline-offset:3px}
-.m2 .addr{}
+.mid .fl{color:var(--kitmuted)}
+.mid b{display:block;font-size:clamp(34px,9.6vw,50px);font-weight:800;line-height:1;letter-spacing:-.02em}
+.mid b.big{font-size:clamp(46px,13vw,62px)}
+.mid .r3{display:block;margin-top:4px;font-size:16px;font-weight:700;color:#fff;white-space:nowrap}
+.m2{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:15px}
+.m2 svg{flex:none}
+.m2 a{color:#fff;text-underline-offset:3px}
+.m2 .addr{color:var(--kitmuted)}
 @media (max-width:599px){.m2 .addr{display:none}}
-.m2 small{display:block;color:var(--muted);font-size:13px;line-height:1.35}
-/* conteggi: ultima riga della distinta della partita */
-.m4{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 14px;padding:6px 10px 7px;border-top:1.5px solid var(--rule)}
-.m4 .c{white-space:nowrap;font-size:14.5px}
-.m4 .c b{font:600 22px/1 var(--cond);color:var(--pen);font-variant-numeric:tabular-nums;margin-right:4px}
-.m4 .split{font-size:13px;color:var(--muted)}
+.m4{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 12px;padding:8px 14px 9px 20px;background:var(--card)}
+.m4 .c{white-space:nowrap;font-size:14px;color:var(--muted)}
+.m4 .c b{font-size:21px;font-weight:800;color:var(--val);margin-right:3px}
 .m4 .foot{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px}
-.live{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0;font-size:13px;color:var(--muted)}
+.m4 .split{font-size:13px;color:var(--muted)}
+.live{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
 .dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--green)}
-.live.bad{color:var(--stamp)}.live.bad .dot{background:var(--stamp)}
+.live.bad{color:var(--red)}.live.bad .dot{background:var(--red)}
 .live .link{font-size:13px}
 /* schede */
-.panel{margin-top:12px}
-.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1.5px solid var(--rule)}
-.tab{display:flex;gap:7px;align-items:center;justify-content:center;min-height:44px;padding:0 16px;background:none;border:0;border-right:1px solid var(--hair);box-shadow:inset 0 -3px 0 transparent;font:700 17px var(--cond);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap}
-.tab:last-child{border-right:0}
-.tab[aria-selected=true]{color:var(--ink);background:var(--pentint);box-shadow:inset 0 -3px 0 var(--pen)}
-.tab em{font:600 13px var(--body);font-style:normal;color:var(--pen);border:1px solid var(--hair);padding:0 6px;border-radius:3px}
+.panel{margin-top:12px;overflow:hidden}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;margin:6px;padding:3px;background:var(--soft);border-radius:14px}
+.tab{display:flex;gap:6px;align-items:center;justify-content:center;min-height:44px;padding:0 8px;background:none;border:0;border-radius:10px;font:500 15px var(--font);color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab[aria-selected=true]{background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 2px rgba(15,22,51,.12)}
+.tab em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--val)}
 .tab .lk{flex:none}
-@media (max-width:399px){.tab{padding:0 6px;font-size:15px;gap:5px}}
-@media (max-width:599px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.tab{border-bottom:1px solid var(--hair)}.tab:nth-child(2n){border-right:0}.tab:nth-child(n+3){border-bottom:0}}
-.body{padding:12px 12px 16px}
+@media (max-width:599px){.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:359px){.tab{font-size:14px;padding:0 4px}}
+.body{padding:6px 14px 16px}
 /* righe del modulo */
-.step{display:grid;grid-template-columns:34px minmax(0,1fr);border-bottom:1.5px solid var(--rule);margin:0}
-.step:not(:has(.num)){grid-template-columns:minmax(0,1fr)}
-.step+.step,.seg+.step,.mine+.step,.ok+.step{margin-top:12px}
-.num{display:grid;place-items:center;align-self:stretch;font:700 19px var(--cond);color:var(--pen)}
-.step>div:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:0 12px;padding:4px 0 4px 4px}
-.step h2{margin:0;font:700 22px/1.1 var(--cond);letter-spacing:.02em;text-transform:uppercase}
+.step{display:flex;align-items:baseline;gap:10px;margin:0}
+.step+.step,.seg+.step,.mine+.step,.ok+.step{margin-top:14px}
+.num{flex:none;min-width:14px;font-size:20px;font-weight:800;color:var(--stripe)}
+.num svg{vertical-align:-3px;color:var(--muted)}
+.step>div:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px;flex:1}
+.step h2{margin:0;font-size:20px;font-weight:700;line-height:1.25}
 .step p{flex-basis:100%;margin:0;color:var(--muted);font-size:14.5px;text-wrap:pretty}
-.step .stamp{margin:2px 0 4px auto;font-size:12px;padding:3px 7px 2px}
+.step .stamp{margin-left:auto}
+.step.wait,.step.wait+.seg{opacity:.5}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 0}
-.opt{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border:1.5px solid var(--hair);border-radius:3px;background:var(--field);font:500 17px var(--body);text-align:left;cursor:pointer}
-.bx{flex:none;position:relative;width:22px;height:22px;border:1.5px solid var(--rule);border-radius:2px}
-.opt[aria-pressed=true]{border:2px solid var(--pen);background:var(--pentint);font-weight:700;padding:0 13.5px}
-.opt[aria-pressed=true] .bx{border-color:var(--pen)}
-.opt[aria-pressed=true] .bx::after{content:"";position:absolute;left:6px;top:1px;width:6px;height:13px;border:solid var(--pen);border-width:0 3px 3px 0;transform:rotate(42deg)}
-label{display:block;font:700 12.5px var(--cond);letter-spacing:.07em;text-transform:uppercase;margin:16px 0 6px;color:var(--muted)}
-select,input{width:100%;min-height:50px;font:inherit;border:1.5px solid var(--rule);border-radius:3px;padding:0 12px;background:var(--field);color:var(--ink)}
-input[type=number]{color:var(--pen);font-weight:600;-moz-appearance:textfield}
+.opt{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--field);font:500 17px var(--font);cursor:pointer}
+.bx{display:none}
+.opt[aria-pressed=true]{background:var(--sel);border-color:var(--sel);color:var(--onsel);font-weight:700}
+.opt[aria-pressed=true] .bx{display:block;width:12px;height:7px;border:solid currentColor;border-width:0 0 2.5px 2.5px;transform:rotate(-45deg) translateY(-2px)}
+label{display:block;font-size:14px;font-weight:700;margin:14px 0 6px}
+select,input{width:100%;min-height:48px;font:inherit;border:1px solid var(--line);border-radius:12px;padding:0 12px;background:var(--field);color:var(--ink)}
+input[type=number]{color:var(--val);font-weight:700;-moz-appearance:textfield}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.go{display:block;width:100%;min-height:50px;margin-top:12px;border:0;border-radius:3px;background:var(--pen);color:var(--ontop);font:700 17px var(--body);cursor:pointer}
-.go:disabled{background:var(--hair);color:var(--muted);cursor:not-allowed}
-.btn2{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1.5px solid var(--rule);border-radius:3px;background:var(--sheet);font:700 15px var(--body);color:var(--pen);cursor:pointer;text-decoration:none}
+.go{display:block;width:100%;min-height:50px;margin-top:14px;border:0;border-radius:12px;background:var(--stripe);color:#fff;font:700 17px var(--font);cursor:pointer}
+[data-theme=dark] .go{background:#dc143c}
+.go:disabled{background:var(--soft);color:var(--muted);cursor:not-allowed}
+.btn2{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);font:700 15px var(--font);color:var(--val);cursor:pointer;text-decoration:none}
 .ok{margin-top:12px;color:var(--green);font-weight:700;min-height:24px}
-.ok.bad{color:var(--stamp);display:flex;gap:8px;align-items:flex-start}
+.ok:empty{display:none}
+.ok.bad{color:var(--red);display:flex;gap:8px;align-items:flex-start}
 .ok.bad svg{flex:none;margin-top:3px}
 .ok .link{margin-left:6px}
-.mine{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin:14px 0 0;padding:10px 12px;border:1px dashed var(--hair);font-size:15px}
+.mine{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:15px}
 .mine .fl{flex-basis:100%}
-.why{color:var(--muted);font-size:13.5px;min-height:20px;margin:8px 0 0}
-.hint{color:var(--muted);font-size:13.5px;min-height:20px;margin:6px 0 0}
+.why{color:var(--muted);font-size:14px;min-height:20px;margin:8px 0 0}
+.hint{color:var(--muted);font-size:14px;min-height:20px;margin:6px 0 0}
 .prev{font-size:14.5px;color:var(--muted);margin:10px 0 0}
-.link{background:none;border:0;padding:3px 0;font:inherit;font-weight:700;color:var(--pen);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.link.del{display:block;margin:18px auto 0;color:var(--stamp);font-weight:500}
+.prev.warn{color:var(--red);font-weight:500}
+.link{background:none;border:0;padding:3px 0;font:inherit;font-weight:700;color:var(--val);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.link.del{display:block;margin:18px auto 0;color:var(--red);font-weight:500}
 .sub{display:block;margin:6px 0 0;font-weight:500}
 .past p{margin:14px 0 0}
 .staffout{margin:22px 0 0;text-align:center}
 .staffout .link{font-weight:500;color:var(--muted)}
-/* elenco della squadra */
-.sqtools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:6px}
-.ok:empty{display:none}
-.sqtools p{margin:0;font-size:13.5px;color:var(--muted);flex:1 1 200px}
-.sqh{display:flex;align-items:baseline;gap:10px;margin:28px 0 0;padding-bottom:6px;border-bottom:1.5px solid var(--rule);font:700 22px/1.1 var(--cond);letter-spacing:.04em;text-transform:uppercase}
+/* squadra */
+.sqtools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:4px 0 6px}
+.sqtools p{margin:0;font-size:14px;color:var(--muted);flex:1 1 200px}
+.sqh{display:flex;align-items:baseline;gap:8px;margin:24px 0 0;font-size:20px;font-weight:800}
 .sqh:first-child{margin-top:0}
-.sqh em{font:600 13px var(--body);font-style:normal;color:var(--pen)}
-.grp h3{margin:16px 0 2px;font:700 15px var(--cond);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-.grp .note{font-size:13.5px;color:var(--muted);margin:0 0 4px}
+.sqh em{font-style:normal;font-size:14px;font-weight:500;color:var(--muted)}
+.grp h3{margin:14px 0 2px;font-size:15px;font-weight:700;color:var(--muted)}
+.grp .note{font-size:14px;color:var(--muted);margin:0 0 4px}
 .grp ul{list-style:none;margin:0;padding:0}
-.grp li{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;padding:5px 0;border-bottom:1px solid var(--hair);font-size:15px}
-.grp li span{color:var(--muted);font-size:13.5px;text-align:right}
+.grp li{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;padding:4px 0;border-bottom:1px solid var(--line);font-size:15px}
+.grp li span{color:var(--muted);font-size:14px;text-align:right}
 .grp li.me{font-weight:700}
 .grp .who{display:flex;align-items:center;gap:12px}
-.nr{flex:none;width:30px;height:30px;border:1px solid var(--hair);border-radius:2px;display:grid;place-items:center;font:600 15px var(--cond);color:var(--pen)}
-.nr.none{border-color:transparent}
-.pick{display:flex;align-items:center;gap:12px;margin:0;min-height:48px;border-bottom:1px solid var(--hair);font:400 15px var(--body);letter-spacing:0;text-transform:none;color:var(--ink);cursor:pointer}
-.pick input{width:22px;height:22px;min-height:0;margin:0 0 0 auto;accent-color:var(--pen);flex:none}
+.nr{flex:none;width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:15px;font-weight:800;color:var(--val)}
+.nr.none{background:none}
+.pick{display:flex;align-items:center;gap:12px;margin:0;min-height:48px;border-bottom:1px solid var(--line);font-weight:400;cursor:pointer}
+.pick input{width:22px;height:22px;min-height:0;margin:0 0 0 auto;accent-color:var(--kit);flex:none}
 .pick.off{opacity:.45;cursor:not-allowed}
-.rt{width:100%;margin-top:4px;padding:10px 12px;font:inherit;font-size:14px;border:1.5px solid var(--rule);border-radius:3px;background:var(--field);color:var(--ink)}
-.cnt{font:700 21px var(--cond);margin:16px 0 4px}.cnt.full{color:var(--stamp)}
+.rt{width:100%;margin-top:4px;padding:10px 12px;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:12px;background:var(--field);color:var(--ink)}
+.cnt{font-size:20px;font-weight:800;margin:16px 0 4px}.cnt.full{color:var(--red)}
 /* ricerca nome */
 .ac{position:relative}
-.ac ul{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:5;list-style:none;margin:0;padding:4px;background:var(--sheet);border:1.5px solid var(--rule);max-height:320px;overflow:auto}
-.ac li{display:flex;align-items:center;gap:12px;min-height:44px;padding:4px 8px;cursor:pointer;font-size:15px}
-.ac li[aria-selected=true]{background:var(--pentint)}
-@media (hover:hover){.ac li:hover{background:var(--pentint)}}
-.ac li small{margin-left:auto;color:var(--muted);font-size:12.5px}
+.ac ul{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;list-style:none;margin:0;padding:6px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(15,22,51,.16);max-height:320px;overflow:auto}
+.ac li{display:flex;align-items:center;gap:12px;min-height:44px;padding:4px 8px;border-radius:10px;cursor:pointer;font-size:15px}
+.ac li[aria-selected=true]{background:var(--soft)}
+@media (hover:hover){.ac li:hover{background:var(--soft)}}
+.ac li small{margin-left:auto;color:var(--muted);font-size:13px}
 .ac li.none{color:var(--muted);cursor:default;background:none}
 /* colonna laterale */
-.sw{display:flex;gap:20px;align-items:baseline;flex-wrap:wrap;margin:30px 0 10px}
-.swb{background:none;border:0;padding:0 0 4px;border-bottom:3px solid transparent;font:700 24px var(--cond);letter-spacing:.03em;text-transform:uppercase;color:var(--muted);cursor:pointer}
-.swb[aria-selected=true]{color:var(--ink);border-color:var(--pen)}
-.cal .rows{display:block}
-.cal button{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;min-height:56px;padding:8px 12px 8px 0;border:0;border-bottom:1px solid var(--hair);background:none;text-align:left;cursor:pointer}
+.sw{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;margin:28px 2px 10px}
+.swb{background:none;border:0;padding:0 0 4px;border-bottom:3px solid transparent;font-size:22px;font-weight:800;color:var(--muted);cursor:pointer}
+.swb[aria-selected=true]{color:var(--ink);border-color:var(--stripe)}
+@media (max-width:480px){.swb{font-size:19px}.sw{gap:14px}}
+.cal .rows{overflow:hidden}
+.cal button{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;min-height:56px;padding:8px 14px 8px 10px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;cursor:pointer}
 .cal button:last-child,.cal button:has(+ .calh){border-bottom:0}
-.cal button[aria-current=true]{background:var(--pentint)}
-.cal .g{align-self:stretch;display:grid;place-content:center;text-align:center;border-right:1px solid var(--hair);font:700 18px/1 var(--cond);color:var(--muted)}
-.cal .calmore{display:flex;width:100%;justify-content:center;min-height:46px;margin:0;border:0;border-top:1.5px solid var(--rule);background:none;font:700 15px var(--body);color:var(--pen);cursor:pointer}
-.calh{margin:0;padding:8px 12px 6px;border-bottom:1.5px solid var(--rule);font:700 15px var(--cond);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:var(--sheet)}
-.calh:not(:first-child){border-top:1.5px solid var(--rule)}
-.cal button[aria-current=true] .g{color:var(--pen)}
-.cal b{display:block;font:700 17px/1.15 var(--cond);letter-spacing:.02em;text-transform:uppercase}
-.cal .t small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
-.cal .r{font:600 22px/1 var(--cond);color:var(--pen);text-align:right;white-space:nowrap}
-.cal .r small{display:block;font:600 12.5px var(--body);margin-top:3px}
-.r.w small{color:var(--green)}.r.l small{color:var(--stamp)}.r.d small{color:var(--muted)}
-.cal .nx{font-size:11.5px;padding:3px 6px 2px}
+.cal button[aria-current=true]{background:var(--soft)}
+.cal .g{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:800;color:var(--muted);background:var(--soft)}
+.cal button[aria-current=true] .g{background:var(--kit);color:#fff}
+.cal b{display:block;font-size:15.5px;font-weight:700;line-height:1.25}
+.cal .t small{display:block;color:var(--muted);font-size:13.5px;margin-top:1px}
+.cal .r{font-size:21px;font-weight:800;color:var(--val);text-align:right;white-space:nowrap}
+.cal .r small{display:block;font-size:12.5px;font-weight:700;margin-top:1px}
+.r.w small{color:var(--green)}.r.l small{color:var(--red)}.r.d small{color:var(--muted)}
+.calh{margin:0;padding:10px 14px 4px;font-size:14px;font-weight:700;color:var(--muted)}
+.cal .calmore{display:flex;width:100%;justify-content:center;min-height:46px;margin:0;border:0;border-top:1px solid var(--line);background:none;font:700 15px var(--font);color:var(--val);cursor:pointer}
 .subs{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 .subs a{flex:1 1 100%;justify-content:center}
 .subs svg{flex:none}
-.rank{list-style:none;margin:0;padding:0 12px}
-.rank li{display:grid;grid-template-columns:28px minmax(0,1fr) 36px;gap:10px;align-items:center;min-height:46px;border-bottom:1px solid var(--hair)}
+.rank{list-style:none;margin:0;padding:2px 14px}
+.rank li{display:grid;grid-template-columns:28px minmax(0,1fr) 36px;gap:10px;align-items:center;min-height:46px;border-bottom:1px solid var(--line)}
 .rank li:last-child{border-bottom:0}.rank li.none{display:block}
-.rank .pos{font:700 17px var(--cond);color:var(--muted)}
+.rank .pos{font-size:16px;font-weight:800;color:var(--muted)}
 .rank .nm{font-size:15px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rank .val{font:600 24px/1 var(--cond);color:var(--pen);text-align:right}
+.rank .val{font-size:22px;font-weight:800;color:var(--val);text-align:right}
 .rank .empty{display:block;color:var(--muted);font-size:14.5px;padding:12px 0}
 /* come funziona */
-.help{margin-top:16px}
-.help summary{display:flex;align-items:center;justify-content:space-between;min-height:50px;padding:12px 14px;font:700 18px var(--cond);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;list-style:none}
+.help{margin-top:12px}
+.help summary{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:12px 16px;font-size:17px;font-weight:700;cursor:pointer;list-style:none}
 .help summary::-webkit-details-marker{display:none}
 .help summary::after{content:"";width:9px;height:9px;border:solid var(--ink);border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-4px;transition:transform .2s}
 .help[open] summary::after{transform:rotate(-135deg);margin-top:4px}
-.help dl{margin:0;padding:0 14px 6px;border-top:1px solid var(--hair)}
+.help dl{margin:0;padding:0 16px 10px}
 .help dt{margin-top:12px;font-weight:700;font-size:15px}
 .help dd{margin:2px 0 0;color:var(--muted);font-size:14.5px;text-wrap:pretty}
 /* blocco codice */
-.lock{max-width:440px;margin:24px auto 0;padding:18px 16px 16px}
-.lock h2{margin:0 0 8px;font:700 32px/1.05 var(--cond);text-transform:uppercase}
-.lock p{margin:0;color:var(--muted);text-wrap:pretty}
-.lock input{text-transform:uppercase;letter-spacing:.3em;font:600 26px var(--cond);color:var(--pen);text-align:center}
-.lock .fmt{margin:6px 0 0;font-size:13.5px;color:var(--muted)}
-.lock .err{min-height:24px;margin-top:12px;font-weight:700;color:var(--stamp)}
+.lock{max-width:440px;margin:24px auto 0;overflow:hidden;border:0;background:var(--kit);color:#fff;padding:22px 18px 18px 26px}
+.lock::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--stripe)}
+.lock h2{margin:0 0 8px;font-size:30px;font-weight:800;line-height:1.1}
+.lock p{margin:0;color:var(--kitmuted);text-wrap:pretty}
+.lock label{color:#fff}
+.lock input{letter-spacing:.3em;font-size:24px;font-weight:800;text-align:center;text-transform:uppercase;border:0;color:#17255a;background:#fff}
+.lock .fmt{margin:6px 0 0;font-size:14px;color:var(--kitmuted)}
+.lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
+.lock .go{background:var(--stripe)}
+.lock :focus-visible{outline-color:#fff}
 @media (min-width:900px){
   main{max-width:1500px;padding:22px clamp(28px,3.5vw,56px) 72px}
   .cols{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:clamp(28px,3vw,48px);align-items:start}
   .side .sw:first-child{margin-top:0}
   .side{position:sticky;top:16px}
   #calrows,.rank{max-height:calc(100vh - 200px);overflow:auto;overscroll-behavior:contain}
-  .m3{grid-template-columns:minmax(0,1fr) 150px minmax(0,1fr)}
+  .m3{grid-template-columns:minmax(0,1fr) 170px minmax(0,1fr)}
+  .club{font-size:24px}
 }
-@media (max-width:480px){.swb{font-size:20px}.sw{gap:14px}}
 @media (max-width:380px){
   main{padding:10px 10px 48px}
-  .m3{grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr)}.m3>div{padding:8px 6px}
-  .m2{grid-template-columns:1fr}.m2>div+div{border-left:0;border-top:1px solid var(--hair)}
-  .body{padding:14px 10px}
+  .m3{grid-template-columns:minmax(0,1fr) 116px minmax(0,1fr)}
+  .body{padding:6px 10px 14px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
@@ -315,7 +323,7 @@ const K = k => (TEST ? 'test-' : '') + k;
 function setTheme(dark, keep){
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   const b = document.getElementById('theme'); b.setAttribute('aria-pressed', dark);
-  document.querySelector('meta[name=theme-color]').content = dark ? '#0d1017' : '#e9edf3';
+  document.querySelector('meta[name=theme-color]').content = dark ? '#0a0f22' : '#f3f4f8';
   if(keep) try{ localStorage.setItem(K('tema'), dark ? 'dark' : 'light'); }catch(e){}
 }
 setTheme(document.documentElement.dataset.theme === 'dark');
@@ -539,9 +547,9 @@ const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok">${WARN}<span>
 const matchLink = m => location.origin + location.pathname + '#' + m.id;
 function remindText(){
   const m = match(), names = new Set(answers().map(x => slug(x.nome)));
-  const miss = ROSTER.filter(r => !names.has(slug(r.name))).map(r => r.name);
-  return `${vs(m)}\n${dShort(m.date)} · ritrovo ${m.ritrovo} · ${m.place}\n` +
-    (miss.length ? `Mancano ancora ${miss.length}: ${miss.join(', ')}.\n` : 'Hanno risposto tutti.\n') + `Rispondi qui: ${matchLink(m)}`;
+  const miss = ROSTER.filter(r => r.role === 'calciatore' && !names.has(slug(r.name))).map(r => r.name);
+  return `${vs(m)}\n${dShort(m.date)} · ritrovo ${m.ritrovo} · ${placeName(m)}\n` +
+    (!miss.length ? 'Hanno risposto tutti i calciatori.\n' : miss.length <= 10 ? `Mancano ancora: ${miss.join(', ')}.\n` : `Mancano ancora ${miss.length} risposte.\n`) + `Rispondi qui: ${matchLink(m)}`;
 }
 
 // timbri della risposta salvata; S.thud li fa “battere” subito dopo il salvataggio
@@ -573,17 +581,20 @@ async function saveCallup(id, keys){
 
 function drawHero(){
   const m = match(), o = outcome(m), g = gShort(m);
-  const team = (name, me, lab) => `<div class="tm${me ? ' me' : ''}"><span class="fl">${lab}</span><b>${esc(name)}</b>${me && o ? scorerBlock(m) : ''}</div>`;
+  const team = (name, me, lab) => `<div class="tm${me ? ' me' : ''}"><span class="sr">${lab}: </span><b>${esc(name)}</b>${me && o ? scorerBlock(m) : ''}</div>`;
   const mid = o
-    ? `<div class="mid"><span class="fl">Risultato</span><b class="big">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</b></div>`
-    : `<div class="mid"><span class="fl">Fischio</span><b>${hhmm(m.date)}</b><span class="fl">Ritrovo <span class="pen r3">${esc(m.ritrovo)}</span></span></div>`;
+    ? `<div class="mid"><span class="sr">Risultato </span><b class="big">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</b></div>`
+    : `<div class="mid"><span class="fl">fischio</span><b>${hhmm(m.date)}</b><span class="r3">ritrovo ${esc(m.ritrovo)}</span></div>`;
   const i = sorted.findIndex(x => x.id === m.id), prev = sorted[i-1], next = sorted[i+1], nx = nextMatch();
   const arrow = (to, lab, d) => `<button type="button" ${to ? `data-match="${to.id}"` : 'disabled'} aria-label="${lab}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg></button>`;
+  const day = new Date(m.date).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
   $('#hero').innerHTML = `<h2 class="sr">${esc(vs(m))}, ${esc(dShort(m.date))}</h2>
-    <div class="mh"><div class="lab"><span class="fl">${esc(g.l)}</span>${o ? stampO(o) : stampHA(m)}${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}">Vai alla prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</div>
+    <div class="kitbg">
+    <div class="mh"><div class="lab"><span class="fl">${esc(day.charAt(0).toUpperCase() + day.slice(1))} · ${relDay(m.date)}${g.n !== '–' ? ' · ' + g.n + 'ª giornata' : ''}</span>${o ? stampO(o) : stampHA(m)}${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}">Vai alla prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</div>
     <div class="hnav">${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
     <div class="m3">${team(m.home ? 'San Salvario' : m.opp, m.home, 'Casa')}${mid}${team(m.home ? m.opp : 'San Salvario', !m.home, 'Ospiti')}</div>
-    <div class="m2"><div><span class="fl">Data</span><span class="pen">${esc(new Date(m.date).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'}))}</span><small>${relDay(m.date)}</small></div><div><span class="fl">Campo</span><span class="pen">${m.place ? `<a href="${esc(mapUrl(m))}" target="_blank" rel="noopener">${esc(placeName(m))}</a>` : '–'}</span>${m.address ? `<small class="addr">${esc(m.address.replace(/,?\s*Italia$/i,''))}</small>` : ''}</div></div>
+    <div class="m2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${m.place ? `<a href="${esc(mapUrl(m))}" target="_blank" rel="noopener">${esc(placeName(m))}</a>` : 'Campo da definire'}${m.address ? `<span class="addr"> · ${esc(m.address.replace(/,?\s*Italia$/i,''))}</span>` : ''}</span></div>
+    </div>
     <div class="m4" aria-label="Conteggi"><span id="stats"></span><span class="foot"><span class="split" id="split"></span><span class="live"><span class="dot"></span><span id="mode"></span></span></span></div>`;
   renderStats(); renderLive();
 }
@@ -606,9 +617,9 @@ function drawBody(){
     if(!STAFF){
       b.innerHTML = `
       <div class="step"><div class="num">${KEY}</div><div><h2>Convocazioni</h2><p>Riservato allo staff: inserisci il codice staff. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
-      <label for="staffcode">Codice staff</label>
-      <input id="staffcode" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false">
-      <button class="go" id="staffgo">Sblocca le convocazioni</button>
+      <form id="staffform"><label for="staffcode">Codice staff</label>
+      <input id="staffcode" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false"${S.bad && S.done ? ' aria-invalid="true"' : ''}>
+      <button class="go" id="staffgo" type="submit">Sblocca le convocazioni</button></form>
       ${okDiv()}`;
       return;
     }
@@ -629,7 +640,7 @@ function drawBody(){
       <div class="step" style="margin-top:28px"><div><h2>Marcatori</h2><p>Solo San Salvario, per cognome, separati da virgola. Doppietta: Rossi (2).</p></div></div>
       <label for="rsc">Chi ha segnato</label>
       <input id="rsc" type="text" maxlength="300" autocomplete="off" value="${esc(S.rSc)}" placeholder="Es. Rossi (2), Bianchi">
-      <p class="prev" id="prev"></p>
+      <p class="prev" id="prev"></p><p class="prev warn" id="warn" role="status"></p>
       <button class="go" id="rsave">Salva risultato</button>
       ${results[m.id] && results[m.id].score && results[m.id].ts ? `<p class="prev">Ultimo salvataggio: ${esc(dShort(results[m.id].ts))}.</p>` : ''}
       ${outcome(m) ? '<button class="link del" id="rclear">Elimina risultato</button>' : ''}
@@ -658,7 +669,7 @@ function drawBody(){
         present(role) + grp('Assenti', ra.filter(x => x.stato === 'no')) + grp('Da confermare', rw);
     };
     S.sqSig = sqSig();
-    const tools = over(match()) ? '' : `<div class="sqtools"><button type="button" class="btn2" data-remind="1">${COPY}Copia promemoria</button><p>Il messaggio per il gruppo WhatsApp: partita, ritrovo, chi manca e il link per rispondere.</p></div>${S.remindText ? `<label for="rtext">Testo del promemoria</label><textarea id="rtext" class="rt" readonly rows="6">${esc(S.remindText)}</textarea>` : ''}${okDiv()}`;
+    const tools = over(match()) ? '' : `<div class="sqtools"><button type="button" class="btn2" data-remind="1">${COPY}Copia promemoria</button><p>Il messaggio per il gruppo WhatsApp: partita, ritrovo, quanti mancano (i nomi solo quando sono 10 o meno) e il link per rispondere.</p></div>${S.remindText ? `<label for="rtext">Testo del promemoria</label><textarea id="rtext" class="rt" readonly rows="6">${esc(S.remindText)}</textarea>` : ''}${okDiv()}`;
     b.innerHTML = tools + sec('calciatore', 'Calciatori') + sec('dirigente', 'Dirigenti');
     return;
   }
@@ -684,9 +695,9 @@ function drawBody(){
   const why = !me ? 'Prima scegli il tuo nome.' : !S.stato ? 'Dicci se vieni.' : !S.tavola ? 'Rispondi a “Resti a tavola?”.' : '';
   S.goOff = !!why || !!same;
   b.innerHTML = who + `
-    <div class="step"><div class="num">2</div><div><h2 id="h-ci">Vieni ${esc(new Date(m.date).toLocaleDateString('it-IT',{weekday:'long'}))}?</h2>${saved ? `<span class="stamp ${saved.stato === 'si' ? 'ok' : ''}${S.thud ? ' thud' : ''}" aria-hidden="true">${saved.stato === 'si' ? 'Presente' : 'Assente'}</span>` : ''}</div></div>
+    <div class="step${me ? '' : ' wait'}"><div class="num">2</div><div><h2 id="h-ci">${over(m) ? 'C’eri?' : 'Vieni ' + esc(new Date(m.date).toLocaleDateString('it-IT',{weekday:'long'})) + '?'}</h2>${saved ? `<span class="stamp ${saved.stato === 'si' ? 'ok' : ''}${S.thud ? ' thud' : ''}" aria-hidden="true">${saved.stato === 'si' ? 'Presente' : 'Assente'}</span>` : ''}</div></div>
     <div class="seg" role="group" aria-labelledby="h-ci"><button class="opt yes" data-stato="si" aria-pressed="${S.stato==='si'}"><span class="bx" aria-hidden="true"></span>Ci sono</button><button class="opt no" data-stato="no" aria-pressed="${S.stato==='no'}"><span class="bx" aria-hidden="true"></span>Non ci sono</button></div>
-    <div class="step"><div class="num">3</div><div><h2 id="h-tav">Resti a tavola?</h2>${saved ? `<span class="stamp ${saved.tavola === 'si' ? 'ok' : 'd'}${S.thud ? ' thud' : ''}" aria-hidden="true">${saved.tavola === 'si' ? 'A tavola' : 'Non a tavola'}</span>` : ''}<p>Anche se non giochi.</p></div></div>
+    <div class="step${me ? '' : ' wait'}"><div class="num">3</div><div><h2 id="h-tav">${over(m) ? 'Sei rimasto a tavola?' : 'Resti a tavola?'}</h2>${saved ? `<span class="stamp ${saved.tavola === 'si' ? 'ok' : 'd'}${S.thud ? ' thud' : ''}" aria-hidden="true">${saved.tavola === 'si' ? 'A tavola' : 'Non a tavola'}</span>` : ''}<p>Anche se non giochi.</p></div></div>
     <div class="seg" role="group" aria-labelledby="h-tav"><button class="opt yes" data-tavola="si" aria-pressed="${S.tavola==='si'}"><span class="bx" aria-hidden="true"></span>Sì</button><button class="opt" data-tavola="no" aria-pressed="${S.tavola==='no'}"><span class="bx" aria-hidden="true"></span>No</button></div>
     ${same ? '' : `<button class="go" id="go" ${S.goOff ? 'disabled' : ''}>${saved ? 'Aggiorna risposta' : 'Conferma presenza'}</button>`}
     ${okDiv()}
@@ -718,9 +729,9 @@ function resultInputs(){
   const goals = sc.reduce((n, g) => n + g.n, 0);
   const known = n => { const k = slug(n.replace(/^\p{L}\.\s*/u, '')); return ROSTER.some(r => r.role === 'calciatore' && (slug(r.name) === slug(n) || slug(surname(r.name)) === k)); };
   const odd = sc.filter(g => !known(g.name)).map(g => g.name);
-  $('#prev').textContent = (sc.length ? 'Sul sito: ' + sc.map(gName).join(' · ') + '.' : 'Nessun marcatore.') +
-    (ok && goals > +S.rGf ? ` Attenzione: ${goals} marcatori ma ${S.rGf} gol.` : '') +
-    (odd.length ? ` Non trovato nella rosa: ${odd.join(', ')}. Controlla come è scritto.` : '');
+  $('#prev').textContent = sc.length ? 'Sul sito: ' + sc.map(gName).join(' · ') + '.' : 'Nessun marcatore.';
+  S.rWarn = (ok && goals > +S.rGf ? `${goals} marcatori ma ${S.rGf} gol. ` : '') + (odd.length ? `Non trovato nella rosa: ${odd.join(', ')}.` : '');
+  $('#warn').textContent = S.rWarn ? 'Attenzione: ' + S.rWarn : '';
   $('#rsave').disabled = !ok;
 }
 // Aggiorna contatore e caselle dei convocati senza ridisegnare l’elenco
@@ -831,6 +842,7 @@ document.addEventListener('click', async e => {
   else if(t.id === 'rsave' || t.id === 'rclear'){
     const clear = t.id === 'rclear', id = S.sel, m = match(), o = outcome(m);
     const was = o ? `${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}` : '', now = m.home ? `${+S.rGf}–${+S.rGs}` : `${+S.rGs}–${+S.rGf}`;
+    if(!clear && S.rWarn && !confirm(`Attenzione: ${S.rWarn} Salvare comunque?`)) return;
     if(!clear && o && was !== now && !confirm(`C’è già un risultato (${was}). Sostituirlo con ${now}?`)) return;
     if(clear && !confirm(`Eliminare il risultato ${m.home ? `San Salvario ${o.gf}–${o.gs} ${m.opp}` : `${m.opp} ${o.gs}–${o.gf} San Salvario`}?`)) return;
     t.disabled = true; if(!clear) t.textContent = 'Salvataggio…';
@@ -912,6 +924,7 @@ document.addEventListener('pointerdown', e => {
 });
 
 document.addEventListener('submit', async e => {
+  if(e.target.id === 'staffform'){ e.preventDefault(); return; }   // Invio “clicca” già il pulsante: lo gestisce il listener dei click
   if(e.target.id !== 'lock') return;
   e.preventDefault();
   const code = normCode($('#code').value), err = $('#err');
