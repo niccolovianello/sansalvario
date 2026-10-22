@@ -294,7 +294,7 @@ html.locked .top-r{position:absolute;right:0;top:0}
   <form class="sheet lock" id="lock" hidden>
     <img class="lock-crest" src="crest-320.webp" alt="Stemma A.S.D. San Salvario" width="160" height="160">
     <h2>Inserisci il codice squadra</h2>
-    <p>Il codice squadra è nella descrizione del gruppo WhatsApp. Non cederlo a nessuno, men che meno a Thomas.</p>
+    <p>Il codice squadra è nella descrizione del gruppo WhatsApp. Non condividerlo con nessuno, men che meno con Thomas.</p>
     <label for="code">Codice squadra</label>
     <input id="code" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" required aria-describedby="fmt">
     <p class="fmt" id="fmt">Il codice è composto da 8 caratteri alfanumerici.</p>
@@ -1006,7 +1006,7 @@ document.addEventListener('submit', async e => {
   const code = normCode($('#code').value), err = $('#err');
   err.textContent = '';
   try{
-    if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Ricontrollalo o chiedilo allo staff.'; $('#code').setAttribute('aria-invalid', 'true'); $('#code').select(); return; }
+    if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Ricontrollalo su WhatsApp.'; $('#code').setAttribute('aria-invalid', 'true'); $('#code').select(); return; }
   }catch(x){ err.textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; return; }
   try{ localStorage.setItem(K('codice'), code); }catch(x){}
   start();
