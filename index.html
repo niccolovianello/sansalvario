@@ -963,6 +963,10 @@ document.addEventListener('input', e => {
   const rk = {rgf:'rGf', rgs:'rGs', rsc:'rSc'}[e.target.id];
   if(rk){ S[rk] = e.target.value.trim(); S.done = ''; $('#ok').textContent = ''; resultInputs(); return; }
   if(e.target.id === 'typed'){ S.typed = e.target.value; S.acI = 0; S.done = ''; acRender(); }
+  if(e.target.id === 'code' || e.target.id === 'staffcode'){   // i codici: solo lettere e numeri, massimo 8
+    const t = e.target, v = normCode(t.value).slice(0, 8);
+    if(v !== t.value){ const p = normCode(t.value.slice(0, t.selectionStart)).length; t.value = v; t.setSelectionRange(Math.min(p, 8), Math.min(p, 8)); }
+  }
 });
 
 document.addEventListener('keydown', e => {
