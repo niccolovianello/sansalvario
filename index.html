@@ -74,8 +74,6 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .cal b{font:700 20px var(--cond);text-transform:uppercase}
 .cal small{color:var(--muted);display:block}
 .cal .r{font:700 22px var(--cond);white-space:nowrap}
-dl{display:grid;grid-template-columns:max-content 1fr;gap:10px 18px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:0}
-dt{font-weight:700}dd{margin:0}
 .note{font-size:13px;color:var(--muted);margin-top:16px}
 .res{display:flex;gap:14px;align-items:center;margin:0 0 16px;padding:14px 16px;background:rgba(255,255,255,.1);border-radius:14px}
 .res .big{font:700 46px/1 var(--cond)}
@@ -165,8 +163,6 @@ dt{font-weight:700}dd{margin:0}
   <h2 class="sec">Calendario</h2>
   <div class="cal" id="cal"></div>
 
-  <h2 class="sec">Info utili</h2>
-  <dl id="info"></dl>
   <p class="note" id="foot"></p>
   </aside></div>
 </main>
@@ -178,13 +174,7 @@ const CONFIG = {
   // Calendario in abbonamento (file .ics). Se presente, il sito legge da qui le partite al posto dell’elenco MATCHES qui sotto.
   icsUrl: "webcal://gist.githubusercontent.com/niccolovianello/ec59381245bb87a38118c26b932f14de/raw/san_salvario_2026-27.ics",
   // Realtime Database Firebase: rosa e presenze stanno sotto /t/<codice squadra>/ (il codice non è scritto qui, lo sanno solo la squadra e le regole Firebase).
-  firebaseUrl: "https://asd-san-salvario-default-rtdb.europe-west1.firebasedatabase.app",
-  info: {
-    "Allenamenti": "Martedì e giovedì, ore 21:00",
-    "Referente": "Mister (nome e telefono)",
-    "Cosa portare": "Maglia, parastinchi, documento",
-    "Terzo tempo": "Si mangia insieme dopo la partita: segnala se resti a tavola"
-  }
+  firebaseUrl: "https://asd-san-salvario-default-rtdb.europe-west1.firebasedatabase.app"
 };
 // date in formato AAAA-MM-GGTHH:MM (ora del fischio d’inizio).
 let MATCHES = [
@@ -520,7 +510,6 @@ function renderFoot(){
 }
 function renderCal(){
   $('#cal').innerHTML = subLinks() + sorted.map(m => `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span><b>${m.home?'San Salvario – '+esc(m.opp):esc(m.opp)+' – San Salvario'}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small></span>${rBadge(m)}</button>`).join('');
-  $('#info').innerHTML = Object.entries(CONFIG.info).map(([k,v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
 }
 function renderAll(){ $('#season').textContent = CONFIG.season; renderHero(); renderStats(); renderBody(); renderCal(); }
 
