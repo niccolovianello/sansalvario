@@ -205,7 +205,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
       <button class="tab" role="tab" id="t-me" aria-selected="true" aria-controls="body" data-tab="me">La tua presenza</button>
       <button class="tab" role="tab" id="t-sq" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="sq">La squadra <em id="sqn">0</em></button>
       <button class="tab" role="tab" id="t-ris" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="ris">Risultato</button>
-      <button class="tab" role="tab" id="t-conv" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="conv">Convocati</button>
+      <button class="tab" role="tab" id="t-conv" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="conv">Convocazioni</button>
     </div>
     <div class="body" id="body" role="tabpanel" aria-labelledby="t-me"></div>
   </section>
@@ -502,10 +502,10 @@ function renderBody(){
   if(S.tab === 'conv'){
     if(!STAFF){
       b.innerHTML = `
-      <div class="step"><div class="num">${KEY}</div><div><h2>Convocati</h2><p>Riservato allo staff: inserisci il codice staff. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
+      <div class="step"><div class="num">${KEY}</div><div><h2>Convocazioni</h2><p>Riservato allo staff: inserisci il codice staff. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
       <label for="staffcode">Codice staff</label>
       <input id="staffcode" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false">
-      <button class="go" id="staffgo">Sblocca i convocati</button>
+      <button class="go" id="staffgo">Sblocca le convocazioni</button>
       ${okDiv()}`;
       return;
     }
@@ -639,11 +639,11 @@ function acChoose(name){
   const r = ROSTER.find(x => x.name === name); if(!r) return;
   S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; S.edit = false; renderBody();
 }
-// Scheda Convocati: sempre visibile, col lucchetto finché non si inserisce il codice staff
+// Scheda Convocazioni: sempre visibile, col lucchetto finché non si inserisce il codice staff
 function renderTop(){
   $('#outbtn').hidden = false;
   const t = $('#t-conv');
-  t.innerHTML = 'Convocati' + (STAFF ? '' : LOCK);
+  t.innerHTML = 'Convocazioni' + (STAFF ? '' : LOCK);
   t.title = STAFF ? '' : 'Riservato allo staff';
 }
 // Gol per giocatore sommando i marcatori di tutte le partite con un risultato
