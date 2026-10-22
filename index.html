@@ -70,12 +70,11 @@ select,input{width:100%;min-height:52px;font:inherit;border:1px solid var(--line
 .nr.none{background:none}
 h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .rank{list-style:none;margin:0;padding:6px 18px;background:var(--card);border:1px solid var(--line);border-radius:18px}
-.rank li{display:grid;grid-template-columns:26px minmax(0,1fr) 34px;gap:4px 10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.rank li{display:grid;grid-template-columns:26px minmax(0,1fr) 34px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
 .rank li:last-child{border-bottom:0}.rank li.none{display:block}
 .rank .pos{font:700 18px var(--cond);color:var(--muted)}
 .rank .nm{font-size:15px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rank .val{grid-row:span 2;font:700 26px/1 var(--cond);text-align:right}
-.rank .bar{grid-column:2;height:8px;border-radius:0 4px 4px 0;background:var(--navy);min-width:8px}
+.rank .val{font:700 26px/1 var(--cond);text-align:right}
 .rank .empty{display:block;color:var(--muted);font-size:14px;padding:8px 0}
 .cal button{display:flex;width:100%;justify-content:space-between;gap:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px;font:inherit;color:inherit;cursor:pointer}
 .cal button[aria-current=true]{border:2px solid var(--navy)}
@@ -522,10 +521,10 @@ function renderFoot(){
 function renderRank(){
   const tot = new Map();
   sorted.filter(outcome).forEach(m => scorerList(m.scorers).forEach(g => { const k = scorerLabel(g.name); tot.set(k, (tot.get(k) || 0) + g.n); }));
-  const rows = [...tot].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0],'it')), max = rows.length ? rows[0][1] : 1;
+  const rows = [...tot].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0],'it'));
   $('#rank').innerHTML = rows.map(([n, v], i) => {
     const pos = i && v === rows[i-1][1] ? '' : i + 1;   // a pari gol stessa posizione, mostrata una volta
-    return `<li title="${esc(n)}: ${v} gol"><span class="pos">${pos}</span><span class="nm">${esc(n)}</span><b class="val">${v}</b><span class="bar" style="width:${(v / max * 100).toFixed(1)}%"></span></li>`;
+    return `<li title="${esc(n)}: ${v} gol"><span class="pos">${pos}</span><span class="nm">${esc(n)}</span><b class="val">${v}</b></li>`;
   }).join('') || '<li class="none"><span class="empty">Nessun gol segnato finora.</span></li>';
 }
 function renderCal(){
