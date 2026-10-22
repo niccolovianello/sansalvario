@@ -57,25 +57,33 @@ button{font:inherit;color:inherit}
 .kitbg{position:relative;background:var(--kit);color:var(--onkit);padding:12px 16px 14px}
 .kitbg .fl{color:var(--kitmuted)}
 .mh{display:flex;align-items:center;gap:10px}
-.mh .lab{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.mh .lab{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.mh .lab>.fl{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pills{display:flex;align-items:center;gap:8px;min-height:30px}
 .mh .lab .fl{font-size:14px;font-weight:500;color:var(--onkit)}
 .hnav{flex:none;display:flex;gap:6px}
 .hnav>*{flex:none}
-.hnav button,.nextb{height:44px;border:0;border-radius:99px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
+.hnav button{height:44px;border:0;border-radius:99px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
 .hnav button{width:44px;display:grid;place-items:center;padding:0}
 .hnav button:disabled{opacity:.35;cursor:default}
-.hnav button.nextb{width:auto;display:inline-flex;align-items:center;gap:4px;padding:0 12px;font:700 14px var(--font)}
+.nextb{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 12px;border:0;border-radius:99px;background:rgba(255,255,255,.16);color:#fff;font:700 13px var(--font);cursor:pointer}
 .mid .stamp{margin-top:8px}
-.m3{display:grid;grid-template-columns:minmax(0,1fr) 128px minmax(0,1fr);align-items:start;gap:4px;margin-top:8px}
+.m3{display:grid;grid-template-columns:minmax(0,1fr) 128px minmax(0,1fr);grid-template-rows:128px 90px;align-items:start;gap:4px;margin-top:8px}
+.m3>.tm,.m3>.mid{grid-row:1;overflow:hidden;max-height:128px}
 .tm{text-align:center}
 .tm .fl{display:none}
 .tm b{display:block;font-size:clamp(18px,5vw,30px);font-weight:800;line-height:1.08;letter-spacing:-.01em;overflow-wrap:break-word;padding-top:14px}
 .tm:not(.me) b{color:var(--kitmuted)}
-.tm ul{list-style:none;margin:10px 0 0;padding:0;font-size:14.5px;font-weight:500;color:#fff}
-.tm li{padding:1px 0}
+.goals{grid-row:2;align-self:stretch}
+.goals.h{grid-column:1 / 3}.goals.a{grid-column:2 / 4}
+.goals ul{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,18px);grid-auto-flow:column;column-gap:6px;margin:0;padding:0;list-style:none;font-size:14px;line-height:18px;font-weight:500;color:#fff;text-align:center}
+.goals li{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.goals.a ul{direction:rtl}.goals.a li{direction:ltr}
 .mid{text-align:center}
 .mid .fl{color:var(--kitmuted)}
 .mid b{display:block;font-size:clamp(34px,9.6vw,50px);font-weight:800;line-height:1;letter-spacing:-.02em}
+.mid b{white-space:nowrap}
+.mid b.big.long{font-size:clamp(34px,9.4vw,50px)}
 .mid b.big{font-size:clamp(46px,13vw,62px)}
 .mid b.r2{font-size:clamp(24px,6.4vw,32px);margin-top:6px}
 .mid .fl{font-size:12.5px;margin-top:1px}
@@ -135,12 +143,14 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .mine .fl{flex-basis:100%}
 .why{color:var(--muted);font-size:14px;margin:8px 0 0}
 .why:empty{display:none}
-.hint{color:var(--muted);font-size:14px;min-height:20px;margin:6px 0 0}
+.hint{color:var(--muted);font-size:14px;margin:6px 0 0}
+.hint:empty{display:none}
 .prev{font-size:14.5px;color:var(--muted);margin:10px 0 0}
 .prev.warn{color:var(--red);font-weight:500}
 .link{background:none;border:0;padding:3px 0;font:inherit;font-weight:700;color:var(--val);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .link.del{display:block;margin:18px auto 0;color:var(--red);font-weight:500}
-.sub{display:block;margin:6px 0 0;font-weight:500}
+.sub{display:block;margin:4px 0 0;font-weight:500}
+.sub+.step,#pick+.step{margin-top:24px}
 .past p{margin:14px 0 0}
 .staffout{margin:22px 0 0;text-align:center}
 .staffout .link{font-weight:500;color:var(--muted)}
@@ -242,6 +252,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   .side{position:sticky;top:16px}
   #calrows,.rank{max-height:calc(100vh - 200px);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
   .m3{grid-template-columns:minmax(0,1fr) 170px minmax(0,1fr)}
+  .goals.h{grid-column:1 / 2}.goals.a{grid-column:3 / 4}
   .club{font-size:24px}
 }
 @media (max-width:380px){
@@ -442,7 +453,9 @@ function scorerLabel(n){
 const gName = g => scorerLabel(g.name) + (g.n > 1 ? ' ×' + g.n : '');
 function scorerBlock(m){
   const sc = scorerList(m.scorers); if(!sc.length) return '';
-  return `<ul aria-label="Marcatori">${sc.map(g => `<li>${esc(gName(g))}</li>`).join('')}</ul>`;
+  // al massimo 10 righe (2 colonne da 5): oltre, l’ultima riga dice quanti altri
+  const rows = sc.length > 10 ? [...sc.slice(0, 9).map(g => esc(gName(g))), `+ altri ${sc.length - 9}`] : sc.map(g => esc(gName(g)));
+  return `<ul aria-label="Marcatori">${rows.map(t => `<li>${t}</li>`).join('')}</ul>`;
 }
 // "Andata, giornata 4" → numero e girone per le etichette brevi
 const gShort = m => { const x = String(m.giornata||'').match(/(andata|ritorno)\D*(\d+)/i); return x ? {n:x[2], p:x[1].slice(0,3).toUpperCase(), l:`Giornata ${x[2]} · ${x[1][0].toUpperCase() + x[1].slice(1).toLowerCase()}`} : {n:'–', p:'', l:'Partita'}; };
@@ -597,18 +610,18 @@ async function saveCallup(id, keys){
 
 function drawHero(){
   const m = match(), o = outcome(m), g = gShort(m);
-  const team = (name, me, lab) => `<div class="tm${me ? ' me' : ''}"><span class="sr">${lab}: </span><b>${esc(name)}</b>${me && o ? scorerBlock(m) : ''}</div>`;
+  const team = (name, me, lab) => `<div class="tm${me ? ' me' : ''}"><span class="sr">${lab}: </span><b>${esc(name)}</b></div>`;
   const mid = o
-    ? `<div class="mid"><span class="sr">Risultato </span><b class="big">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</b>${stampO(o)}</div>`
+    ? `<div class="mid"><span class="sr">Risultato </span><b class="big${o.gf > 9 || o.gs > 9 ? ' long' : ''}">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</b>${stampO(o)}</div>`
     : `<div class="mid"><b>${hhmm(m.date)}</b><span class="fl">calcio d’inizio</span><b class="r2">${esc(m.ritrovo)}</b><span class="fl">ritrovo</span></div>`;
   const i = sorted.findIndex(x => x.id === m.id), prev = sorted[i-1], next = sorted[i+1], nx = nextMatch();
   const arrow = (to, lab, d) => `<button type="button" ${to ? `data-match="${to.id}"` : 'disabled'} aria-label="${lab}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg></button>`;
   const day = new Date(m.date).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
   $('#hero').innerHTML = `<h2 class="sr">${esc(vs(m))}, ${esc(dShort(m.date))}</h2>
     <div class="kitbg">
-    <div class="mh"><div class="lab"><span class="fl">${esc(day.charAt(0).toUpperCase() + day.slice(1))}${kicked(m) && !/^(oggi|ieri)$/.test(relDay(m.date)) ? '' : ' · ' + relDay(m.date)}${g.n !== '–' ? ' · ' + g.n + 'ª giornata' : ''}</span>${stampHA(m)}</div>
-    <div class="hnav">${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}">Prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
-    <div class="m3">${team(m.home ? 'San Salvario' : m.opp, m.home, 'Casa')}${mid}${team(m.home ? m.opp : 'San Salvario', !m.home, 'Ospiti')}</div>
+    <div class="mh"><div class="lab"><span class="fl">${esc(day.charAt(0).toUpperCase() + day.slice(1))}${kicked(m) && !/^(oggi|ieri)$/.test(relDay(m.date)) ? '' : ' · ' + relDay(m.date)}${g.n !== '–' ? ' · ' + g.n + 'ª giornata' : ''}</span><span class="pills">${stampHA(m)}${nx && nx.id !== m.id ? `<button type="button" class="nextb" data-match="${nx.id}">Vai alla prossima<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>` : ''}</span></div>
+    <div class="hnav">${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
+    <div class="m3">${team(m.home ? 'San Salvario' : m.opp, m.home, 'Casa')}${mid}${team(m.home ? m.opp : 'San Salvario', !m.home, 'Ospiti')}<div class="goals ${m.home ? 'h' : 'a'}">${o ? scorerBlock(m) : ''}</div></div>
     <div class="m2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${m.place ? `<a href="${esc(mapUrl(m))}" target="_blank" rel="noopener">${esc(placeName(m))}</a>` : 'Campo da definire'}${m.address ? `<span class="addr"> · ${esc(m.address.replace(/,?\s*Italia$/i,''))}</span>` : ''}</span></div>
     </div>
     <div class="m4" aria-label="Conteggi"><span id="stats"></span><span class="foot"><span class="split" id="split"></span><span class="live"><span class="dot"></span><span id="mode"></span></span></span></div>`;
