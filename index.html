@@ -113,6 +113,12 @@ dt{font-weight:700}dd{margin:0}
 .lock label{color:#fff;margin-top:26px}
 .lock input{text-transform:uppercase;letter-spacing:.3em;font:700 24px var(--cond);text-align:center;border:0}
 .lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
+.tabs{overflow-x:auto;scrollbar-width:none}.tab{white-space:nowrap;flex:none}
+@media (max-width:480px){.tabs{gap:16px;padding:0 16px}.tab{font-size:18px;gap:6px}}
+@media (max-width:380px){.tabs{gap:12px}.tab{font-size:17px}}
+.go.alt{background:none;border:1px solid var(--line);color:var(--muted);margin-top:10px}
+.prev{font-size:14px;color:var(--muted);margin:8px 0 0}
+.foot-btns{display:flex;gap:18px;flex-wrap:wrap}
 .out-btn{background:none;border:0;padding:0;font:inherit;color:var(--muted);text-decoration:underline;cursor:pointer}
 </style>
 </head>
@@ -137,6 +143,7 @@ dt{font-weight:700}dd{margin:0}
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" id="t-me" aria-selected="true" data-tab="me">La tua presenza</button>
       <button class="tab" role="tab" id="t-sq" aria-selected="false" data-tab="sq">La squadra <em id="sqn">0</em></button>
+      <button class="tab" role="tab" id="t-ris" aria-selected="false" data-tab="ris" hidden>Risultato</button>
     </div>
     <div class="body" id="body"></div>
   </section>
@@ -167,19 +174,13 @@ const CONFIG = {
     "Terzo tempo": "Si mangia insieme dopo la partita: segnala se resti a tavola"
   }
 };
-// date in formato AAAA-MM-GGTHH:MM (ora del fischio d’inizio). A partita giocata compila "score" (prima i gol di San Salvario, es. "2-1") e "scorers" (solo San Salvario, es. "Rossi, Bianchi (2)").
+// date in formato AAAA-MM-GGTHH:MM (ora del fischio d’inizio).
 let MATCHES = [
   {id:"262a2-2026-27-san-salvario-calendar",  date:"2026-10-03T12:45", ritrovo:"11:45", opp:"Orange 11 A.S.D.", home:false, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:"", giornata:"Andata, giornata 1"},
   {id:"262a12-2026-27-san-salvario-calendar", date:"2026-10-09T21:00", ritrovo:"20:00", opp:"Automotive Lighting Italia Spa", home:true, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:"", giornata:"Andata, giornata 2"},
   {id:"262a17-2026-27-san-salvario-calendar", date:"2026-10-16T21:00", ritrovo:"20:00", opp:"A.S.D. Oratorio Leini", home:true, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:""}
 ];
-// Risultati (valgono sopra al calendario). Chiave = giorno della partita. "score": prima i gol di San Salvario.
-// "scorers": solo San Salvario, per cognome (il sito scrive l’iniziale del nome, es. J. Varvello). Gol multipli: "Rossi (2)".
-const RESULTS = {
-  "2026-10-03": {score:"1-2", scorers:"Varvello"},
-  "2026-10-09": {score:"1-0", scorers:"Caffa"},
-  "2026-10-16": {score:"4-1", scorers:"Vianello, Primo, Trabuio, Lovera"}
-};
+// I risultati stanno su Firebase (/t/<codice>/risultati/<id partita>): li inserisce lo staff dalla scheda "Risultato" del sito.
 // La rosa sta su Firebase (/t/<codice>/roster): si modifica dalla console Firebase, non qui. Ogni persona: {name, number, role:"calciatore"|"dirigente"}.
 let ROSTER = [];
 /* ============================================================ */
@@ -194,14 +195,18 @@ const DB = CONFIG.firebaseUrl.replace(/\/$/,'');
 let BASE = '';   // DB + '/t/<codice>', impostato da unlock()
 let sorted = [];
 const S = {sel:'', tab:'me', role:'calciatore', pick:'', typed:'', stato:'', tavola:'', done:''};
-let presences = {};
-try{ const m = JSON.parse(localStorage.getItem('mio') || '{}'); S.role = m.role || S.role; S.pick = m.pick || ''; }catch(e){}
+let presences = {}, results = {};
+let STAFF = '';   // codice staff, se questo dispositivo è entrato nell’area staff
+try{ const m = JSON.parse(localStorage.getItem('mio') || '{}'); S.role = m.role || S.role; S.pick = m.pick || ''; STAFF = localStorage.getItem('staff') || ''; }catch(e){}
 
 function useMatches(list){
-  MATCHES = list.map(m => Object.assign({}, m, RESULTS[m.date.slice(0,10)] || {})); sorted = [...MATCHES].sort((a,b) => new Date(a.date) - new Date(b.date));
+  MATCHES = list.map(m => Object.assign({}, m, {base:{score:m.score || '', scorers:m.scorers || ''}})); applyResults();
+  sorted = [...MATCHES].sort((a,b) => new Date(a.date) - new Date(b.date));
   const f = sorted.find(m => new Date(m.date) > Date.now() - 3*3600e3) || sorted[sorted.length-1];
   S.sel = f ? f.id : '';
 }
+// I risultati di Firebase valgono sopra a quelli scritti nel calendario
+function applyResults(){ MATCHES.forEach(m => { const r = results[m.id]; Object.assign(m, r ? {score:r.score, scorers:r.scorers} : m.base); }); }
 useMatches(MATCHES);
 
 /* ---- Lettura del calendario .ics ---- */
@@ -301,11 +306,19 @@ async function unlock(code){
   BASE = `${DB}/t/${code}`;
   return true;
 }
+// Carica presenze e risultati; restituisce true se i risultati sono cambiati
 async function load(){
+  let changed = false;
   try{
-    const r = await fetch(BASE + '/presenze.json', {cache:'no-store'});
-    if(r.ok) presences = (await r.json()) || {};
+    const [p, r] = await Promise.all(['presenze','risultati'].map(k => fetch(`${BASE}/${k}.json`, {cache:'no-store'})));
+    if(p.ok) presences = (await p.json()) || {};
+    if(r.ok){
+      const next = (await r.json()) || {};
+      changed = JSON.stringify(next) !== JSON.stringify(results);
+      results = next; applyResults();
+    }
   }catch(e){}
+  return changed;
 }
 async function save(matchId, rec){
   const key = slug(rec.nome);
@@ -313,6 +326,24 @@ async function save(matchId, rec){
     const r = await fetch(`${BASE}/presenze/${matchId}/${key}.json`, {method:'PUT', body:JSON.stringify(rec)});
     if(!r.ok) return false;
     (presences[matchId] = presences[matchId] || {})[key] = rec;
+    return true;
+  }catch(e){ return false; }
+}
+/* ---- Area staff: il risultato si salva solo se insieme si scrive la “prova” sotto proof/<codice staff> ---- */
+const TS = {'.sv':'timestamp'};
+const patch = body => fetch(BASE + '.json', {method:'PATCH', body:JSON.stringify(body)});
+// true = codice staff giusto, false = sbagliato; lancia un errore se manca la connessione
+async function staffCheck(code){
+  const r = await patch({[`proof/${code}/_check`]: TS});
+  if(r.status === 401 || r.status === 403) return false;
+  if(!r.ok) throw new Error(r.status);
+  return true;
+}
+async function saveResult(id, score, scorers){
+  try{
+    const r = await patch({[`risultati/${id}`]: {score, scorers, ts:TS}, [`proof/${STAFF}/${id}`]: TS});
+    if(!r.ok) return false;
+    results[id] = {score, scorers}; applyResults();
     return true;
   }catch(e){ return false; }
 }
@@ -345,7 +376,36 @@ function renderStats(){
 }
 function renderBody(){
   const b = $('#body');
+  $('#t-ris').hidden = !STAFF;
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.tab === S.tab));
+  if(S.tab === 'staff'){
+    b.innerHTML = `
+      <div class="step"><div class="num">🔑</div><div><h3>Area staff</h3><p>Serve per inserire i risultati. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
+      <label for="staffcode">Codice staff</label>
+      <input id="staffcode" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button class="go" id="staffgo">Entra nell’area staff</button>
+      <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+    return;
+  }
+  if(S.tab === 'ris'){
+    const m = match();
+    if(S.rFor !== m.id){ const o = outcome(m); S.rFor = m.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = m.scorers || ''; S.done = ''; }
+    b.innerHTML = `
+      <div class="step"><div class="num">01</div><div><h3>Risultato</h3><p>${esc(m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario')} · ${esc(dShort(m.date))}. Per un’altra partita, sceglila dal calendario.</p></div></div>
+      <div class="seg">
+        <div><label for="rgf">Gol San Salvario</label><input id="rgf" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGf)}"></div>
+        <div><label for="rgs">Gol ${esc(m.opp)}</label><input id="rgs" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGs)}"></div>
+      </div>
+      <div class="step" style="margin-top:28px"><div class="num">02</div><div><h3>Marcatori</h3><p>Solo San Salvario, per cognome, separati da virgola. Doppietta: Rossi (2).</p></div></div>
+      <label for="rsc">Marcatori</label>
+      <input id="rsc" type="text" maxlength="300" autocomplete="off" value="${esc(S.rSc)}" placeholder="Es. Rossi (2), Bianchi">
+      <p class="prev" id="prev"></p>
+      <button class="go" id="rsave">Salva risultato</button>
+      <button class="go alt" id="rclear">Togli il risultato</button>
+      <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+    resultInputs();
+    return;
+  }
   if(S.tab === 'sq'){
     const a = answers(), names = new Set(a.map(x => slug(x.nome)));
     const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li>${rk && rk.number ? '#' + rk.number + ' ' : ''}${esc(x.nome)}<span>${x.ruolo === 'dirigente' ? 'Dirigente' : 'Calciatore'}${x.tavola === 'si' && x.stato === 'si' ? ' · a tavola' : ''}</span></li>`; };
@@ -370,6 +430,17 @@ function renderBody(){
     <button class="go" id="go" ${name && S.stato && (S.stato==='no' || S.tavola) ? '' : 'disabled'}>Conferma presenza</button>
     <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
 }
+// Aggiorna anteprima marcatori e pulsante Salva senza ridisegnare il modulo
+function resultInputs(){
+  const sc = scorerList(S.rSc), ok = /^\d{1,2}$/.test(S.rGf) && /^\d{1,2}$/.test(S.rGs);
+  const goals = sc.reduce((n, g) => n + g.n, 0);
+  $('#prev').textContent = (sc.length ? 'Sul sito: ' + sc.map(gName).join(' · ') : 'Nessun marcatore.') +
+    (ok && goals > +S.rGf ? ` Attenzione: ${goals} marcatori ma ${S.rGf} gol.` : '');
+  $('#rsave').disabled = !ok;
+}
+function renderFoot(){
+  $('#foot').innerHTML = `<span class="foot-btns"><button class="out-btn" data-out="1">Esci da questo dispositivo</button>${STAFF ? '<button class="out-btn" data-staffout="1">Esci dall’area staff</button>' : '<button class="out-btn" data-staffin="1">Area staff</button>'}</span>`;
+}
 function renderCal(){
   $('#cal').innerHTML = subLinks() + sorted.map(m => `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span><b>${m.home?'San Salvario – '+esc(m.opp):esc(m.opp)+' – San Salvario'}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small></span>${rBadge(m)}</button>`).join('');
   $('#info').innerHTML = Object.entries(CONFIG.info).map(([k,v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
@@ -383,8 +454,24 @@ document.addEventListener('click', async e => {
   else if(d.role){ S.role = d.role; S.pick = ''; S.done = ''; renderBody(); }
   else if(d.stato){ S.stato = d.stato; S.done = ''; renderBody(); }
   else if(d.tavola){ S.tavola = d.tavola; renderBody(); }
-  else if(d.out){ try{ localStorage.removeItem('codice'); }catch(x){} location.reload(); }
-  else if(d.match){ S.sel = d.match; S.stato = S.tavola = S.done = ''; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(d.out){ try{ localStorage.removeItem('codice'); localStorage.removeItem('staff'); }catch(x){} location.reload(); }
+  else if(d.staffin){ S.tab = 'staff'; S.done = ''; renderBody(); $('.panel').scrollIntoView({behavior:'smooth'}); }
+  else if(d.staffout){ STAFF = ''; try{ localStorage.removeItem('staff'); }catch(x){} if(S.tab === 'ris') S.tab = 'me'; renderBody(); renderFoot(); }
+  else if(t.id === 'staffgo'){
+    const code = normCode($('#staffcode').value);
+    try{ S.done = code && await staffCheck(code) ? '' : 'Codice staff errato. Riprova.'; }
+    catch(x){ S.done = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; }
+    if(!S.done){ STAFF = code; try{ localStorage.setItem('staff', code); }catch(x){} S.tab = 'ris'; S.rFor = ''; renderFoot(); }
+    renderBody();
+  }
+  else if(t.id === 'rsave' || t.id === 'rclear'){
+    const clear = t.id === 'rclear', id = S.sel;
+    const ok = await saveResult(id, clear ? '' : `${+S.rGf}-${+S.rGs}`, clear ? '' : scorerList(S.rSc).map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', '));
+    if(ok && clear){ S.rGf = S.rGs = S.rSc = ''; }
+    S.done = ok ? (clear ? 'Risultato tolto.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione o rientra nell’area staff.';
+    renderHero(); renderCal(); renderBody();
+  }
+  else if(d.match){ S.sel = d.match; S.stato = S.tavola = S.done = ''; S.rFor = ''; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
   else if(t.id === 'go'){
     const name = (S.typed || S.pick).trim();
     const ok = await save(S.sel, {nome:name, ruolo:S.role, stato:S.stato, tavola:S.stato==='si' ? S.tavola : 'no'});
@@ -397,6 +484,8 @@ document.addEventListener('change', e => {
   if(e.target.id === 'pick'){ S.pick = e.target.value; S.typed = ''; S.done = ''; renderBody(); }
 });
 document.addEventListener('input', e => {
+  const rk = {rgf:'rGf', rgs:'rGs', rsc:'rSc'}[e.target.id];
+  if(rk){ S[rk] = e.target.value.trim(); S.done = ''; $('#ok').textContent = ''; resultInputs(); return; }
   if(e.target.id === 'typed'){ S.typed = e.target.value; S.done = ''; const g = $('#go'); if(g) g.disabled = !((S.typed||S.pick).trim() && S.stato && (S.stato==='no' || S.tavola)); }
 });
 
@@ -417,10 +506,10 @@ async function start(){
   if(started) return; started = true;
   $('#lock').hidden = true;
   $('#mode').textContent = 'Conteggi condivisi · aggiornamento ogni 5 secondi';
-  $('#foot').innerHTML = '<button class="out-btn" data-out="1">Esci da questo dispositivo</button>';
+  renderFoot();
   await loadICS(); await load(); renderAll();
   $('#app').hidden = false;
-  setInterval(async () => { await load(); renderStats(); if(S.tab === 'sq') renderBody(); }, 5000);
+  setInterval(async () => { if(await load()){ renderHero(); renderCal(); } renderStats(); if(S.tab === 'sq') renderBody(); }, 5000);
 }
 (async () => {
   let saved = '';
