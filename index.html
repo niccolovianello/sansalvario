@@ -401,7 +401,7 @@ function renderBody(){
       <input id="rsc" type="text" maxlength="300" autocomplete="off" value="${esc(S.rSc)}" placeholder="Es. Rossi (2), Bianchi">
       <p class="prev" id="prev"></p>
       <button class="go" id="rsave">Salva risultato</button>
-      <button class="go alt" id="rclear">Togli il risultato</button>
+      <button class="go alt" id="rclear">Elimina risultato</button>
       <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
     resultInputs();
     return;
@@ -468,7 +468,7 @@ document.addEventListener('click', async e => {
     const clear = t.id === 'rclear', id = S.sel;
     const ok = await saveResult(id, clear ? '' : `${+S.rGf}-${+S.rGs}`, clear ? '' : scorerList(S.rSc).map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', '));
     if(ok && clear){ S.rGf = S.rGs = S.rSc = ''; }
-    S.done = ok ? (clear ? 'Risultato tolto.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione o rientra nell’area staff.';
+    S.done = ok ? (clear ? 'Risultato eliminato.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione o rientra nell’area staff.';
     renderHero(); renderCal(); renderBody();
   }
   else if(d.match){ S.sel = d.match; S.stato = S.tavola = S.done = ''; S.rFor = ''; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
