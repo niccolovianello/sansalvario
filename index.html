@@ -183,22 +183,6 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .staffout{margin:22px 0 0;text-align:center}
 .staffout .link{font-weight:500;color:var(--muted)}
 .sub{display:block;margin:4px 0 0;font-weight:500;color:var(--muted)}
-.quick{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.2)}
-.quick h3{font:700 24px/1.1 var(--cond);margin:0 0 10px}
-.quick h3+.qseg{margin-bottom:14px}
-.qseg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.qopt,.qcta{min-height:52px;border-radius:14px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font:500 17px var(--body);cursor:pointer}
-.qopt[aria-pressed=true]{background:#fff;border-color:#fff;color:#12204f;font-weight:700}
-.qopt:disabled{opacity:.6;cursor:default}
-.qcta{width:100%;background:#fff;border-color:#fff;color:#12204f;font-weight:700}
-.qdone{display:flex;gap:14px;align-items:center}
-.qdone .ck{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--gfill)}
-.qdone .ck.no{background:rgba(255,255,255,.18)}
-.qdone b{display:block;font-size:17px}
-.qdone p{margin:2px 0 0;font-size:14px;opacity:.85}
-.quick .link{color:#fff}
-.qmsg{margin:12px 0 0;font-size:14px;font-weight:700}
-.qmsg.bad{color:#ffb3c1}
 </style>
 </head>
 <body>
@@ -454,7 +438,7 @@ const say = (t, bad) => { S.done = t; S.bad = !!bad; announce(t); };
 // a ogni cambio di partita o di nome riparti dalla risposta già salvata
 function syncForm(){
   const fk = S.sel + '|' + S.pick;
-  if(S.fFor !== fk){ S.fFor = fk; const r = mine(); S.stato = r ? r.stato : ''; S.tavola = r ? r.tavola : ''; S.qEdit = false; S.qMsg = ''; }
+  if(S.fFor !== fk){ S.fFor = fk; const r = mine(); S.stato = r ? r.stato : ''; S.tavola = r ? r.tavola : ''; }
 }
 // Ridisegna senza perdere il focus: torna sullo stesso controllo, oppure su S.focus se il gestore l’ha indicato
 function keep(draw){
@@ -479,8 +463,7 @@ const LOCK = '<svg class="lk" width="16" height="16" viewBox="0 0 24 24" fill="n
 const KEY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>';
 const CLOCK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok">${esc(S.done)}</div>`;
-const CHECK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
-const CROSS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
 const answerText = r => (r.stato === 'si' ? 'Ci sono' : 'Non ci sono') + ' · ' + (r.tavola === 'si' ? 'resto a tavola' : 'non resto a tavola');
 function renderLive(){
   $('.live').classList.toggle('bad', !LIVE);
@@ -505,22 +488,6 @@ async function saveCallup(id, keys){
   }catch(e){ return false; }
 }
 
-// Risposta veloce nel riquadro partita: per chi è già riconosciuto, prima del fischio d’inizio
-function quick(m){
-  if(outcome(m) || kicked(m)) return '';
-  const me = meR();
-  if(!me) return `<div class="quick"><button type="button" class="qcta" data-goform="1">Ci sei? Rispondi</button></div>`;
-  syncForm();
-  const saved = mine(), msg = S.qMsg ? `<p class="qmsg${S.qBad ? ' bad' : ''}">${esc(S.qMsg)}</p>` : '';
-  if(saved && !S.qEdit) return `<div class="quick"><div class="qdone"><span class="ck${saved.stato === 'si' ? '' : ' no'}">${saved.stato === 'si' ? CHECK : CROSS}</span><div><b>${esc(answerText(saved))}</b><p>La tua risposta · <button type="button" class="link" data-qedit="1">Cambia</button></p></div></div>${msg}</div>`;
-  const opt = (k, v, t, on) => `<button type="button" class="qopt" data-${k}="${v}" aria-pressed="${on}" ${S.qSaving ? 'disabled' : ''}>${t}</button>`;
-  return `<div class="quick">
-    <h3 id="q-ci">Ci sei, ${esc(me.name.split(' ')[0])}?</h3>
-    <div class="qseg" role="group" aria-labelledby="q-ci">${opt('qs', 'si', 'Ci sono', S.stato === 'si')}${opt('qs', 'no', 'Non ci sono', S.stato === 'no')}</div>
-    ${S.stato || saved ? `<h3 id="q-tav">Resti a tavola?</h3>
-    <div class="qseg" role="group" aria-labelledby="q-tav">${opt('qt', 'si', 'Sì', S.tavola === 'si')}${opt('qt', 'no', 'No', S.tavola === 'no')}</div>` : ''}
-    ${saved ? '<p class="qmsg"><button type="button" class="link" data-qedit="0">Lascia così</button></p>' : ''}${msg}</div>`;
-}
 function drawHero(){
   const m = match(), o = outcome(m);
   const lg = n => n.split(/\s+/).some(w => w.length > 9) ? 'sm' : '';
@@ -535,7 +502,7 @@ function drawHero(){
     <div class="hnav">${arrow(prev, 'Partita precedente', 'M15 5l-7 7 7 7')}${arrow(next, 'Partita successiva', 'M9 5l7 7-7 7')}</div></div>
     <p class="when">${esc(dDate(m.date))}${m.giornata ? ' · ' + esc(m.giornata) : ''}</p>
     <div class="match3"><div class="tm ${m.home ? 'me' : ''} ${lg(home)}">${esc(home)}</div>${mid}<div class="tm ${m.home ? '' : 'me'} ${lg(away)}">${esc(away)}</div>${o ? scorerBlock(m) : ''}</div>
-    <div class="where"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${esc([m.place, m.address].filter(Boolean).join(', '))}</span></div>${quick(m)}`;
+    <div class="where"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${esc([m.place, m.address].filter(Boolean).join(', '))}</span></div>`;
 }
 function renderStats(){
   const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');   // il dettaglio sta nel title e nella scheda La squadra
@@ -704,7 +671,7 @@ function acRender(){
 }
 function acChoose(name){
   const r = ROSTER.find(x => x.name === name); if(!r) return;
-  S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; S.edit = false; S.list = false; S.focus = '#body [data-stato="si"]'; renderBody(); renderHero();
+  S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; S.edit = false; S.list = false; S.focus = '#body [data-stato="si"]'; renderBody();
 }
 // Scheda Convocazioni: sempre visibile, col lucchetto finché non si inserisce il codice staff
 function renderTop(){
@@ -732,7 +699,7 @@ function drawCal(){
 }
 function renderAll(){ $('#season').textContent = CONFIG.season; renderHero(); renderStats(); renderBody(); renderCal(); }
 const sqSig = () => JSON.stringify([presences[S.sel], callups[S.sel], ROSTER.length]);   // la scheda La squadra si ridisegna solo se questo cambia
-// Salva la risposta di chi usa il dispositivo (dal riquadro partita o dal modulo)
+// Salva la risposta di chi usa il dispositivo
 async function submit(){
   const r = meR(); if(!r || !S.stato || !S.tavola || S.busy) return null;
   S.busy = true;
@@ -743,30 +710,18 @@ async function submit(){
 }
 const thanks = (res, m) => !res.ok ? 'Non sono riuscito a salvare. Controlla la connessione e riprova.'
   : S.stato === 'si' ? `${res.upd ? 'Risposta aggiornata' : 'Presenza confermata'}. Ci vediamo alle ${m.ritrovo}!` : `${res.upd ? 'Risposta aggiornata' : 'Risposta salvata'}. Grazie per avvisare.`;
-async function quickSave(){
-  if(!S.stato || !S.tavola) return;
-  S.qSaving = true; renderHero();   // pulsanti disattivati durante il salvataggio
-  const m = match(), res = await submit(); S.qSaving = false; if(!res) return renderHero();
-  S.qMsg = thanks(res, m); S.qBad = !res.ok; announce(S.qMsg);
-  S.focus = res.ok ? '#hero [data-qedit]' : `#hero [data-qt="${S.tavola}"]`;
-  if(res.ok){ S.qEdit = false; S.done = ''; }
-  renderHero(); renderStats(); renderBody();
-}
+
 
 document.addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
   const d = t.dataset;
   if(d.side){ document.querySelectorAll('.swb').forEach(x => { x.setAttribute('aria-selected', x === t); x.tabIndex = x === t ? 0 : -1; }); $('#cal').hidden = d.side !== 'cal'; $('#rank').hidden = d.side !== 'rank'; }
   else if(d.tab){ S.tab = d.tab; renderBody(); }
-  else if(d.stato){ S.stato = d.stato; S.done = ''; S.qMsg = ''; renderBody(); renderHero(); }
-  else if(d.tavola){ S.tavola = d.tavola; S.qMsg = ''; renderBody(); renderHero(); }
+  else if(d.stato){ S.stato = d.stato; S.done = ''; renderBody(); }
+  else if(d.tavola){ S.tavola = d.tavola; renderBody(); }
   else if(d.edit !== undefined){ S.edit = d.edit === '1'; S.typed = ''; S.list = false; S.focus = S.edit ? '#typed' : '[data-edit="1"]'; renderBody(); }
   else if(d.list){ S.list = true; S.focus = '#pick'; renderBody(); }
   else if(d.fix){ S.fix = true; S.focus = '[data-stato="si"]'; renderBody(); }
-  else if(d.qs){ S.stato = d.qs; S.qMsg = ''; if(mine() && !S.tavola) S.tavola = mine().tavola; if(S.tavola) quickSave(); else { S.focus = '#hero [data-qt="si"]'; renderHero(); renderBody(); } }
-  else if(d.qt){ S.tavola = d.qt; S.qMsg = ''; if(S.stato) quickSave(); else renderHero(); }
-  else if(d.qedit !== undefined){ S.qEdit = d.qedit === '1'; S.qMsg = ''; if(!S.qEdit){ const r = mine(); if(r){ S.stato = r.stato; S.tavola = r.tavola; } } S.focus = S.qEdit ? '#hero [data-qs]' : '#hero [data-qedit]'; renderHero(); renderBody(); }
-  else if(d.goform){ S.tab = 'me'; S.edit = false; renderBody(); $('.panel').scrollIntoView({behavior:'smooth', block:'start'}); const f = $('#typed') || $('[data-stato="si"]'); if(f) f.focus({preventScroll:true}); }
   else if(d.out){ if(!confirm('Uscire da questo dispositivo? Per rientrare servirà di nuovo il codice squadra.')) return; try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); }catch(x){} location.reload(); }
   else if(d.staffout){ if(!confirm('Uscire dall’area staff su questo dispositivo?')) return; STAFF = ''; S.done = ''; try{ localStorage.removeItem(K('staff')); }catch(x){} renderBody(); renderTop(); }
   else if(t.id === 'staffgo'){
@@ -798,8 +753,8 @@ document.addEventListener('click', async e => {
     t.disabled = true; t.textContent = 'Salvataggio…';
     const m = match(), res = await submit(); if(!res) return;
     say(thanks(res, m), !res.ok);
-    S.qMsg = ''; S.qEdit = false; S.focus = `#body [data-stato="${S.stato}"]`;
-    renderStats(); renderBody(); renderHero();
+    S.focus = `#body [data-stato="${S.stato}"]`;
+    renderStats(); renderBody();
   }
 });
 document.addEventListener('change', e => {
