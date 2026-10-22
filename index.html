@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A.S.D. San Salvario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#17255a;--ink:#12204f;--red:#dc143c;--bg:#f6f7fa;--card:#fff;--line:#e2e5ee;--muted:#6b7390;--green:#1f8a5b;--cond:'Barlow Condensed','Arial Narrow','Liberation Sans Narrow',sans-serif;--body:'DM Sans',system-ui,sans-serif}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--body)}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+main{max-width:720px;margin:0 auto;padding:16px 16px 56px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 14px;font:700 22px var(--cond);letter-spacing:.06em;text-transform:uppercase}
+.top small{font:500 13px var(--body);color:var(--muted);text-transform:none;letter-spacing:0}
+.hero{background:var(--navy);color:#fff;border-radius:24px;padding:22px;background-image:linear-gradient(115deg,transparent 55%,rgba(255,255,255,.05) 55%,rgba(255,255,255,.05) 75%,transparent 75%)}
+.chips{display:flex;gap:12px;align-items:center;font-size:15px;flex-wrap:wrap}
+.chip{background:rgba(255,255,255,.14);padding:4px 12px;border-radius:8px;font-weight:700;font-size:12px;letter-spacing:.15em}
+.teams{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin:34px 0 26px}
+.us{font:600 17px var(--cond);letter-spacing:.2em;text-transform:uppercase}
+.us i{font:400 12px var(--body);font-style:normal;letter-spacing:.2em;opacity:.6;margin-left:10px}
+.opp{font:700 clamp(40px,12vw,64px)/.95 var(--cond);text-transform:uppercase;margin-top:12px}
+.times{text-align:right}
+.times b{display:block;font:700 clamp(40px,11vw,58px)/1 var(--cond)}
+.times span{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:12px}
+.times .r b{opacity:.75;font-size:clamp(34px,9vw,46px)}
+.where{display:flex;gap:12px;border-top:1px solid rgba(255,255,255,.2);padding-top:18px;font-size:15px;opacity:.95}
+.where svg{flex:none;margin-top:2px}
+.score{font:700 28px var(--cond);margin-top:8px}
+.live{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px;margin:14px 2px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(31,138,91,.15)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+.stat p{margin:0;color:var(--muted);font-size:14px}
+.stat b{display:block;font:700 46px/1.1 var(--cond);margin:4px 0}
+.stat.red b{color:var(--red)}
+.stat small{color:var(--muted);font-size:12px;line-height:1.3;display:block}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;margin-top:16px;overflow:hidden}
+.tabs{display:flex;gap:26px;padding:0 22px;border-bottom:1px solid var(--line)}
+.tab{background:none;border:0;border-bottom:4px solid transparent;font:700 21px var(--cond);padding:18px 0 14px;color:var(--muted);cursor:pointer;display:flex;gap:10px;align-items:center}
+.tab[aria-selected=true]{color:var(--ink);border-color:var(--red)}
+.tab em{font:500 14px var(--body);font-style:normal;background:var(--bg);border-radius:8px;padding:2px 9px}
+.body{padding:22px}
+.step{display:flex;gap:16px;margin-bottom:8px}
+.num{flex:none;width:48px;height:48px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font:700 16px var(--body)}
+.step h3{font:700 26px/1.2 var(--cond);margin:0}
+.step p{margin:2px 0 0;color:var(--muted);font-size:15px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.opt{min-height:56px;border-radius:14px;border:1px solid var(--line);background:#fff;color:var(--muted);font:500 17px var(--body);cursor:pointer}
+.opt[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+.opt.yes[aria-pressed=true]{background:var(--green);border-color:var(--green)}
+.opt.no[aria-pressed=true]{background:var(--red);border-color:var(--red)}
+label{display:block;font-weight:700;font-size:15px;margin:16px 0 8px}
+select,input{width:100%;min-height:52px;font:inherit;border:1px solid var(--line);border-radius:14px;padding:0 14px;background:#fff;color:var(--ink)}
+.go{width:100%;min-height:56px;margin-top:22px;border:0;border-radius:14px;background:var(--red);color:#fff;font:700 18px var(--body);cursor:pointer}
+.go:disabled{opacity:.4;cursor:not-allowed}
+.ok{margin-top:12px;color:var(--green);font-weight:700;min-height:24px}
+.grp h4{font:700 20px var(--cond);margin:18px 0 6px;letter-spacing:.03em}
+.grp ul{list-style:none;margin:0;padding:0}
+.grp li{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
+.grp li span{color:var(--muted);font-size:13px}
+h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
+.cal button{display:flex;width:100%;justify-content:space-between;gap:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px;font:inherit;color:inherit;cursor:pointer}
+.cal button[aria-current=true]{border:2px solid var(--navy)}
+.cal b{font:700 20px var(--cond);text-transform:uppercase}
+.cal small{color:var(--muted);display:block}
+.cal .r{font:700 22px var(--cond);white-space:nowrap}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:10px 18px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:0}
+dt{font-weight:700}dd{margin:0}
+.note{font-size:13px;color:var(--muted);margin-top:16px}
+.res{display:flex;gap:14px;align-items:center;margin:0 0 16px;padding:14px 16px;background:rgba(255,255,255,.1);border-radius:14px}
+.res .big{font:700 46px/1 var(--cond)}
+.res b{font-size:17px}.res small{display:block;opacity:.75;font-size:13px}
+.goals{margin:0 0 18px;font-size:15px}
+.goals h4{margin:0 0 6px;font:600 13px var(--body);opacity:.7}
+.goals ul{list-style:none;margin:0;padding:0}
+.goals li{padding:6px 0;border-top:1px solid rgba(255,255,255,.15);font-weight:500}
+.goals li:first-child{border-top:0}
+.cal .sc span{display:block;color:var(--ink);padding-left:10px}
+.cal .r{text-align:right}.cal .r small{font:500 12px var(--body)}
+.r.w{color:var(--green)}.r.l{color:var(--red)}.r.d{color:var(--muted)}
+.match3{display:grid;grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr);gap:8px;align-items:center;margin:28px 0 24px}
+.tm{font:700 clamp(22px,6vw,38px)/1.02 var(--cond);text-transform:uppercase;text-align:center;overflow-wrap:break-word;opacity:.85}
+.tm.sm{font-size:clamp(18px,4.9vw,32px)}
+.tm.me{opacity:1}
+.mid{text-align:center}
+.mid .t1{font:700 clamp(40px,11vw,56px)/1 var(--cond)}
+.mid .t2{font:700 clamp(30px,8vw,40px)/1 var(--cond);opacity:.75;margin-top:14px}
+.mid span{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-top:4px}
+.mid .big{font:700 clamp(46px,13vw,64px)/1 var(--cond)}
+.mid .out{display:block;font-size:14px;margin-top:2px}
+.mid .goals{margin:14px 0 0;font-size:14px}
+.mid .goals h4{font-size:11px;line-height:1.3}
+.subs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.subs a span{white-space:nowrap}
+.subs a{flex:1 1 200px;display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:center;text-align:center;text-decoration:none;background:var(--navy);color:#fff;font-weight:700;border-radius:14px;padding:14px 16px}
+@media (min-width:900px){
+  main{max-width:1120px;padding:24px 28px 72px}
+  .cols{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:32px;align-items:start}
+  .side h2.sec:first-child{margin-top:0}
+  .top{font-size:26px}
+}
+@media (max-width:380px){
+  main{padding:12px 12px 48px}
+  .hero{padding:18px}
+  .stat{padding:10px}.stat b{font-size:38px}
+  .tabs{gap:18px;padding:0 16px}.body{padding:16px}
+}
+@media (min-width:900px){.match3{grid-template-columns:minmax(0,1fr) 150px minmax(0,1fr)}}
+.lock{max-width:440px;margin:0 auto}
+.lock h1{font:700 clamp(40px,12vw,56px)/.95 var(--cond);text-transform:uppercase;margin:18px 0 10px}
+.lock p{margin:0;opacity:.8}
+.lock label{color:#fff;margin-top:26px}
+.lock input{text-transform:uppercase;letter-spacing:.3em;font:700 24px var(--cond);text-align:center;border:0}
+.lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
+.out-btn{background:none;border:0;padding:0;font:inherit;color:var(--muted);text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><span>A.S.D. San Salvario</span><small id="season"></small></div>
+  <form class="hero lock" id="lock" hidden>
+    <span class="chip">AREA SQUADRA</span>
+    <h1>Inserisci il codice</h1>
+    <p>Te lo chiediamo una volta sola su questo dispositivo.</p>
+    <label for="code">Codice squadra</label>
+    <input id="code" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+    <button class="go" type="submit">Entra</button>
+    <div class="err" id="err" role="alert"></div>
+  </form>
+  <div class="cols" id="app" hidden><div class="main-col">
+  <section class="hero" id="hero" aria-live="polite"></section>
+  <div class="live"><span class="dot"></span><span id="mode"></span></div>
+  <section class="stats" id="stats"></section>
+
+  <section class="panel">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="t-me" aria-selected="true" data-tab="me">La tua presenza</button>
+      <button class="tab" role="tab" id="t-sq" aria-selected="false" data-tab="sq">La squadra <em id="sqn">0</em></button>
+    </div>
+    <div class="body" id="body"></div>
+  </section>
+
+  </div>
+  <aside class="side">
+  <h2 class="sec">Calendario</h2>
+  <div class="cal" id="cal"></div>
+
+  <h2 class="sec">Info utili</h2>
+  <dl id="info"></dl>
+  <p class="note" id="foot"></p>
+  </aside></div>
+</main>
+
+<script>
+/* ============ DA MODIFICARE: i dati della squadra ============ */
+const CONFIG = {
+  season: "Stagione 2026/27",
+  // Calendario in abbonamento (file .ics). Se presente, il sito legge da qui le partite al posto dell’elenco MATCHES qui sotto.
+  icsUrl: "webcal://gist.githubusercontent.com/niccolovianello/ec59381245bb87a38118c26b932f14de/raw/san_salvario_2026-27.ics",
+  // Realtime Database Firebase: rosa e presenze stanno sotto /t/<codice squadra>/ (il codice non è scritto qui, lo sanno solo la squadra e le regole Firebase).
+  firebaseUrl: "https://asd-san-salvario-default-rtdb.europe-west1.firebasedatabase.app",
+  info: {
+    "Allenamenti": "Martedì e giovedì, ore 21:00",
+    "Referente": "Mister (nome e telefono)",
+    "Cosa portare": "Maglia, parastinchi, documento",
+    "Terzo tempo": "Si mangia insieme dopo la partita: segnala se resti a tavola"
+  }
+};
+// date in formato AAAA-MM-GGTHH:MM (ora del fischio d’inizio). A partita giocata compila "score" (prima i gol di San Salvario, es. "2-1") e "scorers" (solo San Salvario, es. "Rossi, Bianchi (2)").
+let MATCHES = [
+  {id:"262a2-2026-27-san-salvario-calendar",  date:"2026-10-03T12:45", ritrovo:"11:45", opp:"Orange 11 A.S.D.", home:false, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:"", giornata:"Andata, giornata 1"},
+  {id:"262a12-2026-27-san-salvario-calendar", date:"2026-10-09T21:00", ritrovo:"20:00", opp:"Automotive Lighting Italia Spa", home:true, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:"", giornata:"Andata, giornata 2"},
+  {id:"262a17-2026-27-san-salvario-calendar", date:"2026-10-16T21:00", ritrovo:"20:00", opp:"A.S.D. Oratorio Leini", home:true, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:""}
+];
+// Risultati (valgono sopra al calendario). Chiave = giorno della partita. "score": prima i gol di San Salvario.
+// "scorers": solo San Salvario, per cognome (il sito scrive l’iniziale del nome, es. J. Varvello). Gol multipli: "Rossi (2)".
+const RESULTS = {
+  "2026-10-03": {score:"1-2", scorers:"Varvello"},
+  "2026-10-09": {score:"1-0", scorers:"Caffa"},
+  "2026-10-16": {score:"4-1", scorers:"Vianello, Primo, Trabuio, Lovera"}
+};
+// La rosa sta su Firebase (/t/<codice>/roster): si modifica dalla console Firebase, non qui. Ogni persona: {name, number, role:"calciatore"|"dirigente"}.
+let ROSTER = [];
+/* ============================================================ */
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const slug = s => s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const dDate = d => new Date(d).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const dShort = d => new Date(d).toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'}) + ' · ' + new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+const hhmm = d => new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+const DB = CONFIG.firebaseUrl.replace(/\/$/,'');
+let BASE = '';   // DB + '/t/<codice>', impostato da unlock()
+let sorted = [];
+const S = {sel:'', tab:'me', role:'calciatore', pick:'', typed:'', stato:'', tavola:'', done:''};
+let presences = {};
+try{ const m = JSON.parse(localStorage.getItem('mio') || '{}'); S.role = m.role || S.role; S.pick = m.pick || ''; }catch(e){}
+
+function useMatches(list){
+  MATCHES = list.map(m => Object.assign({}, m, RESULTS[m.date.slice(0,10)] || {})); sorted = [...MATCHES].sort((a,b) => new Date(a.date) - new Date(b.date));
+  const f = sorted.find(m => new Date(m.date) > Date.now() - 3*3600e3) || sorted[sorted.length-1];
+  S.sel = f ? f.id : '';
+}
+useMatches(MATCHES);
+
+/* ---- Lettura del calendario .ics ---- */
+function parseICS(txt){
+  const lines = txt.replace(/\r/g,'').replace(/\n[ \t]/g,'').split('\n'), out = []; let ev = null, al = false;
+  for(const l of lines){
+    if(l === 'BEGIN:VEVENT') ev = {};
+    else if(l === 'BEGIN:VALARM') al = true;
+    else if(l === 'END:VALARM') al = false;
+    else if(l === 'END:VEVENT'){ if(ev && ev.DTSTART && !/CANCELLED/i.test(ev.STATUS||'')) out.push(ev); ev = null; }
+    else if(ev && !al){
+      const i = l.indexOf(':'); if(i < 0) continue;
+      ev[l.slice(0,i).split(';')[0].toUpperCase()] = l.slice(i+1).replace(/\\n/gi,'\n').replace(/\\([,;\\])/g,'$1');
+    }
+  }
+  return out;
+}
+const p2 = n => String(n).padStart(2,'0');
+function icsToMatch(ev){
+  const m = ev.DTSTART.match(/^(\d{4})(\d\d)(\d\d)(?:T(\d\d)(\d\d)(\d\d)?(Z)?)?$/);
+  const d = m[7] ? new Date(Date.UTC(+m[1],m[2]-1,+m[3],+m[4],+m[5])) : new Date(+m[1],m[2]-1,+m[3],+(m[4]||0),+(m[5]||0));
+  const date = `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}T${p2(d.getHours())}:${p2(d.getMinutes())}`;
+  const sum = (ev.SUMMARY||'').replace(/^[^\p{L}\p{N}]+/u,'').trim(), desc = ev.DESCRIPTION||'';
+  const parts = sum.split(/\s+(?:-|–|—|vs\.?|v|contro)\s+/i);
+  let opp = sum, home = true;
+  if(parts.length >= 2){
+    const u = parts.findIndex(x => /salvario/i.test(x));
+    if(u === 1){ home = false; opp = parts[0]; } else { opp = parts[u === 0 ? 1 : 0]; }
+  }
+  if(/\bTrasferta\b/i.test(desc)) home = false; else if(/\bCasa\b/i.test(desc)) home = true;
+  const g = desc.match(/(andata|ritorno)\s+giornata\s+(\d+)/i);
+  const loc = (ev.LOCATION||'').trim(), c = loc.indexOf(',');
+  const r = desc.match(/ritrovo[^0-9]{0,15}(\d{1,2})[:.](\d\d)/i);
+  const rd = new Date(d.getTime() - 3600e3);
+  const mk = desc.match(/marcatori\s*:\s*([^\n]+)/i);
+  const sc = desc.match(/(?:risultato|finale)[^0-9]{0,10}(\d+\s*[-–]\s*\d+)/i);
+  return {id: slug(ev.UID || date + opp), date, opp: opp.trim(), home,
+    place: c > 0 ? loc.slice(0,c) : loc, address: c > 0 ? loc.slice(c+1).trim() : '',
+    ritrovo: r ? p2(r[1]) + ':' + r[2] : p2(rd.getHours()) + ':' + p2(rd.getMinutes()), score: sc ? sc[1].replace(/\s/g,'') : '',
+    scorers: mk ? mk[1].trim() : '',
+    giornata: g ? g[1][0].toUpperCase() + g[1].slice(1).toLowerCase() + ', giornata ' + g[2] : ''};
+}
+async function loadICS(){
+  if(!CONFIG.icsUrl) return;
+  try{
+    const r = await fetch(CONFIG.icsUrl.replace(/^webcal:/i,'https:'), {cache:'no-store'});
+    if(!r.ok) throw 0;
+    const list = parseICS(await r.text()).map(icsToMatch);
+    if(list.length) useMatches(list);
+  }catch(e){ /* se il file non è raggiungibile resta l’elenco MATCHES scritto qui sopra */ }
+}
+function outcome(m){
+  const x = String(m.score||'').match(/(\d+)\D+(\d+)/); if(!x) return null;
+  const a = +x[1], b = +x[2];
+  return {gf:a, gs:b, label: a>b ? 'Vittoria' : a<b ? 'Sconfitta' : 'Pareggio', cls: a>b ? 'w' : a<b ? 'l' : 'd'};
+}
+function scorerList(str){
+  return String(str||'').split(/[,;]/).map(x => x.trim()).filter(Boolean).map(x => {
+    const m = x.match(/^(.+?)\s*(?:\((\d+)\)|[x×]\s*(\d+)|\s(\d+))$/i);
+    return m ? {name:m[1].trim(), n:+(m[2]||m[3]||m[4])} : {name:x, n:1};
+  });
+}
+function scorerLabel(n){
+  const sur = r => r.name.split(' ').slice(1).join(' '), ini = r => r.name[0].toUpperCase() + '.';
+  const pl = ROSTER.filter(r => r.role === 'calciatore'), t = n.trim(), k = slug(t);
+  const mi = t.match(/^(\p{L})\.?\s+(.+)$/u);
+  let hits = pl.filter(r => slug(r.name) === k || slug(sur(r)) === k);
+  if(hits.length !== 1 && mi) hits = pl.filter(r => r.name[0].toLowerCase() === mi[1].toLowerCase() && slug(sur(r)) === slug(mi[2]));
+  if(hits.length !== 1) return t.charAt(0).toUpperCase() + t.slice(1);
+  const r = hits[0], same = pl.filter(x => ini(x) === ini(r) && slug(sur(x)) === slug(sur(r))).length > 1;
+  return same ? r.name : ini(r) + ' ' + sur(r);
+}
+const gName = g => scorerLabel(g.name) + (g.n > 1 ? ' ×' + g.n : '');
+function scorerBlock(m){
+  const sc = scorerList(m.scorers); if(!sc.length) return '';
+  return `<div class="goals"><h4>Marcatori San Salvario</h4><ul>${sc.map(g => `<li>${esc(gName(g))}</li>`).join('')}</ul></div>`;
+}
+const rBadge = m => { const o = outcome(m); return o ? `<span class="r ${o.cls}">${o.gf}–${o.gs}<small>${o.label}</small></span>` : ''; };
+const scorerLine = m => { const sc = outcome(m) ? scorerList(m.scorers) : []; return sc.length ? `<small class="sc">Marcatori${sc.map(g => `<span>${esc(gName(g))}</span>`).join('')}</small>` : ''; };
+function subLinks(){
+  if(!CONFIG.icsUrl) return '';
+  const w = CONFIG.icsUrl.replace(/^https?:/i,'webcal:');
+  const apple = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>`;
+  const google = `<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M5.5 5.5h13v13h-13z"/><path fill="#4285F4" d="M2.5 0h16v5.5H0V2.5A2.5 2.5 0 0 1 2.5 0z"/><path fill="#FBBC04" d="M18.5 0h3A2.5 2.5 0 0 1 24 2.5v16h-5.5z"/><path fill="#1967D2" d="M0 5.5h5.5v13H0z"/><path fill="#188038" d="M0 18.5h5.5V24h-3A2.5 2.5 0 0 1 0 21.5z"/><path fill="#34A853" d="M5.5 18.5h13V24h-13z"/><path fill="#EA4335" d="M18.5 18.5H24L18.5 24z"/><text x="12" y="15.6" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="8.5" fill="#4285F4">31</text></svg>`;
+  return `<div class="subs"><a href="${esc(w)}">${apple}<span>Aggiungi a<br>Calendario Apple</span></a><a href="https://calendar.google.com/calendar/render?cid=${esc(w)}" target="_blank" rel="noopener">${google}<span>Aggiungi a<br>Google Calendar</span></a></div>`;
+}
+
+/* ---- Codice squadra: apre rosa e presenze su Firebase ---- */
+const normCode = c => String(c||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const surname = n => n.split(' ').slice(1).join(' ') || n;
+// true = codice giusto, false = codice sbagliato; lancia un errore se manca la connessione
+async function unlock(code){
+  const r = await fetch(`${DB}/t/${code}/roster.json`, {cache:'no-store'});
+  if(r.status === 401 || r.status === 403) return false;
+  if(!r.ok) throw new Error(r.status);
+  ROSTER = Object.values((await r.json()) || {}).sort((a,b) =>
+    (a.role === b.role ? 0 : a.role === 'calciatore' ? -1 : 1) || surname(a.name).localeCompare(surname(b.name),'it') || a.name.localeCompare(b.name,'it'));
+  BASE = `${DB}/t/${code}`;
+  return true;
+}
+async function load(){
+  try{
+    const r = await fetch(BASE + '/presenze.json', {cache:'no-store'});
+    if(r.ok) presences = (await r.json()) || {};
+  }catch(e){}
+}
+async function save(matchId, rec){
+  const key = slug(rec.nome);
+  try{
+    const r = await fetch(`${BASE}/presenze/${matchId}/${key}.json`, {method:'PUT', body:JSON.stringify(rec)});
+    if(!r.ok) return false;
+    (presences[matchId] = presences[matchId] || {})[key] = rec;
+    return true;
+  }catch(e){ return false; }
+}
+const match = () => MATCHES.find(m => m.id === S.sel);
+const answers = () => Object.values(presences[S.sel] || {});
+
+function renderHero(){
+  const m = match(), o = outcome(m);
+  const lg = n => n.split(/\s+/).some(w => w.length > 9) ? 'sm' : '';
+  const home = m.home ? 'San Salvario' : m.opp, away = m.home ? m.opp : 'San Salvario';
+  const mid = o
+    ? `<div class="mid"><div class="big">${m.home ? o.gf : o.gs}–${m.home ? o.gs : o.gf}</div><b class="out">${o.label}</b>${scorerBlock(m)}</div>`
+    : `<div class="mid"><div class="t1">${hhmm(m.date)}</div><span>Fischio d’inizio</span><div class="t2">${esc(m.ritrovo)}</div><span>Ritrovo</span></div>`;
+  $('#hero').innerHTML = `
+    <div class="chips"><span class="chip">${m.home?'IN CASA':'TRASFERTA'}</span><span>${esc(dDate(m.date))}</span>${m.giornata ? `<span>${esc(m.giornata)}</span>` : ''}</div>
+    <div class="match3"><div class="tm ${m.home ? 'me' : ''} ${lg(home)}">${esc(home)}</div>${mid}<div class="tm ${m.home ? '' : 'me'} ${lg(away)}">${esc(away)}</div></div>
+    <div class="where"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${esc(m.place)}, ${esc(m.address)}</span></div>`;
+}
+function renderStats(){
+  const a = answers(), yes = a.filter(x => x.stato === 'si'), no = a.filter(x => x.stato === 'no');
+  const pl = yes.filter(x => x.ruolo === 'calciatore').length, dr = yes.length - pl;
+  const tav = yes.filter(x => x.tavola === 'si').length;
+  const names = new Set(a.map(x => slug(x.nome)));
+  const wait = ROSTER.filter(r => !names.has(slug(r.name))).length;
+  $('#stats').innerHTML = `
+    <div class="stat"><p>Presenti</p><b>${yes.length}</b><small>${pl} calciatori · ${dr} dirigenti</small></div>
+    <div class="stat red"><p>A tavola</p><b>${tav}</b><small>Per il dopo partita</small></div>
+    <div class="stat"><p>Da confermare</p><b>${wait}</b><small>${no.length} assenti · ${a.length} risposte</small></div>`;
+  $('#sqn').textContent = ROSTER.length;
+}
+function renderBody(){
+  const b = $('#body');
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.tab === S.tab));
+  if(S.tab === 'sq'){
+    const a = answers(), names = new Set(a.map(x => slug(x.nome)));
+    const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li>${rk && rk.number ? '#' + rk.number + ' ' : ''}${esc(x.nome)}<span>${x.ruolo === 'dirigente' ? 'Dirigente' : 'Calciatore'}${x.tavola === 'si' && x.stato === 'si' ? ' · a tavola' : ''}</span></li>`; };
+    const grp = (t, arr) => `<div class="grp"><h4>${t} (${arr.length})</h4><ul>${arr.map(li).join('') || '<li><span>Nessuno</span></li>'}</ul></div>`;
+    const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
+    b.innerHTML = grp('Presenti', a.filter(x => x.stato === 'si')) + grp('Assenti', a.filter(x => x.stato === 'no')) + grp('Da confermare', wait);
+    return;
+  }
+  const list = ROSTER.filter(r => r.role === S.role);
+  const name = (S.typed || S.pick).trim();
+  b.innerHTML = `
+    <div class="step"><div class="num">01</div><div><h3>Chi sei?</h3><p>Seleziona il tuo nome o aggiungilo all’elenco.</p></div></div>
+    <div class="seg"><button class="opt" data-role="calciatore" aria-pressed="${S.role==='calciatore'}">Calciatore</button><button class="opt" data-role="dirigente" aria-pressed="${S.role==='dirigente'}">Dirigente</button></div>
+    <label for="pick">Scegli dall’elenco</label>
+    <select id="pick"><option value="">Seleziona il tuo nome</option>${list.map(r => `<option value="${esc(r.name)}" ${r.name===S.pick?'selected':''}>${esc(r.name)}${r.number ? ' · #' + r.number : ''}</option>`).join('')}</select>
+    <label for="typed">Non ti trovi? Scrivi il tuo nome</label>
+    <input id="typed" type="text" maxlength="30" autocomplete="name" value="${esc(S.typed)}" placeholder="Nome e cognome">
+    <div class="step" style="margin-top:28px"><div class="num">02</div><div><h3>Ci sei?</h3></div></div>
+    <div class="seg"><button class="opt yes" data-stato="si" aria-pressed="${S.stato==='si'}">Ci sono</button><button class="opt no" data-stato="no" aria-pressed="${S.stato==='no'}">Non ci sono</button></div>
+    ${S.stato === 'si' ? `<div class="step"><div class="num">03</div><div><h3>Resti a tavola?</h3><p>Per il dopo partita.</p></div></div>
+    <div class="seg"><button class="opt yes" data-tavola="si" aria-pressed="${S.tavola==='si'}">Sì</button><button class="opt" data-tavola="no" aria-pressed="${S.tavola==='no'}">No</button></div>` : ''}
+    <button class="go" id="go" ${name && S.stato && (S.stato==='no' || S.tavola) ? '' : 'disabled'}>Conferma presenza</button>
+    <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+}
+function renderCal(){
+  $('#cal').innerHTML = subLinks() + sorted.map(m => `<button data-match="${m.id}" aria-current="${m.id===S.sel}"><span><b>${m.home?'San Salvario – '+esc(m.opp):esc(m.opp)+' – San Salvario'}</b><small>${esc(dShort(m.date))} · ${esc(m.place)}</small>${scorerLine(m)}</span>${rBadge(m)}</button>`).join('');
+  $('#info').innerHTML = Object.entries(CONFIG.info).map(([k,v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
+}
+function renderAll(){ $('#season').textContent = CONFIG.season; renderHero(); renderStats(); renderBody(); renderCal(); }
+
+document.addEventListener('click', async e => {
+  const t = e.target.closest('button'); if(!t) return;
+  const d = t.dataset;
+  if(d.tab){ S.tab = d.tab; renderBody(); }
+  else if(d.role){ S.role = d.role; S.pick = ''; S.done = ''; renderBody(); }
+  else if(d.stato){ S.stato = d.stato; S.done = ''; renderBody(); }
+  else if(d.tavola){ S.tavola = d.tavola; renderBody(); }
+  else if(d.out){ try{ localStorage.removeItem('codice'); }catch(x){} location.reload(); }
+  else if(d.match){ S.sel = d.match; S.stato = S.tavola = S.done = ''; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(t.id === 'go'){
+    const name = (S.typed || S.pick).trim();
+    const ok = await save(S.sel, {nome:name, ruolo:S.role, stato:S.stato, tavola:S.stato==='si' ? S.tavola : 'no'});
+    S.done = ok ? 'Presenza confermata. Grazie!' : 'Non sono riuscito a salvare. Controlla la connessione e riprova.';
+    if(ok){ localStorage.setItem('mio', JSON.stringify({role:S.role, pick:S.pick})); }
+    renderStats(); renderBody();
+  }
+});
+document.addEventListener('change', e => {
+  if(e.target.id === 'pick'){ S.pick = e.target.value; S.typed = ''; S.done = ''; renderBody(); }
+});
+document.addEventListener('input', e => {
+  if(e.target.id === 'typed'){ S.typed = e.target.value; S.done = ''; const g = $('#go'); if(g) g.disabled = !((S.typed||S.pick).trim() && S.stato && (S.stato==='no' || S.tavola)); }
+});
+
+document.addEventListener('submit', async e => {
+  if(e.target.id !== 'lock') return;
+  e.preventDefault();
+  const code = normCode($('#code').value), err = $('#err');
+  err.textContent = '';
+  try{
+    if(!code || !(await unlock(code))){ err.textContent = 'Codice errato. Riprova.'; return; }
+  }catch(x){ err.textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; return; }
+  try{ localStorage.setItem('codice', code); }catch(x){}
+  start();
+});
+
+let started = false;
+async function start(){
+  if(started) return; started = true;
+  $('#lock').hidden = true;
+  $('#mode').textContent = 'Conteggi condivisi · aggiornamento ogni 5 secondi';
+  $('#foot').innerHTML = '<button class="out-btn" data-out="1">Esci da questo dispositivo</button>';
+  await loadICS(); await load(); renderAll();
+  $('#app').hidden = false;
+  setInterval(async () => { await load(); renderStats(); if(S.tab === 'sq') renderBody(); }, 5000);
+}
+(async () => {
+  let saved = '';
+  try{ saved = localStorage.getItem('codice') || ''; }catch(e){}
+  try{ if(saved && await unlock(saved)) return start(); }
+  catch(e){ $('#err').textContent = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; }
+  $('#lock').hidden = false;
+})();
+</script>
+</body>
+</html>

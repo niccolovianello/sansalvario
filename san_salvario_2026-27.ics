@@ -1,0 +1,645 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//San Salvario A.S.D.//Calendario 2026-27//IT
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:San Salvario A.S.D. 2026/27
+X-WR-TIMEZONE:Europe/Rome
+BEGIN:VTIMEZONE
+TZID:Europe/Rome
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:262A2-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20261003T124500
+DTEND;TZID=Europe/Rome:20261003T141500
+SUMMARY:⚽ Orange 11 A.S.D. – San Salvario A.S.D.
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 1 (2
+ 62A2) – Trasferta\nCalcio d'inizio: 12:45\nRitrovo: 11:45
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Orange 11 A.S.D. – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Orange 11 A.S.D. – San Salvario A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A12-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20261009T210000
+DTEND;TZID=Europe/Rome:20261009T223000
+SUMMARY:⚽ San Salvario A.S.D. – Automotive Lighting Italia Spa
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 2 (2
+ 62A12) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Automotive Lighting Italia Spa (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Automotive Lighting Italia Spa (tra 2 o
+ re)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A17-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20261016T210000
+DTEND;TZID=Europe/Rome:20261016T223000
+SUMMARY:⚽ San Salvario A.S.D. – Oratorio Leini
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 3 (2
+ 62A17) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Oratorio Leini (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Oratorio Leini (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A25-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20261023T210000
+DTEND;TZID=Europe/Rome:20261023T223000
+SUMMARY:⚽ San Salvario A.S.D. – Dinamo Torino
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 4 (2
+ 62A25) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Dinamo Torino (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Dinamo Torino (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A32-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20261031T143000
+DTEND;TZID=Europe/Rome:20261031T160000
+SUMMARY:⚽ Andromeda – San Salvario A.S.D.
+LOCATION:CUS Torino\, Via Milano 63\, 10095 Grugliasco TO\, Italia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 5 (2
+ 62A32) – Trasferta\nCalcio d'inizio: 14:30\nRitrovo: 13:30
+GEO:45.066593;7.606064
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Milano 63 10095 Grugli
+ asco TO Italia";X-APPLE-RADIUS=150;X-TITLE="CUS Torino":geo:45.066593,7.60
+ 6064
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Andromeda – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Andromeda – San Salvario A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A38-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20261106T210000
+DTEND;TZID=Europe/Rome:20261106T223000
+SUMMARY:⚽ San Salvario A.S.D. – Don Bosco Caselle
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 6 (2
+ 62A38) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Don Bosco Caselle (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Don Bosco Caselle (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A47-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20261115T150000
+DTEND;TZID=Europe/Rome:20261115T163000
+SUMMARY:⚽ San Martino Rivoli – San Salvario A.S.D.
+LOCATION:Campo Don Luigi Ghilardi\, Strada Don Luigi Ghilardi\, 10098 Rivol
+ i TO\, Italia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 7 (2
+ 62A47) – Trasferta\nCalcio d'inizio: 15:00\nRitrovo: 14:00
+GEO:45.058176;7.523945
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Strada Don Luigi Ghilardi 
+ 10098 Rivoli TO Italia";X-APPLE-RADIUS=150;X-TITLE="Campo Don Luigi Ghilar
+ di":geo:45.058176,7.523945
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Martino Rivoli – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Martino Rivoli – San Salvario A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A51-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20261120T210000
+DTEND;TZID=Europe/Rome:20261120T223000
+SUMMARY:⚽ San Salvario A.S.D. – Sampigandia
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 8 (2
+ 62A51) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Sampigandia (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Sampigandia (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A62-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20261128T143000
+DTEND;TZID=Europe/Rome:20261128T160000
+SUMMARY:⚽ G.S. Rivese – San Salvario A.S.D.
+LOCATION:Campo San Giuseppe Riva\, Piazza Falcone e Borsellino\, 10020 Riva
+  presso Chieri TO\, Italia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 9 (2
+ 62A62) – Trasferta\nCalcio d'inizio: 14:30\nRitrovo: 13:30
+GEO:44.987192;7.86795
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Piazza Falcone e Borsellin
+ o 10020 Riva presso Chieri TO Italia";X-APPLE-RADIUS=150;X-TITLE="Campo Sa
+ n Giuseppe Riva":geo:44.987192,7.86795
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:G.S. Rivese – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:G.S. Rivese – San Salvario A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A64-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20261211T210000
+DTEND;TZID=Europe/Rome:20261211T223000
+SUMMARY:⚽ San Salvario A.S.D. – Real Benny
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 10 (
+ 262A64) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Real Benny (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Real Benny (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A77-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270122T210000
+DTEND;TZID=Europe/Rome:20270122T223000
+SUMMARY:⚽ San Salvario A.S.D. – Valsalice Alfieri
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 11 (
+ 262A77) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Valsalice Alfieri (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Valsalice Alfieri (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A78-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270130T153000
+DTEND;TZID=Europe/Rome:20270130T170000
+SUMMARY:⚽ Sporting San Giuseppe A.S.D. – San Salvario A.S.D.
+LOCATION:Sisport\, Via Santa Cristina 1\, 10036 Settimo Torinese TO\, Itali
+ a
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 12 (
+ 262A78) – Trasferta\nCalcio d'inizio: 15:30\nRitrovo: 14:30
+GEO:45.126261;7.75213
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Santa Cristina 1 10036
+  Settimo Torinese TO Italia";X-APPLE-RADIUS=150;X-TITLE="Sisport":geo:45.1
+ 26261,7.75213
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Sporting San Giuseppe A.S.D. – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Sporting San Giuseppe A.S.D. – San Salvario A.S.D. (tra 2 ore
+ )
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262A90-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270205T210000
+DTEND;TZID=Europe/Rome:20270205T223000
+SUMMARY:⚽ San Salvario A.S.D. – Sportinsieme Piobesi Torinese
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nAndata giornata 13 (
+ 262A90) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Sportinsieme Piobesi Torinese (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Sportinsieme Piobesi Torinese (tra 2 or
+ e)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R2-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270212T210000
+DTEND;TZID=Europe/Rome:20270212T223000
+SUMMARY:⚽ San Salvario A.S.D. – Orange 11 A.S.D.
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 1 (
+ 262R2) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Orange 11 A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Orange 11 A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R12-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270220T130000
+DTEND;TZID=Europe/Rome:20270220T143000
+SUMMARY:⚽ Automotive Lighting Italia Spa – San Salvario A.S.D.
+LOCATION:Orione Vallette\, Via dei Gladioli 39\, 10151 Torino TO\, Italia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 2 (
+ 262R12) – Trasferta\nCalcio d'inizio: 13:00\nRitrovo: 12:00
+GEO:45.100307;7.630503
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via dei Gladioli 39 10151 
+ Torino TO Italia";X-APPLE-RADIUS=150;X-TITLE="Orione Vallette":geo:45.1003
+ 07,7.630503
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Automotive Lighting Italia Spa – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Automotive Lighting Italia Spa – San Salvario A.S.D. (tra 2 o
+ re)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R17-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270227T164500
+DTEND;TZID=Europe/Rome:20270227T181500
+SUMMARY:⚽ Oratorio Leini – San Salvario A.S.D.
+LOCATION:La Cittadella\, Via Carlo Gremo 59\, 10040 Leinì TO\, Italia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 3 (
+ 262R17) – Trasferta\nCalcio d'inizio: 16:45\nRitrovo: 15:45
+GEO:45.182366;7.72488
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Carlo Gremo 59 10040 L
+ einì TO Italia";X-APPLE-RADIUS=150;X-TITLE="La Cittadella":geo:45.182366,
+ 7.72488
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Oratorio Leini – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Oratorio Leini – San Salvario A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R25-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270306T130000
+DTEND;TZID=Europe/Rome:20270306T143000
+SUMMARY:⚽ Dinamo Torino – San Salvario A.S.D.
+LOCATION:Pertusa\, Via Genova 161\, 10127 Torino TO\, Italia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 4 (
+ 262R25) – Trasferta\nCalcio d'inizio: 13:00\nRitrovo: 12:00
+GEO:45.025104;7.666658
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Genova 161 10127 Torin
+ o TO Italia";X-APPLE-RADIUS=150;X-TITLE="Pertusa":geo:45.025104,7.666658
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Dinamo Torino – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Dinamo Torino – San Salvario A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R32-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270312T210000
+DTEND;TZID=Europe/Rome:20270312T223000
+SUMMARY:⚽ San Salvario A.S.D. – Andromeda
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 5 (
+ 262R32) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Andromeda (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Andromeda (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R38-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270320T150000
+DTEND;TZID=Europe/Rome:20270320T163000
+SUMMARY:⚽ Don Bosco Caselle – San Salvario A.S.D.
+LOCATION:Devietti Goggia\, Via Aldo Devietti Goggia 66\, 10077 San Maurizio
+  Canavese TO\, Italia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 6 (
+ 262R38) – Trasferta\nCalcio d'inizio: 15:00\nRitrovo: 14:00
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Don Bosco Caselle – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Don Bosco Caselle – San Salvario A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R47-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270402T210000
+DTEND;TZID=Europe/Rome:20270402T223000
+SUMMARY:⚽ San Salvario A.S.D. – San Martino Rivoli
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 7 (
+ 262R47) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – San Martino Rivoli (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – San Martino Rivoli (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R51-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270410T124500
+DTEND;TZID=Europe/Rome:20270410T141500
+SUMMARY:⚽ Sampigandia – San Salvario A.S.D.
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 8 (
+ 262R51) – Trasferta\nCalcio d'inizio: 12:45\nRitrovo: 11:45
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Sampigandia – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Sampigandia – San Salvario A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R62-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270416T210000
+DTEND;TZID=Europe/Rome:20270416T223000
+SUMMARY:⚽ San Salvario A.S.D. – G.S. Rivese
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 9 (
+ 262R62) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – G.S. Rivese (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – G.S. Rivese (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R64-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270426T210000
+DTEND;TZID=Europe/Rome:20270426T223000
+SUMMARY:⚽ Real Benny – San Salvario A.S.D.
+LOCATION:Campo Luigi Einaudi\, Parco Luigi Einaudi 3/A\, 10099 San Mauro To
+ rinese TO\, Italia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 10 
+ (262R64) – Trasferta\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.108374;7.767888
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Parco Luigi Einaudi 3/A 10
+ 099 San Mauro Torinese TO Italia";X-APPLE-RADIUS=150;X-TITLE="Campo Luigi 
+ Einaudi":geo:45.108374,7.767888
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Real Benny – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Real Benny – San Salvario A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R77-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270508T130000
+DTEND;TZID=Europe/Rome:20270508T143000
+SUMMARY:⚽ Valsalice Alfieri – San Salvario A.S.D.
+LOCATION:Centrocampo\, Via Petrella 40\, 10154 Torino TO\, Italia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 11 
+ (262R77) – Trasferta\nCalcio d'inizio: 13:00\nRitrovo: 12:00
+GEO:45.089709;7.703934
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Petrella 40 10154 Tori
+ no TO Italia";X-APPLE-RADIUS=150;X-TITLE="Centrocampo":geo:45.089709,7.703
+ 934
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Valsalice Alfieri – San Salvario A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Valsalice Alfieri – San Salvario A.S.D. (tra 2 ore)
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:262R78-2026-27@san-salvario-calendar
+DTSTAMP:20261013T133818Z
+DTSTART;TZID=Europe/Rome:20270514T210000
+DTEND;TZID=Europe/Rome:20270514T223000
+SUMMARY:⚽ San Salvario A.S.D. – Sporting San Giuseppe A.S.D.
+LOCATION:USD San Giorgio - Campo Nitti\, Via Nitti 6\, 10137 Torino TO\, It
+ alia
+DESCRIPTION:Calcio A 11 CSI – Open M / Eccellenza B\nRitorno giornata 12 
+ (262R78) – Casa\nCalcio d'inizio: 21:00\nRitrovo: 20:00
+GEO:45.043637;7.622731
+X-APPLE-STRUCTURED-LOCATION;VALUE=URI;X-ADDRESS="Via Nitti 6 10137 Torino T
+ O Italia";X-APPLE-RADIUS=150;X-TITLE="USD San Giorgio - Campo Nitti":geo:4
+ 5.043637,7.622731
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Sporting San Giuseppe A.S.D. (domani)
+TRIGGER:-P1D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:San Salvario A.S.D. – Sporting San Giuseppe A.S.D. (tra 2 ore
+ )
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+END:VCALENDAR
