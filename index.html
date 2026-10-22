@@ -128,6 +128,14 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .lock label{color:#fff;margin-top:26px}
 .lock input{text-transform:uppercase;letter-spacing:.3em;font:700 24px var(--cond);text-align:center;border:0}
 .lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
+.ac{position:relative}
+.ac ul{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;list-style:none;margin:0;padding:6px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(18,32,79,.14);max-height:320px;overflow:auto}
+.ac li{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:15px}
+.ac li[aria-selected=true]{background:var(--bg)}
+@media (hover:hover){.ac li:hover{background:var(--bg)}}
+.ac li small{margin-left:auto;color:var(--muted);font-size:12px}
+.ac li.none{color:var(--muted);cursor:default;background:none}
+.hint{color:var(--red);font-size:13px;min-height:18px;margin:6px 0 0}
 .pick{display:flex;align-items:center;gap:14px;margin:0;padding:9px 0;border-bottom:1px solid var(--line);font-weight:400;cursor:pointer}
 .pick input{width:22px;height:22px;min-height:0;margin:0 0 0 auto;accent-color:var(--red);flex:none}
 .pick.off{opacity:.45;cursor:not-allowed}
@@ -490,20 +498,22 @@ function renderBody(){
     return;
   }
   const list = ROSTER.filter(r => r.role === S.role);
-  const name = (S.typed || S.pick).trim();
+  const name = S.pick;
   b.innerHTML = `
-    <div class="step"><div class="num">01</div><div><h3>Chi sei?</h3><p>Seleziona il tuo nome o aggiungilo all’elenco.</p></div></div>
+    <div class="step"><div class="num">01</div><div><h3>Chi sei?</h3><p>Scegli il tuo nome dall’elenco o cercalo.</p></div></div>
     <div class="seg"><button class="opt" data-role="calciatore" aria-pressed="${S.role==='calciatore'}">Calciatore</button><button class="opt" data-role="dirigente" aria-pressed="${S.role==='dirigente'}">Dirigente</button></div>
     <label for="pick">Scegli dall’elenco</label>
     <select id="pick"><option value="">Seleziona il tuo nome</option>${list.map(r => `<option value="${esc(r.name)}" ${r.name===S.pick?'selected':''}>${esc(r.name)}${r.number ? ' · #' + r.number : ''}</option>`).join('')}</select>
-    <label for="typed">Non ti trovi? Scrivi il tuo nome</label>
-    <input id="typed" type="text" maxlength="30" autocomplete="name" value="${esc(S.typed)}" placeholder="Nome e cognome">
+    <label for="typed">Oppure cerca il tuo nome</label>
+    <div class="ac"><input id="typed" type="text" maxlength="30" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="acl" value="${esc(S.typed)}" placeholder="Scrivi nome, cognome o numero"><ul id="acl" role="listbox" aria-label="Nomi della rosa" hidden></ul></div>
+    <p class="hint" id="achint"></p>
     <div class="step" style="margin-top:28px"><div class="num">02</div><div><h3>Ci sei?</h3></div></div>
     <div class="seg"><button class="opt yes" data-stato="si" aria-pressed="${S.stato==='si'}">Ci sono</button><button class="opt no" data-stato="no" aria-pressed="${S.stato==='no'}">Non ci sono</button></div>
     <div class="step"><div class="num">03</div><div><h3>Resti a tavola?</h3><p>Per il dopo partita, anche se non giochi.</p></div></div>
     <div class="seg"><button class="opt yes" data-tavola="si" aria-pressed="${S.tavola==='si'}">Sì</button><button class="opt" data-tavola="no" aria-pressed="${S.tavola==='no'}">No</button></div>
     <button class="go" id="go" ${name && S.stato && S.tavola ? '' : 'disabled'}>Conferma presenza</button>
     <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+  if(S.typed) acRender();
 }
 // Aggiorna anteprima marcatori e pulsante Salva senza ridisegnare il modulo
 function resultInputs(){
@@ -519,6 +529,25 @@ function callupInputs(){
   $('#cnt').textContent = `Convocati: ${n}/${MAX_CONV}`;
   $('#cnt').classList.toggle('full', full);
   document.querySelectorAll('[data-conv]').forEach(c => { c.disabled = full && !c.checked; c.closest('.pick').classList.toggle('off', c.disabled); });
+}
+/* ---- Ricerca del nome: suggerisce solo persone della rosa ---- */
+function acMatches(q){
+  const words = slug(q).split('-').filter(Boolean); if(!words.length) return [];
+  return ROSTER.filter(r => { const parts = slug(r.name).split('-'); return words.every(w => parts.some(p => p.startsWith(w)) || String(r.number) === w); }).slice(0, 8);
+}
+function acRender(){
+  const ul = $('#acl'), inp = $('#typed'), items = acMatches(S.typed), open = !!S.typed.trim();
+  S.acList = items; S.acI = Math.min(S.acI || 0, Math.max(items.length - 1, 0));
+  ul.innerHTML = items.map((r, i) => `<li role="option" id="aco-${i}" data-ac="${esc(r.name)}" aria-selected="${i === S.acI}">${r.number ? `<b class="nr">${r.number}</b>` : '<b class="nr none"></b>'}<span>${esc(r.name)}</span><small>${r.role === 'dirigente' ? 'Dirigente' : 'Calciatore'}</small></li>`).join('')
+    || '<li class="none" role="option" aria-disabled="true">Nessuno con questo nome nella rosa</li>';
+  ul.hidden = !open; inp.setAttribute('aria-expanded', open);
+  if(items.length && open) inp.setAttribute('aria-activedescendant', 'aco-' + S.acI); else inp.removeAttribute('aria-activedescendant');
+  $('#achint').textContent = open ? 'Scegli il tuo nome tra quelli proposti.' : '';
+  const g = $('#go'); if(g) g.disabled = open || !(S.pick && S.stato && S.tavola);   // finché si sta cercando, il nome non è scelto
+}
+function acChoose(name){
+  const r = ROSTER.find(x => x.name === name); if(!r) return;
+  S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; renderBody();
 }
 function renderFoot(){
   $('#foot').innerHTML = `<span class="foot-btns"><button class="out-btn" data-out="1">Esci da questo dispositivo</button>${STAFF ? '<button class="out-btn" data-staffout="1">Esci dall’area staff</button>' : '<button class="out-btn" data-staffin="1">Area staff</button>'}</span>`;
@@ -574,8 +603,8 @@ document.addEventListener('click', async e => {
   }
   else if(d.match){ S.sel = d.match; S.stato = S.tavola = S.done = ''; S.rFor = S.cFor = ''; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
   else if(t.id === 'go'){
-    const name = (S.typed || S.pick).trim();
-    const ok = await save(S.sel, {nome:name, ruolo:S.role, stato:S.stato, tavola:S.tavola});
+    const r = ROSTER.find(x => x.name === S.pick); if(!r) return;   // solo nomi della rosa
+    const ok = await save(S.sel, {nome:r.name, ruolo:r.role, stato:S.stato, tavola:S.tavola});
     S.done = ok ? 'Presenza confermata. Grazie!' : 'Non sono riuscito a salvare. Controlla la connessione e riprova.';
     if(ok){ localStorage.setItem('mio', JSON.stringify({role:S.role, pick:S.pick})); }
     renderStats(); renderBody();
@@ -589,7 +618,23 @@ document.addEventListener('change', e => {
 document.addEventListener('input', e => {
   const rk = {rgf:'rGf', rgs:'rGs', rsc:'rSc'}[e.target.id];
   if(rk){ S[rk] = e.target.value.trim(); S.done = ''; $('#ok').textContent = ''; resultInputs(); return; }
-  if(e.target.id === 'typed'){ S.typed = e.target.value; S.done = ''; const g = $('#go'); if(g) g.disabled = !((S.typed||S.pick).trim() && S.stato && S.tavola); }
+  if(e.target.id === 'typed'){ S.typed = e.target.value; S.acI = 0; S.done = ''; acRender(); }
+});
+
+document.addEventListener('keydown', e => {
+  if(e.target.id !== 'typed' || $('#acl').hidden) return;
+  const n = (S.acList || []).length;
+  if(e.key === 'ArrowDown' && n){ e.preventDefault(); S.acI = (S.acI + 1) % n; acRender(); }
+  else if(e.key === 'ArrowUp' && n){ e.preventDefault(); S.acI = (S.acI - 1 + n) % n; acRender(); }
+  else if(e.key === 'Enter' && n){ e.preventDefault(); acChoose(S.acList[S.acI].name); }
+  else if(e.key === 'Escape'){ $('#acl').hidden = true; e.target.setAttribute('aria-expanded', false); }
+});
+document.addEventListener('focusout', e => { if(e.target.id === 'typed'){ $('#acl').hidden = true; e.target.setAttribute('aria-expanded', false); } });
+document.addEventListener('focusin', e => { if(e.target.id === 'typed' && S.typed) acRender(); });
+// pointerdown (non click) così il campo non perde il focus prima della scelta
+document.addEventListener('pointerdown', e => {
+  const o = e.target.closest('[data-ac]'); if(!o) return;
+  e.preventDefault(); acChoose(o.dataset.ac);
 });
 
 document.addEventListener('submit', async e => {
