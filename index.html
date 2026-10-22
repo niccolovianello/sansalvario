@@ -259,15 +259,14 @@ html.locked .lock{width:100%;margin:auto;padding:0 0 8vh;background:none;border-
 html.locked .top{margin:0;padding:0 0 10px;background:none;color:#fff}
 html.locked .top::before{display:none}
 html.locked .top small{color:var(--kitmuted)}
-html.locked .top .theme{background:rgba(255,255,255,.14);border-color:transparent;color:#fff}
+html.locked .top-r{display:none}   /* niente tema/uscita nella schermata del codice */
 html.locked .top :focus-visible{outline-color:#fff}
 /* testata centrata, più grande; il motto scende sotto il pulsante */
-html.locked .top{position:relative;justify-content:center;padding:4px 52px 10px;text-align:center}
+html.locked .top{position:relative;justify-content:center;padding:4px 0 10px;text-align:center}
 html.locked .top .brand{justify-content:center}
 html.locked .top .club{font-size:clamp(22px,6.6vw,30px)}
 html.locked .top small{font-size:14px;margin-top:4px}
 html.locked .top .motto{display:none}
-html.locked .top-r{position:absolute;right:0;top:0}
 @media (max-width:899px){html.locked body::before{content:"";position:fixed;left:0;top:0;bottom:0;width:8px;background:var(--stripe)}html.locked main{padding-left:calc(var(--gut) + 8px)}}
 @media (min-width:900px){
   main{max-width:1500px;padding:22px clamp(28px,3.5vw,56px) 72px}
