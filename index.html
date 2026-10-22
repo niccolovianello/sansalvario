@@ -150,7 +150,10 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .cnt{font:700 22px var(--cond);margin:18px 0 4px}.cnt.full{color:var(--red)}
 .grp .note{font-size:13px;color:var(--muted);margin:-2px 0 6px}
 .tabs{overflow-x:auto;scrollbar-width:none}.tab{white-space:nowrap;flex:none}
-@media (max-width:480px){.tabs{gap:16px;padding:0 16px}.tab{font-size:18px;gap:6px}}
+@media (max-width:480px){.tabs{gap:14px;padding:0 16px}.tab{font-size:17px;gap:6px}}
+.tabs.more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
+.tabs.less{-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px);mask-image:linear-gradient(90deg,transparent,#000 44px)}
+.tabs.less.more{-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent)}
 @media (max-width:380px){.tabs{gap:12px}.tab{font-size:17px}}
 .prev{font-size:14px;color:var(--muted);margin:8px 0 0}
 .top-r{display:flex;align-items:center;gap:8px}
@@ -175,12 +178,14 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
 .link.del{display:block;margin:18px auto 0;color:var(--red);font-weight:500}
 .past p{margin:14px 0 0}
 @media (max-width:480px){.stat p{min-height:2.5em;line-height:1.25}}
-.theme[aria-pressed=true].staff{background:var(--navy);border-color:var(--navy);color:#fff}
+.tab .lk{flex:none;opacity:.8}
+.staffout{margin:22px 0 0;text-align:center}
+.staffout .link{font-weight:500;color:var(--muted)}
 </style>
 </head>
 <body>
 <main>
-  <div class="top"><div><h1 class="club">A.S.D. San Salvario</h1><span class="test-chip">Test</span><small id="season"></small><p class="motto">“Ci entra prima in culo che in testa”</p></div><div class="top-r"><button class="theme staff" id="staffbtn" type="button" data-staffbtn="1" aria-label="Area staff" title="Area staff" aria-pressed="false" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg></button><button class="theme" id="theme" type="button" aria-label="Tema scuro" aria-pressed="false"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><mask id="moon-cut"><rect x="-6" y="-6" width="36" height="36" fill="#fff"/><circle class="cut" cx="25" cy="2" r="6.5" fill="#000"/></mask><circle class="sun" cx="12" cy="12" r="5" fill="currentColor" mask="url(#moon-cut)"/><g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg></button><button class="theme" id="outbtn" type="button" data-out="1" aria-label="Esci da questo dispositivo" title="Esci da questo dispositivo" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg></button></div></div>
+  <div class="top"><div><h1 class="club">A.S.D. San Salvario</h1><span class="test-chip">Test</span><small id="season"></small><p class="motto">“Ci entra prima in culo che in testa”</p></div><div class="top-r"><button class="theme" id="theme" type="button" aria-label="Tema scuro" aria-pressed="false"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><mask id="moon-cut"><rect x="-6" y="-6" width="36" height="36" fill="#fff"/><circle class="cut" cx="25" cy="2" r="6.5" fill="#000"/></mask><circle class="sun" cx="12" cy="12" r="5" fill="currentColor" mask="url(#moon-cut)"/><g class="rays" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12h2.5M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg></button><button class="theme" id="outbtn" type="button" data-out="1" aria-label="Esci da questo dispositivo" title="Esci da questo dispositivo" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg></button></div></div>
   <form class="hero lock" id="lock" hidden>
     <span class="chip">AREA SQUADRA</span>
     <h2>Inserisci il codice</h2>
@@ -200,7 +205,7 @@ h2.sec{font:700 28px var(--cond);margin:34px 2px 12px}
       <button class="tab" role="tab" id="t-me" aria-selected="true" aria-controls="body" data-tab="me">La tua presenza</button>
       <button class="tab" role="tab" id="t-sq" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="sq">La squadra <em id="sqn">0</em></button>
       <button class="tab" role="tab" id="t-ris" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="ris">Risultato</button>
-      <button class="tab" role="tab" id="t-conv" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="conv" hidden>Convocati</button>
+      <button class="tab" role="tab" id="t-conv" aria-selected="false" aria-controls="body" tabindex="-1" data-tab="conv">Convocati</button>
     </div>
     <div class="body" id="body" role="tabpanel" aria-labelledby="t-me"></div>
   </section>
@@ -424,6 +429,7 @@ const match = () => MATCHES.find(m => m.id === S.sel);
 const mine = () => S.pick ? (presences[S.sel] || {})[slug(S.pick)] : null;   // la risposta salvata di chi usa questo dispositivo
 const say = (t, bad) => { S.done = t; S.bad = !!bad; };
 const WARN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>';
+const LOCK = '<svg class="lk" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const KEY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>';
 const CLOCK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok" role="alert">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
@@ -479,43 +485,32 @@ function renderStats(){
     <div class="stat"><p>${done ? 'Senza risposta' : 'Da confermare'}</p><b>${wait}</b><small>${pl(no.length, 'assente', 'assenti')} · ${pl(a.length, 'risposta', 'risposte')}</small></div>`;
   $('#sqn').textContent = ROSTER.length;
 }
+// sfuma il bordo della barra schede dove ci sono altre schede da scorrere
+function tabFade(){
+  const tb = $('.tabs');
+  tb.classList.toggle('more', tb.scrollLeft + tb.clientWidth < tb.scrollWidth - 4);
+  tb.classList.toggle('less', tb.scrollLeft > 4);
+}
 function renderBody(){
   const b = $('#body');
-  $('#t-conv').hidden = !STAFF;
-  if(S.tab === 'conv' && !STAFF) S.tab = 'me';
   document.querySelectorAll('.tab').forEach(t => { const on = t.dataset.tab === S.tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; if(on) b.setAttribute('aria-labelledby', t.id); });
   // con 4 schede su telefono la barra scorre: tieni visibile quella selezionata
   const tb = $('.tabs'), st = $('.tab[aria-selected=true]');
   if(st && st.offsetLeft + st.offsetWidth > tb.scrollLeft + tb.clientWidth) tb.scrollLeft = st.offsetLeft + st.offsetWidth - tb.clientWidth + 16;
   else if(st && st.offsetLeft < tb.scrollLeft) tb.scrollLeft = Math.max(0, st.offsetLeft - 16);
-  if(S.tab === 'staff'){
-    b.innerHTML = STAFF ? `
-      <div class="step"><div class="num">${KEY}</div><div><h2>Area staff</h2><p>Sei nell’area staff su questo dispositivo.</p></div></div>
-      ${okDiv()}` : `
-      <div class="step"><div class="num">${KEY}</div><div><h2>Area staff</h2><p>Riservata allo staff. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
+  tabFade();
+  if(S.tab === 'conv'){
+    if(!STAFF){
+      b.innerHTML = `
+      <div class="step"><div class="num">${KEY}</div><div><h2>Convocati</h2><p>Riservato allo staff: inserisci il codice staff. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
       <label for="staffcode">Codice staff</label>
       <input id="staffcode" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false">
-      <button class="go" id="staffgo">Entra nell’area staff</button>
+      <button class="go" id="staffgo">Sblocca i convocati</button>
       ${okDiv()}`;
-    return;
-  }
-  if(S.tab === 'conv'){
-    const m = match(), cu = callup();
-    if(S.cFor !== m.id){ S.cFor = m.id; S.cSel = new Set(cu.list.map(x => slug(x.nome))); S.done = ''; }
-    const head = `<div class="step"><div class="num">01</div><div><h2>Convocazioni</h2><p>${esc(m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario')} · ${esc(dShort(m.date))}. Per un’altra partita, sceglila dal calendario.</p></div></div>`;
-    const who = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}`; };
-    if(!cu.av.length){ b.innerHTML = head + '<p class="prev">Nessun calciatore ha ancora dato disponibilità.</p>'; return; }
-    if(cu.auto){
-      b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Fino a ${MAX_CONV} sono tutti convocati automaticamente.</p>
-        <div class="grp"><ul>${cu.av.map(x => `<li><div class="who">${who(x)}</div></li>`).join('')}</ul></div>`;
       return;
     }
-    b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Scegli fino a ${MAX_CONV} convocati.</p>
-      <div class="cnt" id="cnt"></div>
-      <div>${cu.av.map(x => { const k = slug(x.nome); return `<label class="pick">${who(x)}<input type="checkbox" data-conv="${esc(k)}" ${S.cSel.has(k) ? 'checked' : ''}></label>`; }).join('')}</div>
-      <button class="go" id="csave">Salva convocazioni</button>
-      ${okDiv()}`;
-    callupInputs();
+    renderConv(b);
+    b.insertAdjacentHTML('beforeend', '<p class="staffout"><button class="link" data-staffout="1">Esci dall’area staff</button></p>');
     return;
   }
   if(S.tab === 'ris'){
@@ -592,6 +587,24 @@ function renderBody(){
     ${okDiv()}`;
   if(S.typed) acRender();
 }
+function renderConv(b){
+  const m = match(), cu = callup();
+  if(S.cFor !== m.id){ S.cFor = m.id; S.cSel = new Set(cu.list.map(x => slug(x.nome))); S.done = ''; }
+  const head = `<div class="step"><div class="num">01</div><div><h2>Convocazioni</h2><p>${esc(m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario')} · ${esc(dShort(m.date))}. Per un’altra partita, sceglila dal calendario.</p></div></div>`;
+  const who = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}`; };
+  if(!cu.av.length){ b.innerHTML = head + '<p class="prev">Nessun calciatore ha ancora dato disponibilità.</p>'; return; }
+  if(cu.auto){
+    b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Fino a ${MAX_CONV} sono tutti convocati automaticamente.</p>
+      <div class="grp"><ul>${cu.av.map(x => `<li><div class="who">${who(x)}</div></li>`).join('')}</ul></div>`;
+    return;
+  }
+  b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Scegli fino a ${MAX_CONV} convocati.</p>
+    <div class="cnt" id="cnt"></div>
+    <div>${cu.av.map(x => { const k = slug(x.nome); return `<label class="pick">${who(x)}<input type="checkbox" data-conv="${esc(k)}" ${S.cSel.has(k) ? 'checked' : ''}></label>`; }).join('')}</div>
+    <button class="go" id="csave">Salva convocazioni</button>
+    ${okDiv()}`;
+  callupInputs();
+}
 // Aggiorna anteprima marcatori e pulsante Salva senza ridisegnare il modulo
 function resultInputs(){
   const sc = scorerList(S.rSc), ok = /^\d{1,2}$/.test(S.rGf) && /^\d{1,2}$/.test(S.rGs);
@@ -626,10 +639,12 @@ function acChoose(name){
   const r = ROSTER.find(x => x.name === name); if(!r) return;
   S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; S.edit = false; renderBody();
 }
-// Pulsanti in alto accanto al tema: area staff (premuto = dentro) ed esci
+// Scheda Convocati: sempre visibile, col lucchetto finché non si inserisce il codice staff
 function renderTop(){
-  const sb = $('#staffbtn'); sb.hidden = $('#outbtn').hidden = false;
-  sb.setAttribute('aria-pressed', !!STAFF); sb.title = STAFF ? 'Area staff: sei dentro. Tocca per uscire' : 'Area staff';
+  $('#outbtn').hidden = false;
+  const t = $('#t-conv');
+  t.innerHTML = 'Convocati' + (STAFF ? '' : LOCK);
+  t.title = STAFF ? '' : 'Riservato allo staff';
 }
 // Gol per giocatore sommando i marcatori di tutte le partite con un risultato
 function renderRank(){
@@ -661,10 +676,7 @@ document.addEventListener('click', async e => {
   else if(d.edit){ S.edit = true; renderBody(); }
   else if(d.fix){ S.fix = true; renderBody(); }
   else if(d.out){ if(!confirm('Uscire da questo dispositivo? Per rientrare servirà di nuovo il codice squadra.')) return; try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); }catch(x){} location.reload(); }
-  else if(d.staffbtn){
-    if(!STAFF){ S.tab = 'staff'; S.done = ''; renderBody(); $('.panel').scrollIntoView({behavior:'smooth'}); }
-    else if(confirm('Uscire dall’area staff su questo dispositivo?')){ STAFF = ''; try{ localStorage.removeItem(K('staff')); }catch(x){} if(S.tab === 'staff' || S.tab === 'conv') S.tab = 'me'; renderBody(); renderTop(); }
-  }
+  else if(d.staffout){ if(!confirm('Uscire dall’area staff su questo dispositivo?')) return; STAFF = ''; S.done = ''; try{ localStorage.removeItem(K('staff')); }catch(x){} renderBody(); renderTop(); }
   else if(t.id === 'staffgo'){
     const code = normCode($('#staffcode').value);
     try{ say(code && await staffCheck(code) ? '' : 'Codice staff errato. Riprova.', true); }
@@ -715,6 +727,8 @@ document.addEventListener('keydown', e => {
   else if(e.key === 'Enter' && n){ e.preventDefault(); acChoose(S.acList[S.acI].name); }
   else if(e.key === 'Escape'){ $('#acl').hidden = true; e.target.setAttribute('aria-expanded', false); }
 });
+$('.tabs').addEventListener('scroll', tabFade, {passive:true});
+window.addEventListener('resize', tabFade);
 // frecce, Home e Fine per muoversi tra le schede
 document.addEventListener('keydown', e => {
   const t = e.target.closest && e.target.closest('[role=tab]'); if(!t || !['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
