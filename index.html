@@ -119,6 +119,11 @@ dt{font-weight:700}dd{margin:0}
 .lock label{color:#fff;margin-top:26px}
 .lock input{text-transform:uppercase;letter-spacing:.3em;font:700 24px var(--cond);text-align:center;border:0}
 .lock .err{min-height:24px;margin-top:12px;font-weight:700;color:#ffb3c1}
+.pick{display:flex;align-items:center;gap:14px;margin:0;padding:9px 0;border-bottom:1px solid var(--line);font-weight:400;cursor:pointer}
+.pick input{width:22px;height:22px;min-height:0;margin:0 0 0 auto;accent-color:var(--red);flex:none}
+.pick.off{opacity:.45;cursor:not-allowed}
+.cnt{font:700 22px var(--cond);margin:18px 0 4px}.cnt.full{color:var(--red)}
+.grp .note{font-size:13px;color:var(--muted);margin:-2px 0 6px}
 .tabs{overflow-x:auto;scrollbar-width:none}.tab{white-space:nowrap;flex:none}
 @media (max-width:480px){.tabs{gap:16px;padding:0 16px}.tab{font-size:18px;gap:6px}}
 @media (max-width:380px){.tabs{gap:12px}.tab{font-size:17px}}
@@ -150,6 +155,7 @@ dt{font-weight:700}dd{margin:0}
       <button class="tab" role="tab" id="t-me" aria-selected="true" data-tab="me">La tua presenza</button>
       <button class="tab" role="tab" id="t-sq" aria-selected="false" data-tab="sq">La squadra <em id="sqn">0</em></button>
       <button class="tab" role="tab" id="t-ris" aria-selected="false" data-tab="ris">Risultato</button>
+      <button class="tab" role="tab" id="t-conv" aria-selected="false" data-tab="conv" hidden>Convocati</button>
     </div>
     <div class="body" id="body"></div>
   </section>
@@ -201,7 +207,8 @@ const DB = CONFIG.firebaseUrl.replace(/\/$/,'');
 let BASE = '';   // DB + '/t/<codice>', impostato da unlock()
 let sorted = [];
 const S = {sel:'', tab:'me', role:'calciatore', pick:'', typed:'', stato:'', tavola:'', done:''};
-let presences = {}, results = {};
+let presences = {}, results = {}, callups = {};
+const MAX_CONV = 20;   // massimo convocati per partita
 let STAFF = '';   // codice staff, se questo dispositivo è entrato nell’area staff
 try{ const m = JSON.parse(localStorage.getItem('mio') || '{}'); S.role = m.role || S.role; S.pick = m.pick || ''; STAFF = localStorage.getItem('staff') || ''; }catch(e){}
 
@@ -316,8 +323,9 @@ async function unlock(code){
 async function load(){
   let changed = false;
   try{
-    const [p, r] = await Promise.all(['presenze','risultati'].map(k => fetch(`${BASE}/${k}.json`, {cache:'no-store'})));
+    const [p, r, c] = await Promise.all(['presenze','risultati','convocati'].map(k => fetch(`${BASE}/${k}.json`, {cache:'no-store'})));
     if(p.ok) presences = (await p.json()) || {};
+    if(c.ok) callups = (await c.json()) || {};
     if(r.ok){
       const next = (await r.json()) || {};
       changed = JSON.stringify(next) !== JSON.stringify(results);
@@ -356,6 +364,23 @@ async function saveResult(id, score, scorers){
 }
 const match = () => MATCHES.find(m => m.id === S.sel);
 const answers = () => Object.values(presences[S.sel] || {});
+// Convocati della partita selezionata: fino a 20 disponibili sono tutti convocati, oltre decide lo staff
+function callup(){
+  const av = answers().filter(x => x.ruolo === 'calciatore' && x.stato === 'si');
+  if(av.length <= MAX_CONV) return {auto:true, decided:true, av, list:av};
+  const c = callups[S.sel], sel = (c && c.giocatori) || {};
+  return {auto:false, decided:!!c, av, list:av.filter(x => sel[slug(x.nome)])};
+}
+// Solo lo staff può salvare: insieme ai convocati si scrive la prova sotto proof/<codice staff>
+async function saveCallup(id, keys){
+  try{
+    const giocatori = Object.fromEntries(keys.map(k => [k, true]));
+    const r = await patch({[`convocati/${id}`]: {giocatori, ts:TS}, [`proof/${STAFF}/${id}`]: TS});
+    if(!r.ok) return false;
+    callups[id] = {giocatori};
+    return true;
+  }catch(e){ return false; }
+}
 
 function renderHero(){
   const m = match(), o = outcome(m);
@@ -383,7 +408,13 @@ function renderStats(){
 }
 function renderBody(){
   const b = $('#body');
+  $('#t-conv').hidden = !STAFF;
+  if(S.tab === 'conv' && !STAFF) S.tab = 'me';
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.tab === S.tab));
+  // con 4 schede su telefono la barra scorre: tieni visibile quella selezionata
+  const tb = $('.tabs'), st = $('.tab[aria-selected=true]');
+  if(st && st.offsetLeft + st.offsetWidth > tb.scrollLeft + tb.clientWidth) tb.scrollLeft = st.offsetLeft + st.offsetWidth - tb.clientWidth + 16;
+  else if(st && st.offsetLeft < tb.scrollLeft) tb.scrollLeft = Math.max(0, st.offsetLeft - 16);
   if(S.tab === 'staff'){
     b.innerHTML = STAFF ? `
       <div class="step"><div class="num">🔑</div><div><h3>Area staff</h3><p>Sei nell’area staff su questo dispositivo.</p></div></div>
@@ -393,6 +424,25 @@ function renderBody(){
       <input id="staffcode" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false">
       <button class="go" id="staffgo">Entra nell’area staff</button>
       <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+    return;
+  }
+  if(S.tab === 'conv'){
+    const m = match(), cu = callup();
+    if(S.cFor !== m.id){ S.cFor = m.id; S.cSel = new Set(cu.list.map(x => slug(x.nome))); S.done = ''; }
+    const head = `<div class="step"><div class="num">01</div><div><h3>Convocazioni</h3><p>${esc(m.home ? 'San Salvario – ' + m.opp : m.opp + ' – San Salvario')} · ${esc(dShort(m.date))}. Per un’altra partita, sceglila dal calendario.</p></div></div>`;
+    const who = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}`; };
+    if(!cu.av.length){ b.innerHTML = head + '<p class="prev">Nessun calciatore ha ancora dato disponibilità.</p>'; return; }
+    if(cu.auto){
+      b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Fino a ${MAX_CONV} sono tutti convocati automaticamente.</p>
+        <div class="grp"><ul>${cu.av.map(x => `<li><div class="who">${who(x)}</div></li>`).join('')}</ul></div>`;
+      return;
+    }
+    b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Scegli fino a ${MAX_CONV} convocati.</p>
+      <div class="cnt" id="cnt"></div>
+      <div>${cu.av.map(x => { const k = slug(x.nome); return `<label class="pick">${who(x)}<input type="checkbox" data-conv="${esc(k)}" ${S.cSel.has(k) ? 'checked' : ''}></label>`; }).join('')}</div>
+      <button class="go" id="csave">Salva convocazioni</button>
+      <div class="ok" id="ok" role="status">${esc(S.done)}</div>`;
+    callupInputs();
     return;
   }
   if(S.tab === 'ris'){
@@ -419,10 +469,17 @@ function renderBody(){
     const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li><div class="who">${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}</div><span>${x.tavola === 'si' && x.stato === 'si' ? 'A tavola' : ''}</span></li>`; };
     const grp = (t, arr) => `<div class="grp"><h4>${t} (${arr.length})</h4><ul>${arr.map(li).join('') || '<li><span>Nessuno</span></li>'}</ul></div>`;
     const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
+    const cu = callup(), inConv = new Set(cu.list.map(x => slug(x.nome)));
+    const present = role => {
+      const yes = a.filter(x => x.ruolo === role && x.stato === 'si');
+      if(role !== 'calciatore') return grp('Presenti', yes);
+      if(!cu.decided) return grp('Presenti', yes).replace('</h4>', `</h4><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
+      return grp('Convocati', cu.list) + (cu.auto ? '' : grp('Disponibili non convocati', yes.filter(x => !inConv.has(slug(x.nome)))));
+    };
     const sec = (role, title) => {
       const ra = a.filter(x => x.ruolo === role), rw = wait.filter(x => x.ruolo === role);
       return `<h3 class="sqh">${title}<em>${ROSTER.filter(r => r.role === role).length}</em></h3>` +
-        grp('Presenti', ra.filter(x => x.stato === 'si')) + grp('Assenti', ra.filter(x => x.stato === 'no')) + grp('Da confermare', rw);
+        present(role) + grp('Assenti', ra.filter(x => x.stato === 'no')) + grp('Da confermare', rw);
     };
     b.innerHTML = sec('calciatore', 'Calciatori') + sec('dirigente', 'Dirigenti');
     return;
@@ -451,6 +508,13 @@ function resultInputs(){
     (ok && goals > +S.rGf ? ` Attenzione: ${goals} marcatori ma ${S.rGf} gol.` : '');
   $('#rsave').disabled = !ok;
 }
+// Aggiorna contatore e caselle dei convocati senza ridisegnare l’elenco
+function callupInputs(){
+  const n = S.cSel.size, full = n >= MAX_CONV;
+  $('#cnt').textContent = `Convocati: ${n}/${MAX_CONV}`;
+  $('#cnt').classList.toggle('full', full);
+  document.querySelectorAll('[data-conv]').forEach(c => { c.disabled = full && !c.checked; c.closest('.pick').classList.toggle('off', c.disabled); });
+}
 function renderFoot(){
   $('#foot').innerHTML = `<span class="foot-btns"><button class="out-btn" data-out="1">Esci da questo dispositivo</button>${STAFF ? '<button class="out-btn" data-staffout="1">Esci dall’area staff</button>' : '<button class="out-btn" data-staffin="1">Area staff</button>'}</span>`;
 }
@@ -469,12 +533,18 @@ document.addEventListener('click', async e => {
   else if(d.tavola){ S.tavola = d.tavola; renderBody(); }
   else if(d.out){ try{ localStorage.removeItem('codice'); localStorage.removeItem('staff'); }catch(x){} location.reload(); }
   else if(d.staffin){ S.tab = 'staff'; S.done = ''; renderBody(); $('.panel').scrollIntoView({behavior:'smooth'}); }
-  else if(d.staffout){ STAFF = ''; try{ localStorage.removeItem('staff'); }catch(x){} if(S.tab === 'staff') S.tab = 'me'; renderBody(); renderFoot(); }
+  else if(d.staffout){ STAFF = ''; try{ localStorage.removeItem('staff'); }catch(x){} if(S.tab === 'staff' || S.tab === 'conv') S.tab = 'me'; renderBody(); renderFoot(); }
   else if(t.id === 'staffgo'){
     const code = normCode($('#staffcode').value);
     try{ S.done = code && await staffCheck(code) ? '' : 'Codice staff errato. Riprova.'; }
     catch(x){ S.done = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; }
-    if(!S.done){ STAFF = code; try{ localStorage.setItem('staff', code); }catch(x){} S.done = 'Fatto: sei entrato nell’area staff.'; renderFoot(); }
+    if(!S.done){ STAFF = code; try{ localStorage.setItem('staff', code); }catch(x){} S.done = ''; S.tab = 'conv'; S.cFor = ''; renderFoot(); }
+    renderBody();
+  }
+  else if(t.id === 'csave'){
+    const keys = [...S.cSel].slice(0, MAX_CONV);
+    const ok = await saveCallup(S.sel, keys);
+    S.done = ok ? 'Convocazioni salvate.' : 'Non sono riuscito a salvare. Controlla la connessione o rientra nell’area staff.';
     renderBody();
   }
   else if(t.id === 'rsave' || t.id === 'rclear'){
@@ -484,7 +554,7 @@ document.addEventListener('click', async e => {
     S.done = ok ? (clear ? 'Risultato eliminato.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione e riprova.';
     renderHero(); renderCal(); renderBody();
   }
-  else if(d.match){ S.sel = d.match; S.stato = S.tavola = S.done = ''; S.rFor = ''; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(d.match){ S.sel = d.match; S.stato = S.tavola = S.done = ''; S.rFor = S.cFor = ''; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
   else if(t.id === 'go'){
     const name = (S.typed || S.pick).trim();
     const ok = await save(S.sel, {nome:name, ruolo:S.role, stato:S.stato, tavola:S.stato==='si' ? S.tavola : 'no'});
@@ -494,6 +564,8 @@ document.addEventListener('click', async e => {
   }
 });
 document.addEventListener('change', e => {
+  const ck = e.target.dataset && e.target.dataset.conv;
+  if(ck){ e.target.checked ? S.cSel.add(ck) : S.cSel.delete(ck); $('#ok').textContent = ''; callupInputs(); return; }
   if(e.target.id === 'pick'){ S.pick = e.target.value; S.typed = ''; S.done = ''; renderBody(); }
 });
 document.addEventListener('input', e => {
