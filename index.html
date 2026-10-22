@@ -149,7 +149,7 @@ dt{font-weight:700}dd{margin:0}
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" id="t-me" aria-selected="true" data-tab="me">La tua presenza</button>
       <button class="tab" role="tab" id="t-sq" aria-selected="false" data-tab="sq">La squadra <em id="sqn">0</em></button>
-      <button class="tab" role="tab" id="t-ris" aria-selected="false" data-tab="ris" hidden>Risultato</button>
+      <button class="tab" role="tab" id="t-ris" aria-selected="false" data-tab="ris">Risultato</button>
     </div>
     <div class="body" id="body"></div>
   </section>
@@ -335,7 +335,7 @@ async function save(matchId, rec){
     return true;
   }catch(e){ return false; }
 }
-/* ---- Area staff: il risultato si salva solo se insieme si scrive la “prova” sotto proof/<codice staff> ---- */
+/* ---- Area staff: il codice staff si verifica scrivendo una “prova” sotto proof/<codice staff> ---- */
 const TS = {'.sv':'timestamp'};
 const patch = body => fetch(BASE + '.json', {method:'PATCH', body:JSON.stringify(body)});
 // true = codice staff giusto, false = sbagliato; lancia un errore se manca la connessione
@@ -345,9 +345,10 @@ async function staffCheck(code){
   if(!r.ok) throw new Error(r.status);
   return true;
 }
+// I risultati li può modificare chiunque abbia il codice squadra
 async function saveResult(id, score, scorers){
   try{
-    const r = await patch({[`risultati/${id}`]: {score, scorers, ts:TS}, [`proof/${STAFF}/${id}`]: TS});
+    const r = await fetch(`${BASE}/risultati/${id}.json`, {method:'PUT', body:JSON.stringify({score, scorers, ts:TS})});
     if(!r.ok) return false;
     results[id] = {score, scorers}; applyResults();
     return true;
@@ -382,11 +383,12 @@ function renderStats(){
 }
 function renderBody(){
   const b = $('#body');
-  $('#t-ris').hidden = !STAFF;
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.tab === S.tab));
   if(S.tab === 'staff'){
-    b.innerHTML = `
-      <div class="step"><div class="num">🔑</div><div><h3>Area staff</h3><p>Serve per inserire i risultati. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
+    b.innerHTML = STAFF ? `
+      <div class="step"><div class="num">🔑</div><div><h3>Area staff</h3><p>Sei nell’area staff su questo dispositivo.</p></div></div>
+      <div class="ok" id="ok" role="status">${esc(S.done)}</div>` : `
+      <div class="step"><div class="num">🔑</div><div><h3>Area staff</h3><p>Riservata allo staff. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
       <label for="staffcode">Codice staff</label>
       <input id="staffcode" type="text" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false">
       <button class="go" id="staffgo">Entra nell’area staff</button>
@@ -467,19 +469,19 @@ document.addEventListener('click', async e => {
   else if(d.tavola){ S.tavola = d.tavola; renderBody(); }
   else if(d.out){ try{ localStorage.removeItem('codice'); localStorage.removeItem('staff'); }catch(x){} location.reload(); }
   else if(d.staffin){ S.tab = 'staff'; S.done = ''; renderBody(); $('.panel').scrollIntoView({behavior:'smooth'}); }
-  else if(d.staffout){ STAFF = ''; try{ localStorage.removeItem('staff'); }catch(x){} if(S.tab === 'ris') S.tab = 'me'; renderBody(); renderFoot(); }
+  else if(d.staffout){ STAFF = ''; try{ localStorage.removeItem('staff'); }catch(x){} if(S.tab === 'staff') S.tab = 'me'; renderBody(); renderFoot(); }
   else if(t.id === 'staffgo'){
     const code = normCode($('#staffcode').value);
     try{ S.done = code && await staffCheck(code) ? '' : 'Codice staff errato. Riprova.'; }
     catch(x){ S.done = 'Non riesco a collegarmi. Controlla la connessione e riprova.'; }
-    if(!S.done){ STAFF = code; try{ localStorage.setItem('staff', code); }catch(x){} S.tab = 'ris'; S.rFor = ''; renderFoot(); }
+    if(!S.done){ STAFF = code; try{ localStorage.setItem('staff', code); }catch(x){} S.done = 'Fatto: sei entrato nell’area staff.'; renderFoot(); }
     renderBody();
   }
   else if(t.id === 'rsave' || t.id === 'rclear'){
     const clear = t.id === 'rclear', id = S.sel;
     const ok = await saveResult(id, clear ? '' : `${+S.rGf}-${+S.rGs}`, clear ? '' : scorerList(S.rSc).map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', '));
     if(ok && clear){ S.rGf = S.rGs = S.rSc = ''; }
-    S.done = ok ? (clear ? 'Risultato eliminato.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione o rientra nell’area staff.';
+    S.done = ok ? (clear ? 'Risultato eliminato.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione e riprova.';
     renderHero(); renderCal(); renderBody();
   }
   else if(d.match){ S.sel = d.match; S.stato = S.tavola = S.done = ''; S.rFor = ''; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
