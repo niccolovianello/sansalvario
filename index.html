@@ -655,6 +655,7 @@ const KEY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke=
 const FORK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>';   // forchetta e coltello (a tavola)
 const COPY = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>';
 const PLUS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+const MINUS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>';
 const CLOCK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok">${esc(S.done)}${S.undo && S.tab === 'me' ? `${S.done ? '' : 'Risposta salvata.'} <button type="button" class="link" data-undo="1">Annulla</button>` : ''}</div>`;
 // link alla partita: #<id> nell’indirizzo, così si può mandare nel gruppo
@@ -765,9 +766,9 @@ function drawBody(){
   }
   if(S.tab === 'sq'){
     const a = answers(), names = new Set(a.map(x => slug(x.nome)));
-    // a destra: forchetta e coltello per chi resta a tavola; l’admin ha anche “Segna come disponibile” accanto al ruolo
+    // a destra: forchetta e coltello per chi resta a tavola; l’admin ha anche “Segna come disponibile / assente” accanto al ruolo
     const fork = x => x.tavola === 'si' ? `<span class="fk" role="img" aria-label="A tavola" title="A tavola">${FORK}</span>` : '';
-    const mark = x => ADMIN && x.stato !== 'si' ? `<button type="button" class="mk" data-mark="${esc(slug(x.nome))}" aria-label="Segna ${esc(x.nome)} come disponibile">${PLUS}<span><span class="lg">Segna come </span>disponibile</span></button>` : '';
+    const mark = x => { if(!ADMIN) return ''; const yes = x.stato === 'si', w = yes ? 'assente' : 'disponibile'; return `<button type="button" class="mk" data-mark="${esc(slug(x.nome))}" data-to="${yes ? 'no' : 'si'}" aria-label="Segna ${esc(x.nome)} come ${w}">${yes ? MINUS : PLUS}<span><span class="lg">Segna come </span>${w}</span></button>`; };
     const li = x => `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}>${row(x, `<span class="tv${mark(x) ? ' adm' : ''}">${mark(x)}${fork(x)}</span>`)}</li>`;
     const ul = arr => `<ul>${arr.map(li).join('') || '<li class="none">Ancora nessuno</li>'}</ul>`;
     // split = calciatori disponibili raggruppati per ruolo
@@ -1008,14 +1009,15 @@ document.addEventListener('click', async e => {
     renderBody();
   }
   else if(d.mark && ADMIN && !S.busy){
-    // l’admin segna disponibile chi non ha risposto o ha detto no; a tavola resta com’era (“no” se non aveva risposto)
+    // l’admin segna disponibile (o assente) chiunque; a tavola resta com’era (“no” se non aveva risposto)
     const r = ROSTER.find(x => slug(x.name) === d.mark); if(!r) return;
     const id = S.sel, prev = (presences[id] || {})[d.mark] || null;
     S.busy = true; t.disabled = true;
-    const ok = await save(id, {nome:r.name, ruolo:r.role, stato:'si', tavola:prev ? prev.tavola : 'no'});
+    const to = d.to === 'no' ? 'no' : 'si';
+    const ok = await save(id, {nome:r.name, ruolo:r.role, stato:to, tavola:prev ? prev.tavola : 'no'});
     S.busy = false;
     S.aUndo = ok ? {id, key:d.mark, prev} : null;
-    say(ok ? `${r.name} segnato come disponibile.` : 'Non sono riuscito a salvare. Controlla la connessione e riprova.', !ok);
+    say(ok ? `${r.name} segnato come ${to === 'si' ? 'disponibile' : 'assente'}.` : 'Non sono riuscito a salvare. Controlla la connessione e riprova.', !ok);
     S.focus = ok ? '[data-aundo]' : ''; renderStats(); renderBody();
   }
   else if(d.aundo && S.aUndo){
