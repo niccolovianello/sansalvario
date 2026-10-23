@@ -172,20 +172,28 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .grp h3{margin:14px 0 2px;font-size:15px;font-weight:700;color:var(--muted)}
 .grp .note{font-size:14px;color:var(--muted);margin:0 0 4px}
 .grp ul{list-style:none;margin:0;padding:0}
-.grp li{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;padding:4px 0;border-bottom:1px solid var(--line);font-size:15px}
-.grp li span{color:var(--muted);font-size:14px;text-align:right}
+/* ogni sezione è una griglia condivisa: numero | nome | ruolo | a tavola; le righe usano subgrid, così i ruoli sono incolonnati subito dopo il nome più lungo */
+.grp,.pl{display:grid;grid-template-columns:32px minmax(0,max-content) auto minmax(0,1fr);column-gap:12px;align-items:center}
+.grp h3,.grp .note,.ph,.grp li.none{grid-column:1/-1}
+.grp ul{display:contents}
+.grp li,.pick{display:grid;grid-template-columns:subgrid;grid-column:1/-1;align-items:center;min-height:44px;padding:4px 0;border-bottom:1px solid var(--line);font-size:15px}
+.grp li.none{display:block;color:var(--muted);font-size:14px}
 .grp li.me{font-weight:700}
-.grp .who{display:flex;align-items:center;gap:12px}
+.nm{display:flex;align-items:center;gap:8px;min-width:0}
+.tv{grid-column:4;justify-self:end;color:var(--muted);font-size:14px;text-align:right}
+.ph{margin:12px 0 0;font-size:12.5px;font-weight:700;letter-spacing:.03em;color:var(--muted)}
+.ph:first-child{margin-top:6px}
 .nr{flex:none;width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:15px;font-weight:800;color:var(--val)}
 .nr.none{background:none}
 /* ruolo in campo e capitano */
 .pos,.cap{flex:none;font-style:normal}
-.pos{display:inline-block;margin-left:-4px;padding:4px 6px;border-radius:6px;background:var(--soft);color:var(--muted);font-size:11px;font-weight:700;line-height:1;letter-spacing:.06em}
-.cap{display:inline-grid;place-items:center;width:20px;height:20px;margin-left:-4px;border-radius:6px;background:var(--stripe);color:#fff;font-size:12px;font-weight:800;line-height:1}
+.pos{grid-column:3;display:inline-block;padding:4px 6px;border-radius:6px;background:var(--soft);color:var(--muted);font-size:11px;font-weight:700;line-height:1;letter-spacing:.06em}
+.cap{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;background:var(--stripe);color:#fff;font-size:12px;font-weight:800;line-height:1}
 .step h2 .cap{margin-left:6px;vertical-align:2px}
+.ac li .cap{margin-left:-4px}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.pick{display:flex;align-items:center;gap:12px;margin:0;min-height:48px;border-bottom:1px solid var(--line);font-weight:400;cursor:pointer}
-.pick input{width:22px;height:22px;min-height:0;margin:0 0 0 auto;accent-color:var(--kit);flex:none}
+.pick{margin:0;min-height:48px;font-weight:400;cursor:pointer}
+.pick input{grid-column:4;justify-self:end;width:22px;height:22px;min-height:0;margin:0;accent-color:var(--kit)}
 .pick.off{opacity:.45;cursor:not-allowed}
 .rt{width:100%;margin-top:4px;padding:10px 12px;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:12px;background:var(--field);color:var(--ink)}
 .cnt{font-size:20px;font-weight:800;margin:16px 0 4px}.cnt.full{color:var(--red)}
@@ -555,6 +563,12 @@ const capTag = r => r && r.captain ? '<i class="cap" role="img" aria-label="Capi
 const posTag = r => r && r.pos && POS_NAME[r.pos] ? `<i class="pos" title="${POS_NAME[r.pos]}"><span class="vh">${POS_NAME[r.pos]}</span><span aria-hidden="true">${r.pos}</span></i>` : '';
 const badges = r => capTag(r) + posTag(r);
 const roleName = r => r.role === 'dirigente' ? 'Dirigente' : (POS_NAME[r.pos] || 'Calciatore');
+const POS_PL = {POR:'Portieri', DIF:'Difensori', CEN:'Centrocampisti', ATT:'Attaccanti'};
+const rosterOf = n => ROSTER.find(r => slug(r.name) === slug(n));
+// Una riga della rosa: numero, nome (col capitano), ruolo in colonna, poi l’eventuale cella a destra
+const row = (x, right) => { const rk = rosterOf(x.nome); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}<span class="nm">${esc(x.nome)}${capTag(rk)}</span>${posTag(rk)}${right || ''}`; };
+// Divide un elenco per ruolo: [["Portieri", [...]], ["Difensori", [...]], …]; chi non ha ruolo finisce in "Altri"
+const byPos = arr => { const b = {}; arr.forEach(x => { const rk = rosterOf(x.nome), k = rk && POS_PL[rk.pos] ? rk.pos : 'ALTRI'; (b[k] = b[k] || []).push(x); }); return ['POR','DIF','CEN','ATT','ALTRI'].filter(k => b[k]).map(k => [POS_PL[k] || 'Altri', b[k]]); };
 // Carica presenze e risultati; restituisce true se i risultati sono cambiati
 async function load(){
   let changed = false;
@@ -741,8 +755,10 @@ function drawBody(){
   }
   if(S.tab === 'sq'){
     const a = answers(), names = new Set(a.map(x => slug(x.nome)));
-    const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}><div class="who">${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}${badges(rk)}</div><span>${x.tavola === 'si' ? 'A tavola' : ''}</span></li>`; };
-    const grp = (t, arr, keep) => !arr.length && !keep ? '' : `<div class="grp"><h3>${t} (${arr.length})</h3><ul>${arr.map(li).join('') || '<li><span>Ancora nessuno</span></li>'}</ul></div>`;
+    const li = x => `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}>${row(x, `<span class="tv">${x.tavola === 'si' ? 'A tavola' : ''}</span>`)}</li>`;
+    const ul = arr => `<ul>${arr.map(li).join('') || '<li class="none">Ancora nessuno</li>'}</ul>`;
+    // split = calciatori disponibili raggruppati per ruolo
+    const grp = (t, arr, keep, split) => !arr.length && !keep ? '' : `<div class="grp"><h3>${t} (${arr.length})</h3>${split && arr.length ? byPos(arr).map(([h, a]) => `<h4 class="ph">${h}</h4>` + ul(a)).join('') : ul(arr)}</div>`;
     const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
     const cu = callup(), inConv = new Set(cu.list.map(x => slug(x.nome)));
     // “Convocati” solo quando lo staff ha scelto; prima sono “Disponibili” (a partita finita “Presenti”)
@@ -750,9 +766,9 @@ function drawBody(){
     const present = role => {
       const yes = a.filter(x => x.ruolo === role && x.stato === 'si');
       if(role !== 'calciatore') return grp(avail, yes, true);
-      if(cu.auto) return grp(avail, yes, true).replace('</h3>', over(match()) ? '</h3>' : `</h3><p class="note">Fino a ${MAX_CONV} disponibili sono tutti convocati.</p>`);
-      if(!cu.decided) return grp(avail, yes, true).replace('</h3>', `</h3><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
-      return grp('Convocati', cu.list, true) + grp('Disponibili non convocati', yes.filter(x => !inConv.has(slug(x.nome))));
+      if(cu.auto) return grp(avail, yes, true, true).replace('</h3>', over(match()) ? '</h3>' : `</h3><p class="note">Fino a ${MAX_CONV} disponibili sono tutti convocati.</p>`);
+      if(!cu.decided) return grp(avail, yes, true, true).replace('</h3>', `</h3><p class="note">Sono più di ${MAX_CONV}: convocazioni in attesa dello staff.</p>`);
+      return grp('Convocati', cu.list, true, true) + grp('Disponibili non convocati', yes.filter(x => !inConv.has(slug(x.nome))), false, true);
     };
     const sec = (role, title) => {
       const ra = a.filter(x => x.ruolo === role), rw = wait.filter(x => x.ruolo === role);
@@ -800,16 +816,15 @@ function renderConv(b){
   const m = match(), cu = callup();
   if(S.cFor !== m.id){ S.cFor = m.id; S.cSel = new Set(cu.list.map(x => slug(x.nome))); S.done = ''; }
   const head = `<div class="step"><div><h2>Convocazioni</h2><p>Fino a ${MAX_CONV} disponibili sono tutti convocati; oltre, scegli tu i ${MAX_CONV}.</p></div></div>`;
-  const who = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}${badges(rk)}`; };
   if(!cu.av.length){ b.innerHTML = head + '<p class="prev">Nessun calciatore ha ancora dato disponibilità.</p>'; return; }
   if(cu.auto){
     b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Fino a ${MAX_CONV} sono tutti convocati automaticamente.</p>
-      <div class="grp"><ul>${cu.av.map(x => `<li><div class="who">${who(x)}</div></li>`).join('')}</ul></div>`;
+      <div class="grp">${byPos(cu.av).map(([h, a]) => `<h4 class="ph">${h}</h4><ul>${a.map(x => `<li>${row(x)}</li>`).join('')}</ul>`).join('')}</div>`;
     return;
   }
   b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Scegli fino a ${MAX_CONV} convocati.</p>
     <div class="cnt" id="cnt"></div>
-    <div>${cu.av.map(x => { const k = slug(x.nome); return `<label class="pick">${who(x)}<input type="checkbox" data-conv="${esc(k)}" ${S.cSel.has(k) ? 'checked' : ''}></label>`; }).join('')}</div>
+    <div class="pl">${byPos(cu.av).map(([h, a]) => `<h4 class="ph">${h}</h4>` + a.map(x => { const k = slug(x.nome); return `<label class="pick">${row(x, `<input type="checkbox" data-conv="${esc(k)}" ${S.cSel.has(k) ? 'checked' : ''}>`)}</label>`; }).join('')).join('')}</div>
     <button class="go" id="csave">Salva convocazioni</button>
     ${okDiv()}`;
   callupInputs();
