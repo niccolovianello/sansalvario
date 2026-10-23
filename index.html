@@ -391,7 +391,7 @@ const dShort = d => new Date(d).toLocaleDateString('it-IT',{weekday:'short',day:
 const hhmm = d => new Date(d).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
 const DB = CONFIG.firebaseUrl.replace(/\/$/,'');
 // Sito di test (…/sansalvario/dev/ o …/sansalvario-test/): salva codice e nome con un prefisso, per non mescolarli col sito vero sullo stesso indirizzo.
-const TEST = /-test\/|\/dev\//.test(location.pathname);
+const TEST = /\/dev-/.test(location.pathname);
 const K = k => (TEST ? 'test-' : '') + k;
 function setTheme(dark, keep){
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
