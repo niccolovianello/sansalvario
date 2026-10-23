@@ -1,4 +1,5 @@
-# Publishes main at / and develop at /dev/ as one GitHub Pages site.
+# Publishes main at / and develop at /<DEV_PATH secret>/ as one GitHub Pages site.
+# The dev path is a secret so it does not appear in this public repo.
 name: Pages
 on:
   push:
@@ -19,11 +20,12 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - run: test -n "${{ secrets.DEV_PATH }}"  # stop if the DEV_PATH secret is missing
       - uses: actions/checkout@v4
         with: { ref: main, path: site }
       - uses: actions/checkout@v4
-        with: { ref: develop, path: site/dev }
-      - run: rm -rf site/.git site/.github site/dev/.git site/dev/.github
+        with: { ref: develop, path: "site/${{ secrets.DEV_PATH }}" }
+      - run: rm -rf site/.git site/.github "site/${{ secrets.DEV_PATH }}/.git" "site/${{ secrets.DEV_PATH }}/.github"
       - uses: actions/upload-pages-artifact@v3
         with: { path: site }
       - id: deployment
