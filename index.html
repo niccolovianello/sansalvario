@@ -209,6 +209,17 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 @media (hover:hover){.ac li:hover{background:var(--soft)}}
 .ac li small{margin-left:auto;color:var(--muted);font-size:13px}
 .ac li.none{color:var(--muted);cursor:default;background:none}
+/* marcatori: un riquadro per giocatore dentro il campo */
+.chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:48px;padding:6px;border:1px solid var(--line);border-radius:12px;background:var(--field);cursor:text}
+.chips:focus-within{outline:3px solid var(--focus);outline-offset:2px}
+.chipset{display:contents}
+.chips input{flex:1 1 140px;width:auto;min-width:0;min-height:34px;border:0;padding:0 6px;background:none}
+.chips input:focus-visible{outline:none}
+.chip{display:inline-flex;align-items:center;gap:4px;min-height:34px;padding:0 0 0 12px;border-radius:99px;background:var(--soft);color:var(--val);font-size:15px;font-weight:700}
+.chip b{font-weight:800;font-variant-numeric:tabular-nums}
+.chip.bad{background:none;box-shadow:inset 0 0 0 1.5px var(--red);color:var(--red)}
+.chx{display:grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:none;color:inherit;cursor:pointer}
+@media (hover:hover){.chx:hover{background:var(--line)}}
 /* colonna laterale */
 .sw{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;margin:28px 2px 10px}
 .swb{background:none;border:0;padding:0 0 4px;border-bottom:3px solid transparent;font-size:22px;font-weight:800;color:var(--muted);cursor:pointer}
@@ -486,14 +497,20 @@ function scorerList(str){
     return m ? {name:m[1].trim(), n:+(m[2]||m[3]||m[4])} : {name:x, n:1};
   });
 }
-function scorerLabel(n){
-  const sur = r => r.name.split(' ').slice(1).join(' '), ini = r => r.name[0].toUpperCase() + '.';
+// il calciatore della rosa che corrisponde al nome scritto (cognome, “L. Rossi” o nome completo), se è uno solo
+function scorerFind(n){
+  const sur = r => r.name.split(' ').slice(1).join(' ');
   const pl = ROSTER.filter(r => r.role === 'calciatore'), t = n.trim(), k = slug(t);
   const mi = t.match(/^(\p{L})\.?\s+(.+)$/u);
   let hits = pl.filter(r => slug(r.name) === k || slug(sur(r)) === k);
   if(hits.length !== 1 && mi) hits = pl.filter(r => r.name[0].toLowerCase() === mi[1].toLowerCase() && slug(sur(r)) === slug(mi[2]));
-  if(hits.length !== 1) return t.charAt(0).toUpperCase() + t.slice(1);
-  const r = hits[0], same = pl.filter(x => ini(x) === ini(r) && slug(sur(x)) === slug(sur(r))).length > 1;
+  return hits.length === 1 ? hits[0] : null;
+}
+function scorerLabel(n){
+  const sur = r => r.name.split(' ').slice(1).join(' '), ini = r => r.name[0].toUpperCase() + '.';
+  const pl = ROSTER.filter(r => r.role === 'calciatore'), t = n.trim(), r = scorerFind(t);
+  if(!r) return t.charAt(0).toUpperCase() + t.slice(1);
+  const same = pl.filter(x => ini(x) === ini(r) && slug(sur(x)) === slug(sur(r))).length > 1;
   return same ? r.name : ini(r) + ' ' + sur(r);
 }
 const gName = g => scorerLabel(g.name) + (g.n > 1 ? ' ×' + g.n : '');
@@ -624,6 +641,7 @@ function renderHero(){ keep(drawHero); }
 function renderBody(){ keep(drawBody); }
 function renderCal(){ keep(drawCal); }
 const WARN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>';
+const XI = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const LOCK = '<svg class="lk" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const KEY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>';
 const FORK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>';   // forchetta e coltello (a tavola)
@@ -716,7 +734,7 @@ function drawBody(){
   }
   if(S.tab === 'ris'){
     const m = match();
-    if(S.rFor !== m.id){ const o = outcome(m); S.rFor = m.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = m.scorers || ''; S.done = ''; }
+    if(S.rFor !== m.id){ const o = outcome(m); S.rFor = m.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = scInit(m.scorers); S.rQ = ''; S.done = ''; }
     const head = `<div class="step"><div><h2>Risultato</h2><p>Lo vede tutta la squadra e si può correggere.</p></div></div>`;
     if(!kicked(m)){ b.innerHTML = head + '<p class="prev">Il risultato si potrà inserire dal calcio d’inizio in poi.</p>'; return; }
     b.innerHTML = head + `
@@ -724,15 +742,16 @@ function drawBody(){
         <div><label for="rgf">Gol San Salvario</label><input id="rgf" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGf)}"></div>
         <div><label for="rgs">Gol ${esc(m.opp)}</label><input id="rgs" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGs)}"></div>
       </div>
-      <div class="step" style="margin-top:28px"><div><h2>Marcatori</h2><p>Solo San Salvario, per cognome, separati da virgola. Doppietta: Rossi (2).</p></div></div>
+      <div class="step" style="margin-top:28px"><div><h2>Marcatori</h2><p>Solo San Salvario. Doppietta: scegli due volte lo stesso giocatore.</p></div></div>
       <label for="rsc">Chi ha segnato</label>
-      <input id="rsc" type="text" maxlength="300" autocomplete="off" value="${esc(S.rSc)}" placeholder="Es. Rossi (2), Bianchi">
+      <div class="ac"><div class="chips"><span class="chipset" id="chipset" role="list" aria-label="Marcatori scelti"></span><input id="rsc" type="text" maxlength="30" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="scl" value="${esc(S.rQ)}"></div><ul id="scl" role="listbox" aria-label="Calciatori della rosa" hidden></ul></div>
       <p class="prev" id="prev"></p><p class="prev warn" id="warn" role="status"></p>
       <button class="go" id="rsave">Salva risultato</button>
+      <p class="why" id="rwhy"></p>
       ${results[m.id] && results[m.id].score && results[m.id].ts ? `<p class="prev">Ultimo salvataggio: ${esc(dShort(results[m.id].ts))}.</p>` : ''}
       ${outcome(m) ? '<button class="link del" id="rclear">Elimina risultato</button>' : ''}
       ${okDiv().replace('</div>', S.rUndo && S.rUndo.id === m.id ? ' <button type="button" class="link" data-rundo="1">Ripristina</button></div>' : '</div>')}`;
-    resultInputs();
+    scRender();
     return;
   }
   if(S.tab === 'sq'){
@@ -815,14 +834,48 @@ function renderConv(b){
 }
 // Aggiorna anteprima marcatori e pulsante Salva senza ridisegnare il modulo
 function resultInputs(){
-  const sc = scorerList(S.rSc), ok = /^\d{1,2}$/.test(S.rGf) && /^\d{1,2}$/.test(S.rGs);
+  const sc = S.rSc, ok = /^\d{1,2}$/.test(S.rGf) && /^\d{1,2}$/.test(S.rGs);
   const goals = sc.reduce((n, g) => n + g.n, 0);
-  const known = n => { const k = slug(n.replace(/^\p{L}\.\s*/u, '')); return ROSTER.some(r => r.role === 'calciatore' && (slug(r.name) === slug(n) || slug(surname(r.name)) === k)); };
-  const odd = sc.filter(g => !known(g.name)).map(g => g.name);
   $('#prev').textContent = sc.length ? 'Sul sito: ' + sc.map(gName).join(' · ') + '.' : 'Nessun marcatore.';
-  S.rWarn = (ok && goals > +S.rGf ? `${goals} marcatori ma ${S.rGf} gol. ` : '') + (odd.length ? `Non trovato nella rosa: ${odd.join(', ')}.` : '');
+  S.rWarn = ok && goals > +S.rGf ? `${goals} marcatori ma ${S.rGf} gol.` : '';
   $('#warn').textContent = S.rWarn ? 'Attenzione: ' + S.rWarn : '';
-  $('#rsave').disabled = !ok;
+  // i marcatori devono essere calciatori della rosa
+  const why = sc.some(g => g.bad) ? 'Togli i nomi in rosso: non sono nella rosa.' : S.rQ.trim() ? 'Scegli il marcatore tra quelli proposti.' : scText().length > 300 ? 'Troppi marcatori da salvare.' : '';
+  $('#rwhy').textContent = why;
+  $('#rsave').disabled = !ok || !!why;
+}
+/* ---- Marcatori: si scelgono solo calciatori della rosa, ognuno in un riquadro ---- */
+// testo salvato: nomi completi della rosa, “(2)” per la doppietta
+const scText = () => S.rSc.map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', ');
+function scInit(str){
+  const out = [];
+  scorerList(str).forEach(g => { const r = scorerFind(g.name), name = r ? r.name : g.name, x = out.find(y => y.name === name); if(x) x.n += g.n; else out.push({name, n:g.n, bad:!r}); });
+  return out;
+}
+function scRender(){
+  const inp = $('#rsc'), ul = $('#scl'); if(!inp) return;
+  $('#chipset').innerHTML = S.rSc.map((g, i) => { const l = scorerLabel(g.name); return `<span class="chip${g.bad ? ' bad' : ''}" role="listitem">${esc(l)}${g.n > 1 ? ` <b>×${g.n}</b>` : ''}${g.bad ? ' · non nella rosa' : ''}<button type="button" class="chx" data-scdel="${i}" aria-label="Togli ${esc(l)}">${XI}</button></span>`; }).join('');
+  inp.placeholder = S.rSc.length ? 'Aggiungi' : 'Cognome o numero di maglia';
+  const open = !!S.rQ.trim(), items = open ? acMatches(S.rQ, ROSTER.filter(r => r.role === 'calciatore')) : [];
+  S.scList = items; S.scI = Math.min(S.scI || 0, Math.max(items.length - 1, 0));
+  ul.innerHTML = items.map((r, i) => acItem(r, i, i === S.scI, 'sco', 'sc')).join('')
+    || '<li class="none" role="option" aria-disabled="true">Nessun calciatore con questo nome nella rosa.</li>';
+  ul.hidden = !open; inp.setAttribute('aria-expanded', open);
+  if(items.length) inp.setAttribute('aria-activedescendant', 'sco-' + S.scI); else inp.removeAttribute('aria-activedescendant');
+  resultInputs();
+}
+// scegliere di nuovo lo stesso giocatore aggiunge un gol
+function scChoose(name){
+  const r = ROSTER.find(x => x.name === name); if(!r) return;
+  const x = S.rSc.find(g => g.name === r.name); if(x) x.n++; else S.rSc.push({name:r.name, n:1});
+  S.rQ = ''; S.scI = 0; S.done = ''; $('#ok').textContent = ''; $('#rsc').value = '';
+  scRender(); $('#rsc').focus();
+  const g = x || S.rSc[S.rSc.length - 1]; announce(`${scorerLabel(g.name)}${g.n > 1 ? ', ' + g.n + ' gol' : ''}`);
+}
+function scDel(i){
+  const g = S.rSc.splice(i, 1)[0]; if(!g) return;
+  S.done = ''; $('#ok').textContent = '';
+  scRender(); $('#rsc').focus(); announce(`Tolto ${scorerLabel(g.name)}`);
 }
 // Aggiorna contatore e caselle dei convocati senza ridisegnare l’elenco
 function callupInputs(){
@@ -832,14 +885,16 @@ function callupInputs(){
   document.querySelectorAll('[data-conv]').forEach(c => { c.disabled = full && !c.checked; c.closest('.pick').classList.toggle('off', c.disabled); });
 }
 /* ---- Ricerca del nome: suggerisce solo persone della rosa ---- */
-function acMatches(q){
+function acMatches(q, list = ROSTER){
   const words = slug(q).split('-').filter(Boolean); if(!words.length) return [];
-  return ROSTER.filter(r => { const parts = slug(r.name).split('-'); return words.every(w => parts.some(p => p.startsWith(w)) || String(r.number) === w); }).slice(0, 8);
+  return list.filter(r => { const parts = slug(r.name).split('-'); return words.every(w => parts.some(p => p.startsWith(w)) || String(r.number) === w); }).slice(0, 8);
 }
+// una riga dell’elenco proposto (id = pfx-i, data-<d> = nome)
+const acItem = (r, i, sel, pfx, d) => `<li role="option" id="${pfx}-${i}" data-${d}="${esc(r.name)}" aria-selected="${sel}">${r.number ? `<b class="nr">${r.number}</b>` : '<b class="nr none"></b>'}<span>${esc(r.name)}</span>${capTag(r)}<small>${roleName(r)}</small></li>`;
 function acRender(){
   const ul = $('#acl'), inp = $('#typed'), items = acMatches(S.typed), open = !!S.typed.trim();
   S.acList = items; S.acI = Math.min(S.acI || 0, Math.max(items.length - 1, 0));
-  ul.innerHTML = items.map((r, i) => `<li role="option" id="aco-${i}" data-ac="${esc(r.name)}" aria-selected="${i === S.acI}">${r.number ? `<b class="nr">${r.number}</b>` : '<b class="nr none"></b>'}<span>${esc(r.name)}</span>${capTag(r)}<small>${roleName(r)}</small></li>`).join('')
+  ul.innerHTML = items.map((r, i) => acItem(r, i, i === S.acI, 'aco', 'ac')).join('')
     || '<li class="none" role="option" aria-disabled="true">Nessuno con questo nome nella rosa: scegli dall’elenco qui sotto o chiedi allo staff di aggiungerti.</li>';
   ul.hidden = !open; inp.setAttribute('aria-expanded', open);
   if(items.length && open) inp.setAttribute('aria-activedescendant', 'aco-' + S.acI); else inp.removeAttribute('aria-activedescendant');
@@ -945,18 +1000,19 @@ document.addEventListener('click', async e => {
     if(!clear && o && was !== now && !await ask('Sostituire il risultato?', `C’è già ${was}: diventerà ${now}.`, 'Sostituisci')) return;
     if(clear && !await ask('Eliminare il risultato?', `${m.home ? `San Salvario ${o.gf}–${o.gs} ${m.opp}` : `${m.opp} ${o.gs}–${o.gf} San Salvario`}. Subito dopo puoi ancora ripristinarlo.`, 'Elimina')) return;
     t.disabled = true; if(!clear) t.textContent = 'Salvataggio…';
-    const ok = await saveResult(id, clear ? '' : `${+S.rGf}-${+S.rGs}`, clear ? '' : scorerList(S.rSc).map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', '));
-    if(ok && clear){ S.rUndo = {id, score:m.score, scorers:m.scorers}; S.rGf = S.rGs = S.rSc = ''; } else S.rUndo = null;
+    const ok = await saveResult(id, clear ? '' : `${+S.rGf}-${+S.rGs}`, clear ? '' : scText());
+    if(ok && clear){ S.rUndo = {id, score:m.score, scorers:m.scorers}; S.rGf = S.rGs = S.rQ = ''; S.rSc = []; } else S.rUndo = null;
     say(ok ? (clear ? 'Risultato eliminato.' : 'Risultato salvato.') : 'Non sono riuscito a salvare. Controlla la connessione e riprova.', !ok);
     renderHero(); renderCal(); renderBody();
   }
   else if(d.rundo && S.rUndo){
     const u = S.rUndo; S.rUndo = null;
     const ok = await saveResult(u.id, u.score, u.scorers);
-    if(ok){ const o = outcome(match()); S.rFor = u.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = match().scorers || ''; }
+    if(ok){ const o = outcome(match()); S.rFor = u.id; S.rGf = o ? String(o.gf) : ''; S.rGs = o ? String(o.gs) : ''; S.rSc = scInit(match().scorers); S.rQ = ''; }
     say(ok ? 'Risultato ripristinato.' : 'Non sono riuscito a ripristinarlo. Controlla la connessione e riprova.', !ok);
     renderHero(); renderCal(); renderBody();
   }
+  else if(d.scdel){ scDel(+d.scdel); }
   else if(d.match){ const inHero = !!t.closest('#hero'); selectMatch(d.match); if(!inHero) window.scrollTo({top:0,behavior:'smooth'}); }
   else if(d.allcal){ S.allCal = !S.allCal; S.focus = '[data-allcal]'; renderCal(); }
   else if(d.help){ const h = $('#help'); h.open = true; h.scrollIntoView({behavior:'smooth', block:'start'}); h.querySelector('summary').focus({preventScroll:true}); }
@@ -993,9 +1049,10 @@ document.addEventListener('change', e => {
   if(e.target.id === 'pick'){ const r = ROSTER.find(x => x.name === e.target.value); if(!r) return; acChoose(r.name); }
 });
 document.addEventListener('input', e => {
-  const rk = {rgf:'rGf', rgs:'rGs', rsc:'rSc'}[e.target.id];
+  const rk = {rgf:'rGf', rgs:'rGs'}[e.target.id];
   if(rk){ S[rk] = e.target.value.trim(); S.done = ''; $('#ok').textContent = ''; resultInputs(); return; }
   if(e.target.id === 'typed'){ S.typed = e.target.value; S.acI = 0; S.done = ''; acRender(); }
+  if(e.target.id === 'rsc'){ S.rQ = e.target.value; S.scI = 0; scRender(); }
   if(e.target.id === 'code' || e.target.id === 'staffcode'){   // i codici: solo lettere e numeri, massimo 8
     const t = e.target, v = normCode(t.value).slice(0, 8);
     if(v !== t.value){ const p = normCode(t.value.slice(0, t.selectionStart)).length; t.value = v; t.setSelectionRange(Math.min(p, 8), Math.min(p, 8)); }
@@ -1009,6 +1066,17 @@ document.addEventListener('keydown', e => {
   else if(e.key === 'ArrowUp' && n){ e.preventDefault(); S.acI = (S.acI - 1 + n) % n; acRender(); }
   else if(e.key === 'Enter' && n){ e.preventDefault(); acChoose(S.acList[S.acI].name); }
   else if(e.key === 'Escape'){ $('#acl').hidden = true; e.target.setAttribute('aria-expanded', false); }
+});
+// marcatori: frecce, Invio, Esc; Backspace a campo vuoto toglie l’ultimo riquadro
+document.addEventListener('keydown', e => {
+  if(e.target.id !== 'rsc') return;
+  if(e.key === 'Backspace' && !e.target.value && S.rSc.length){ e.preventDefault(); scDel(S.rSc.length - 1); return; }
+  if($('#scl').hidden) return;
+  const n = (S.scList || []).length;
+  if(e.key === 'ArrowDown' && n){ e.preventDefault(); S.scI = (S.scI + 1) % n; scRender(); }
+  else if(e.key === 'ArrowUp' && n){ e.preventDefault(); S.scI = (S.scI - 1 + n) % n; scRender(); }
+  else if(e.key === 'Enter' && n){ e.preventDefault(); scChoose(S.scList[S.scI].name); }
+  else if(e.key === 'Escape'){ $('#scl').hidden = true; e.target.setAttribute('aria-expanded', false); }
 });
 // Nomi delle squadre: si va a capo solo tra le parole; se una parola non entra, il nome si rimpicciolisce quanto basta
 function fitNames(){
@@ -1028,10 +1096,12 @@ document.addEventListener('keydown', e => {
   const n = e.key === 'Home' ? all[0] : e.key === 'End' ? all[all.length-1] : all[(i + (e.key === 'ArrowRight' ? 1 : -1) + all.length) % all.length];
   e.preventDefault(); n.click(); n.focus();
 });
-document.addEventListener('focusout', e => { if(e.target.id === 'typed'){ $('#acl').hidden = true; e.target.setAttribute('aria-expanded', false); } });
-document.addEventListener('focusin', e => { if(e.target.id === 'typed' && S.typed) acRender(); });
+document.addEventListener('focusout', e => { const l = {typed:'#acl', rsc:'#scl'}[e.target.id]; if(l){ $(l).hidden = true; e.target.setAttribute('aria-expanded', false); } });
+document.addEventListener('focusin', e => { if(e.target.id === 'typed' && S.typed) acRender(); if(e.target.id === 'rsc' && S.rQ) scRender(); });
 // pointerdown (non click) così il campo non perde il focus prima della scelta
 document.addEventListener('pointerdown', e => {
+  if(e.target.matches && e.target.matches('.chips, .chipset')){ e.preventDefault(); $('#rsc').focus(); return; }   // tocco nel riquadro vuoto
+  const s = e.target.closest('[data-sc]'); if(s){ e.preventDefault(); scChoose(s.dataset.sc); return; }
   const o = e.target.closest('[data-ac]'); if(!o) return;
   e.preventDefault(); acChoose(o.dataset.ac);
 });
