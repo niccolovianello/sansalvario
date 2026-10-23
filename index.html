@@ -187,6 +187,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .grp li.me .fk{color:var(--val)}
 /* admin: “Segna come disponibile” subito dopo il ruolo */
 .mk{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);font:700 13px var(--font);color:var(--val);cursor:pointer;white-space:nowrap}
+.mk.no{color:var(--red);border-color:var(--red)}
 .mk:disabled{opacity:.5;cursor:default}
 @media (max-width:480px){.mk{gap:4px;padding:0 8px}.mk .lg{display:none}}
 /* sui telefoni la riga è stretta: numero, spazi e distanza dal ruolo più piccoli, così nome e “A tavola” restano su una riga */
@@ -768,7 +769,7 @@ function drawBody(){
     const a = answers(), names = new Set(a.map(x => slug(x.nome)));
     // a destra: forchetta e coltello per chi resta a tavola; l’admin ha anche “Segna come disponibile / assente” accanto al ruolo
     const fork = x => x.tavola === 'si' ? `<span class="fk" role="img" aria-label="A tavola" title="A tavola">${FORK}</span>` : '';
-    const mark = x => { if(!ADMIN) return ''; const yes = x.stato === 'si', w = yes ? 'assente' : 'disponibile'; return `<button type="button" class="mk" data-mark="${esc(slug(x.nome))}" data-to="${yes ? 'no' : 'si'}" aria-label="Segna ${esc(x.nome)} come ${w}">${yes ? MINUS : PLUS}<span><span class="lg">Segna come </span>${w}</span></button>`; };
+    const mark = x => { if(!ADMIN) return ''; const yes = x.stato === 'si', w = yes ? 'assente' : 'disponibile'; return `<button type="button" class="mk${yes ? ' no' : ''}" data-mark="${esc(slug(x.nome))}" data-to="${yes ? 'no' : 'si'}" aria-label="Segna ${esc(x.nome)} come ${w}">${yes ? MINUS : PLUS}<span><span class="lg">Segna come </span>${w}</span></button>`; };
     const li = x => `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}>${row(x, `<span class="tv${mark(x) ? ' adm' : ''}">${mark(x)}${fork(x)}</span>`)}</li>`;
     const ul = arr => `<ul>${arr.map(li).join('') || '<li class="none">Ancora nessuno</li>'}</ul>`;
     // split = calciatori disponibili raggruppati per ruolo
