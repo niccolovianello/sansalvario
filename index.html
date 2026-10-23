@@ -178,6 +178,12 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .grp .who{display:flex;align-items:center;gap:12px}
 .nr{flex:none;width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:15px;font-weight:800;color:var(--val)}
 .nr.none{background:none}
+/* ruolo in campo e capitano */
+.pos,.cap{flex:none;font-style:normal}
+.pos{display:inline-block;margin-left:-4px;padding:4px 6px;border-radius:6px;background:var(--soft);color:var(--muted);font-size:11px;font-weight:700;line-height:1;letter-spacing:.06em}
+.cap{display:inline-grid;place-items:center;width:20px;height:20px;margin-left:-4px;border-radius:6px;background:var(--stripe);color:#fff;font-size:12px;font-weight:800;line-height:1}
+.step h2 .cap{margin-left:6px;vertical-align:2px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .pick{display:flex;align-items:center;gap:12px;margin:0;min-height:48px;border-bottom:1px solid var(--line);font-weight:400;cursor:pointer}
 .pick input{width:22px;height:22px;min-height:0;margin:0 0 0 auto;accent-color:var(--kit);flex:none}
 .pick.off{opacity:.45;cursor:not-allowed}
@@ -362,6 +368,15 @@ let MATCHES = [
 // I risultati stanno su Firebase (/t/<codice>/risultati/<id partita>): li inserisce lo staff dalla scheda "Risultato" del sito.
 // La rosa sta su Firebase (/t/<codice>/roster): si modifica dalla console Firebase, non qui. Ogni persona: {name, number, role:"calciatore"|"dirigente"}.
 let ROSTER = [];
+// Ruoli in campo dei calciatori e capitano. Ogni nome si cerca nella rosa: basta il cognome, oppure "Nome Cognome" se il cognome è di più giocatori.
+// Se su Firebase una persona ha già pos ("POR"|"DIF"|"CEN"|"ATT") o captain: true, vale quello.
+const RUOLI = {
+  POR: ["Lazarone", "Lorenzo Rossi", "Luca Rossi", "Santarsiere"],
+  DIF: ["Guido Albonico", "Giacomobello", "Giulini", "Moncalbano", "Montelepre", "Pellegrino", "Trabuio", "Vianello"],
+  CEN: ["Ballerini", "Cristofori", "El Amri", "Gargagliano", "Gentile", "Lovera", "Mele", "Oliva", "Primo", "Sarni", "Scanferla", "Zennaro"],
+  ATT: ["Francesco Albonico", "Luca Albonico", "Caffa", "Moro", "Porpiglia", "Sahere", "Vanin", "Varvello"]
+};
+const CAPITANO = "Scanferla";
 /* ============================================================ */
 
 const $ = s => document.querySelector(s);
@@ -517,9 +532,29 @@ async function unlock(code){
   if(!r.ok) throw new Error(r.status);
   ROSTER = Object.values((await r.json()) || {}).sort((a,b) =>
     (a.role === b.role ? 0 : a.role === 'calciatore' ? -1 : 1) || surname(a.name).localeCompare(surname(b.name),'it') || a.name.localeCompare(b.name,'it'));
+  applyRoles();
   BASE = `${DB}/t/${code}`;
   return true;
 }
+const POS_NAME = {POR:'Portiere', DIF:'Difensore', CEN:'Centrocampista', ATT:'Attaccante'};
+// Trova un calciatore della rosa da "Cognome" o "Nome Cognome"; tollera doppie diverse (Lazzarone/Lazarone) e finali diverse (Santarsiero/Santarsiere)
+function findPlayer(n){
+  const pl = ROSTER.filter(r => r.role === 'calciatore'), k = slug(n), loose = x => x.replace(/(.)\1/g, '$1');
+  let hits = pl.filter(r => slug(r.name) === k || slug(surname(r.name)) === k);
+  if(hits.length !== 1) hits = pl.filter(r => loose(slug(surname(r.name))) === loose(k));
+  if(hits.length !== 1 && k.length >= 6) hits = pl.filter(r => slug(surname(r.name)).startsWith(k.slice(0, -1)));
+  return hits.length === 1 ? hits[0] : null;
+}
+function applyRoles(){
+  const miss = [];
+  Object.entries(RUOLI).forEach(([pos, names]) => names.forEach(n => { const r = findPlayer(n); if(!r) miss.push(n); else if(!r.pos) r.pos = pos; }));
+  const c = findPlayer(CAPITANO); if(c && !ROSTER.some(r => r.captain)) c.captain = true;
+  if(miss.length) console.warn('RUOLI: nomi non trovati nella rosa: ' + miss.join(', '));
+}
+const capTag = r => r && r.captain ? '<i class="cap" role="img" aria-label="Capitano" title="Capitano">C</i>' : '';
+const posTag = r => r && r.pos && POS_NAME[r.pos] ? `<i class="pos" title="${POS_NAME[r.pos]}"><span class="vh">${POS_NAME[r.pos]}</span><span aria-hidden="true">${r.pos}</span></i>` : '';
+const badges = r => capTag(r) + posTag(r);
+const roleName = r => r.role === 'dirigente' ? 'Dirigente' : (POS_NAME[r.pos] || 'Calciatore');
 // Carica presenze e risultati; restituisce true se i risultati sono cambiati
 async function load(){
   let changed = false;
@@ -706,7 +741,7 @@ function drawBody(){
   }
   if(S.tab === 'sq'){
     const a = answers(), names = new Set(a.map(x => slug(x.nome)));
-    const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}><div class="who">${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}</div><span>${x.tavola === 'si' ? 'A tavola' : ''}</span></li>`; };
+    const li = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}><div class="who">${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}${badges(rk)}</div><span>${x.tavola === 'si' ? 'A tavola' : ''}</span></li>`; };
     const grp = (t, arr, keep) => !arr.length && !keep ? '' : `<div class="grp"><h3>${t} (${arr.length})</h3><ul>${arr.map(li).join('') || '<li><span>Ancora nessuno</span></li>'}</ul></div>`;
     const wait = ROSTER.filter(r => !names.has(slug(r.name))).map(r => ({nome:r.name, ruolo:r.role}));
     const cu = callup(), inConv = new Set(cu.list.map(x => slug(x.nome)));
@@ -739,7 +774,7 @@ function drawBody(){
     return;
   }
   const who = me && !S.edit
-    ? `<div class="step"><div class="num">1</div><div><h2>Sei ${esc(me.name)}</h2><p>${me.role === 'dirigente' ? 'Dirigente' : 'Calciatore'}${me.number ? ' · #' + me.number : ''} · <button class="link" data-edit="1">Cambia</button></p></div></div>`
+    ? `<div class="step"><div class="num">1</div><div><h2>Sei ${esc(me.name)}${capTag(me)}</h2><p>${roleName(me)}${me.captain ? ' · Capitano' : ''}${me.number ? ' · #' + me.number : ''} · <button class="link" data-edit="1">Cambia</button></p></div></div>`
     : `<div class="step"><div class="num">1</div><div><h2>Chi sei?</h2><p>Cerca il tuo nome nella rosa.${me ? ' <button class="link" data-edit="0">Annulla</button>' : ''}</p></div></div>
     <label for="typed">Nome, cognome o numero di maglia</label>
     <div class="ac"><input id="typed" type="text" maxlength="30" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="acl" value="${esc(S.typed)}" placeholder="Es. Rossi oppure 16"><ul id="acl" role="listbox" aria-label="Nomi della rosa" hidden></ul></div>
@@ -765,7 +800,7 @@ function renderConv(b){
   const m = match(), cu = callup();
   if(S.cFor !== m.id){ S.cFor = m.id; S.cSel = new Set(cu.list.map(x => slug(x.nome))); S.done = ''; }
   const head = `<div class="step"><div><h2>Convocazioni</h2><p>Fino a ${MAX_CONV} disponibili sono tutti convocati; oltre, scegli tu i ${MAX_CONV}.</p></div></div>`;
-  const who = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}`; };
+  const who = x => { const rk = ROSTER.find(r => slug(r.name) === slug(x.nome)); return `${rk && rk.number ? `<b class="nr">${rk.number}</b>` : '<b class="nr none"></b>'}${esc(x.nome)}${badges(rk)}`; };
   if(!cu.av.length){ b.innerHTML = head + '<p class="prev">Nessun calciatore ha ancora dato disponibilità.</p>'; return; }
   if(cu.auto){
     b.innerHTML = head + `<p class="prev">Disponibili: ${cu.av.length}. Fino a ${MAX_CONV} sono tutti convocati automaticamente.</p>
@@ -805,7 +840,7 @@ function acMatches(q){
 function acRender(){
   const ul = $('#acl'), inp = $('#typed'), items = acMatches(S.typed), open = !!S.typed.trim();
   S.acList = items; S.acI = Math.min(S.acI || 0, Math.max(items.length - 1, 0));
-  ul.innerHTML = items.map((r, i) => `<li role="option" id="aco-${i}" data-ac="${esc(r.name)}" aria-selected="${i === S.acI}">${r.number ? `<b class="nr">${r.number}</b>` : '<b class="nr none"></b>'}<span>${esc(r.name)}</span><small>${r.role === 'dirigente' ? 'Dirigente' : 'Calciatore'}</small></li>`).join('')
+  ul.innerHTML = items.map((r, i) => `<li role="option" id="aco-${i}" data-ac="${esc(r.name)}" aria-selected="${i === S.acI}">${r.number ? `<b class="nr">${r.number}</b>` : '<b class="nr none"></b>'}<span>${esc(r.name)}</span>${capTag(r)}<small>${roleName(r)}</small></li>`).join('')
     || '<li class="none" role="option" aria-disabled="true">Nessuno con questo nome nella rosa: scegli dall’elenco qui sotto o chiedi allo staff di aggiungerti.</li>';
   ul.hidden = !open; inp.setAttribute('aria-expanded', open);
   if(items.length && open) inp.setAttribute('aria-activedescendant', 'aco-' + S.acI); else inp.removeAttribute('aria-activedescendant');
