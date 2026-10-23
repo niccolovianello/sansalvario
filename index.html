@@ -173,9 +173,10 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .grp .note{font-size:14px;color:var(--muted);margin:0 0 4px}
 .grp ul{list-style:none;margin:0;padding:0}
 /* ogni sezione è una griglia condivisa: numero | nome | ruolo | a tavola; le righe usano subgrid, così i ruoli sono incolonnati subito dopo il nome più lungo */
-.grp,.pl{display:grid;grid-template-columns:32px minmax(0,max-content) auto minmax(0,1fr);column-gap:12px;align-items:center}
-.grp h3,.grp .note,.ph,.grp li.none{grid-column:1/-1}
-.grp ul{display:contents}
+.grp,.pl,.sqg{display:grid;grid-template-columns:32px minmax(0,max-content) auto minmax(0,1fr);column-gap:12px;align-items:center}
+.sqg .grp,.grp ul{display:contents}   /* nella scheda La squadra la griglia è l’intera sezione Calciatori / Dirigenti */
+.sqg+.sqg{margin-top:24px}
+.sqh,.grp h3,.grp .note,.ph,.grp li.none{grid-column:1/-1}
 .grp li,.pick{display:grid;grid-template-columns:subgrid;grid-column:1/-1;align-items:center;min-height:44px;padding:4px 0;border-bottom:1px solid var(--line);font-size:15px}
 .grp li.none{display:block;color:var(--muted);font-size:14px}
 .grp li.me{font-weight:700}
@@ -772,8 +773,9 @@ function drawBody(){
     };
     const sec = (role, title) => {
       const ra = a.filter(x => x.ruolo === role), rw = wait.filter(x => x.ruolo === role);
-      return `<h2 class="sqh">${title}<em>${ROSTER.filter(r => r.role === role).length}</em></h2>` +
-        present(role) + grp('Assenti', ra.filter(x => x.stato === 'no')) + grp('Da confermare', rw);
+      // .sqg: tutte le sezioni (Disponibili, Assenti, Da confermare) condividono le stesse colonne, così i ruoli sono incolonnati allo stesso punto
+      return `<div class="sqg"><h2 class="sqh">${title}<em>${ROSTER.filter(r => r.role === role).length}</em></h2>` +
+        present(role) + grp('Assenti', ra.filter(x => x.stato === 'no')) + grp('Da confermare', rw) + '</div>';
     };
     S.sqSig = sqSig();
     const tools = over(match()) ? '' : `<div class="sqtools"><button type="button" class="btn2" data-remind="1">${COPY}Copia promemoria</button><p>Il messaggio per il gruppo WhatsApp: partita, ritrovo, quanti mancano (i nomi solo quando sono 10 o meno) e il link per rispondere.</p></div>${S.remindText ? `<label for="rtext">Testo del promemoria</label><textarea id="rtext" class="rt" readonly rows="6">${esc(S.remindText)}</textarea>` : ''}${okDiv()}`;
