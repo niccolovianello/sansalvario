@@ -375,17 +375,9 @@ let MATCHES = [
   {id:"262a17-2026-27-san-salvario-calendar", date:"2026-10-16T21:00", ritrovo:"20:00", opp:"A.S.D. Oratorio Leini", home:true, place:"USD San Giorgio - Campo Nitti", address:"Via Nitti 6, 10137 Torino TO, Italia", score:""}
 ];
 // I risultati stanno su Firebase (/t/<codice>/risultati/<id partita>): li inserisce lo staff dalla scheda "Risultato" del sito.
-// La rosa sta su Firebase (/t/<codice>/roster): si modifica dalla console Firebase, non qui. Ogni persona: {name, number, role:"calciatore"|"dirigente"}.
+// La rosa sta su Firebase (/t/<codice>/roster): si modifica dalla console Firebase, non qui.
+// Ogni persona: {name, number, role:"calciatore"|"dirigente", pos:"POR"|"DIF"|"CEN"|"ATT" (solo calciatori, facoltativo), captain:true (solo il capitano)}.
 let ROSTER = [];
-// Ruoli in campo dei calciatori e capitano. Ogni nome si cerca nella rosa: basta il cognome, oppure "Nome Cognome" se il cognome è di più giocatori.
-// Se su Firebase una persona ha già pos ("POR"|"DIF"|"CEN"|"ATT") o captain: true, vale quello.
-const RUOLI = {
-  POR: ["Lazarone", "Lorenzo Rossi", "Luca Rossi", "Santarsiere"],
-  DIF: ["Guido Albonico", "Giacomobello", "Giulini", "Montalbano", "Montelepre", "Pellegrino", "Trabuio", "Vianello"],
-  CEN: ["Ballerini", "Cristofori", "El Amri", "Gargagliano", "Gentile", "Lovera", "Mele", "Oliva", "Primo", "Sarni", "Scanferla", "Zennaro"],
-  ATT: ["Francesco Albonico", "Luca Albonico", "Caffa", "Moro", "Porpiglia", "Sahere", "Vanin", "Varvello"]
-};
-const CAPITANO = "Scanferla";
 /* ============================================================ */
 
 const $ = s => document.querySelector(s);
@@ -541,25 +533,10 @@ async function unlock(code){
   if(!r.ok) throw new Error(r.status);
   ROSTER = Object.values((await r.json()) || {}).sort((a,b) =>
     (a.role === b.role ? 0 : a.role === 'calciatore' ? -1 : 1) || surname(a.name).localeCompare(surname(b.name),'it') || a.name.localeCompare(b.name,'it'));
-  applyRoles();
   BASE = `${DB}/t/${code}`;
   return true;
 }
 const POS_NAME = {POR:'Portiere', DIF:'Difensore', CEN:'Centrocampista', ATT:'Attaccante'};
-// Trova un calciatore della rosa da "Cognome" o "Nome Cognome"; tollera doppie diverse (Lazzarone/Lazarone) e finali diverse (Santarsiero/Santarsiere)
-function findPlayer(n){
-  const pl = ROSTER.filter(r => r.role === 'calciatore'), k = slug(n), loose = x => x.replace(/(.)\1/g, '$1');
-  let hits = pl.filter(r => slug(r.name) === k || slug(surname(r.name)) === k);
-  if(hits.length !== 1) hits = pl.filter(r => loose(slug(surname(r.name))) === loose(k));
-  if(hits.length !== 1 && k.length >= 6) hits = pl.filter(r => slug(surname(r.name)).startsWith(k.slice(0, -1)));
-  return hits.length === 1 ? hits[0] : null;
-}
-function applyRoles(){
-  const miss = [];
-  Object.entries(RUOLI).forEach(([pos, names]) => names.forEach(n => { const r = findPlayer(n); if(!r) miss.push(n); else if(!r.pos) r.pos = pos; }));
-  const c = findPlayer(CAPITANO); if(c && !ROSTER.some(r => r.captain)) c.captain = true;
-  if(miss.length) console.warn('RUOLI: nomi non trovati nella rosa: ' + miss.join(', '));
-}
 const capTag = r => r && r.captain ? '<i class="cap" role="img" aria-label="Capitano" title="Capitano">C</i>' : '';
 const posTag = r => r && r.pos && POS_NAME[r.pos] ? `<i class="pos" title="${POS_NAME[r.pos]}"><span class="vh">${POS_NAME[r.pos]}</span><span aria-hidden="true">${r.pos}</span></i>` : '';
 const badges = r => capTag(r) + posTag(r);
