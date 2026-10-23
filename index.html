@@ -742,7 +742,7 @@ function drawBody(){
         <div><label for="rgf">Gol San Salvario</label><input id="rgf" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGf)}"></div>
         <div><label for="rgs">Gol ${esc(m.opp)}</label><input id="rgs" type="number" inputmode="numeric" min="0" max="99" value="${esc(S.rGs)}"></div>
       </div>
-      <div class="step" style="margin-top:28px"><div><h2>Marcatori</h2><p>Solo San Salvario. Doppietta: scegli due volte lo stesso giocatore.</p></div></div>
+      <div class="step" style="margin-top:28px"><div><h2>Marcatori</h2><p>Solo San Salvario, tra i calciatori disponibili. Doppietta: scegli due volte lo stesso giocatore.</p></div></div>
       <label for="rsc">Chi ha segnato</label>
       <div class="ac"><div class="chips"><span class="chipset" id="chipset" role="list" aria-label="Marcatori scelti"></span><input id="rsc" type="text" maxlength="30" autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="scl" value="${esc(S.rQ)}"></div><ul id="scl" role="listbox" aria-label="Calciatori della rosa" hidden></ul></div>
       <p class="prev" id="prev"></p><p class="prev warn" id="warn" role="status"></p>
@@ -840,12 +840,18 @@ function resultInputs(){
   S.rWarn = ok && goals > +S.rGf ? `${goals} marcatori ma ${S.rGf} gol.` : '';
   $('#warn').textContent = S.rWarn ? 'Attenzione: ' + S.rWarn : '';
   // i marcatori devono essere calciatori della rosa
-  const why = sc.some(g => g.bad) ? 'Togli i nomi in rosso: non sono nella rosa.' : S.rQ.trim() ? 'Scegli il marcatore tra quelli proposti.' : scText().length > 300 ? 'Troppi marcatori da salvare.' : '';
+  const pool = scPool(), why = sc.some(g => !scOk(g, pool)) ? 'Togli i nomi in rosso: può segnare solo chi era disponibile.' : S.rQ.trim() ? 'Scegli il marcatore tra quelli proposti.' : scText().length > 300 ? 'Troppi marcatori da salvare.' : '';
   $('#rwhy').textContent = why;
   $('#rsave').disabled = !ok || !!why;
 }
 /* ---- Marcatori: si scelgono solo calciatori della rosa, ognuno in un riquadro ---- */
 // testo salvato: nomi completi della rosa, “(2)” per la doppietta
+// chi può aver segnato: i calciatori della rosa che hanno risposto “ci sono” per la partita
+function scPool(){
+  const av = new Set(answers().filter(x => x.ruolo === 'calciatore' && x.stato === 'si').map(x => slug(x.nome)));
+  return ROSTER.filter(r => r.role === 'calciatore' && av.has(slug(r.name)));
+}
+const scOk = (g, pool) => !g.bad && pool.some(r => r.name === g.name);
 const scText = () => S.rSc.map(g => g.name + (g.n > 1 ? ` (${g.n})` : '')).join(', ');
 function scInit(str){
   const out = [];
@@ -854,19 +860,20 @@ function scInit(str){
 }
 function scRender(){
   const inp = $('#rsc'), ul = $('#scl'); if(!inp) return;
-  $('#chipset').innerHTML = S.rSc.map((g, i) => { const l = scorerLabel(g.name); return `<span class="chip${g.bad ? ' bad' : ''}" role="listitem">${esc(l)}${g.n > 1 ? ` <b>×${g.n}</b>` : ''}${g.bad ? ' · non nella rosa' : ''}<button type="button" class="chx" data-scdel="${i}" aria-label="Togli ${esc(l)}">${XI}</button></span>`; }).join('');
+  const pool = scPool();
+  $('#chipset').innerHTML = S.rSc.map((g, i) => { const l = scorerLabel(g.name), ok = scOk(g, pool); return `<span class="chip${ok ? '' : ' bad'}" role="listitem">${esc(l)}${g.n > 1 ? ` <b>×${g.n}</b>` : ''}${ok ? '' : g.bad ? ' · non nella rosa' : ' · non disponibile'}<button type="button" class="chx" data-scdel="${i}" aria-label="Togli ${esc(l)}">${XI}</button></span>`; }).join('');
   inp.placeholder = S.rSc.length ? 'Aggiungi' : 'Cognome o numero di maglia';
-  const open = !!S.rQ.trim(), items = open ? acMatches(S.rQ, ROSTER.filter(r => r.role === 'calciatore')) : [];
+  const open = !!S.rQ.trim(), items = open ? acMatches(S.rQ, pool) : [];
   S.scList = items; S.scI = Math.min(S.scI || 0, Math.max(items.length - 1, 0));
   ul.innerHTML = items.map((r, i) => acItem(r, i, i === S.scI, 'sco', 'sc')).join('')
-    || '<li class="none" role="option" aria-disabled="true">Nessun calciatore con questo nome nella rosa.</li>';
+    || `<li class="none" role="option" aria-disabled="true">${pool.length ? 'Nessun calciatore disponibile con questo nome.' : 'Nessun calciatore ha dato disponibilità per questa partita.'}</li>`;
   ul.hidden = !open; inp.setAttribute('aria-expanded', open);
   if(items.length) inp.setAttribute('aria-activedescendant', 'sco-' + S.scI); else inp.removeAttribute('aria-activedescendant');
   resultInputs();
 }
 // scegliere di nuovo lo stesso giocatore aggiunge un gol
 function scChoose(name){
-  const r = ROSTER.find(x => x.name === name); if(!r) return;
+  const r = scPool().find(x => x.name === name); if(!r) return;
   const x = S.rSc.find(g => g.name === r.name); if(x) x.n++; else S.rSc.push({name:r.name, n:1});
   S.rQ = ''; S.scI = 0; S.done = ''; $('#ok').textContent = ''; $('#rsc').value = '';
   scRender(); $('#rsc').focus();
