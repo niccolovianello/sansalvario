@@ -173,7 +173,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .grp .note{font-size:14px;color:var(--muted);margin:0 0 4px}
 .grp ul{list-style:none;margin:0;padding:0}
 /* ogni sezione è una griglia condivisa: numero | nome | ruolo | a tavola; le righe usano subgrid, così i ruoli sono incolonnati subito dopo il nome più lungo */
-.grp,.pl,.sqg{display:grid;grid-template-columns:32px minmax(0,max-content) auto minmax(0,1fr);column-gap:12px;align-items:center}
+.grp,.pl,.sqg{display:grid;grid-template-columns:32px minmax(0,max-content) auto minmax(max-content,1fr);column-gap:12px;align-items:center}   /* se manca spazio si stringe il nome, non “A tavola” */
 .sqg .grp,.grp ul{display:contents}   /* nella scheda La squadra la griglia è l’intera sezione Calciatori / Dirigenti */
 .sqg+.sqg{margin-top:24px}
 .sqh,.grp h3,.grp .note,.ph,.grp li.none{grid-column:1/-1}
@@ -181,14 +181,17 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .grp li.none{display:block;color:var(--muted);font-size:14px}
 .grp li.me{font-weight:700}
 .nm{display:flex;align-items:center;gap:8px;min-width:0}
-.tv{grid-column:4;justify-self:end;color:var(--muted);font-size:14px;text-align:right}
+.tv{grid-column:4;justify-self:end;display:flex;color:var(--muted)}
+.grp li.me .tv{color:var(--val)}
+/* sui telefoni la riga è stretta: numero, spazi e distanza dal ruolo più piccoli, così nome e “A tavola” restano su una riga */
+@media (max-width:480px){.pos{margin-left:12px}.grp,.pl,.sqg{column-gap:8px;grid-template-columns:28px minmax(0,max-content) auto minmax(max-content,1fr)}.grp .nr,.pl .nr{width:28px;height:28px;font-size:14px}}
 .ph{margin:12px 0 0;font-size:12.5px;font-weight:700;letter-spacing:.03em;color:var(--muted)}
 .ph:first-child{margin-top:6px}
 .nr{flex:none;width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:15px;font-weight:800;color:var(--val)}
 .nr.none{background:none}
 /* ruolo in campo e capitano */
 .pos,.cap{flex:none;font-style:normal}
-.pos{grid-column:3;display:inline-block;margin-left:16px;padding:4px 6px;border-radius:6px;background:var(--soft);color:var(--muted);font-size:11px;font-weight:700;line-height:1;letter-spacing:.06em}
+.pos{grid-column:3;display:inline-block;margin-left:40px;padding:4px 6px;border-radius:6px;background:var(--soft);color:var(--muted);font-size:11px;font-weight:700;line-height:1;letter-spacing:.06em}
 .cap{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;background:var(--stripe);color:#fff;font-size:12px;font-weight:800;line-height:1}
 .step h2 .cap{margin-left:6px;vertical-align:2px}
 .ac li .cap{margin-left:-4px}
@@ -623,6 +626,7 @@ function renderCal(){ keep(drawCal); }
 const WARN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>';
 const LOCK = '<svg class="lk" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const KEY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>';
+const FORK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>';   // forchetta e coltello (a tavola)
 const COPY = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>';
 const CLOCK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok">${esc(S.done)}${S.undo && S.tab === 'me' ? `${S.done ? '' : 'Risposta salvata.'} <button type="button" class="link" data-undo="1">Annulla</button>` : ''}</div>`;
@@ -733,7 +737,8 @@ function drawBody(){
   }
   if(S.tab === 'sq'){
     const a = answers(), names = new Set(a.map(x => slug(x.nome)));
-    const li = x => `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}>${row(x, `<span class="tv">${x.tavola === 'si' ? 'A tavola' : ''}</span>`)}</li>`;
+    // a destra: forchetta e coltello per chi resta a tavola
+    const li = x => `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}>${row(x, x.tavola === 'si' ? `<span class="tv" role="img" aria-label="A tavola" title="A tavola">${FORK}</span>` : '<span class="tv"></span>')}</li>`;
     const ul = arr => `<ul>${arr.map(li).join('') || '<li class="none">Ancora nessuno</li>'}</ul>`;
     // split = calciatori disponibili raggruppati per ruolo
     const grp = (t, arr, keep, split) => !arr.length && !keep ? '' : `<div class="grp"><h3>${t} (${arr.length})</h3>${split && arr.length ? byPos(arr).map(([h, a]) => `<h4 class="ph">${h}</h4>` + ul(a)).join('') : ul(arr)}</div>`;
