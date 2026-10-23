@@ -181,8 +181,14 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .grp li.none{display:block;color:var(--muted);font-size:14px}
 .grp li.me{font-weight:700}
 .nm{display:flex;align-items:center;gap:8px;min-width:0}
-.tv{grid-column:4;justify-self:end;display:flex;color:var(--muted)}
-.grp li.me .tv{color:var(--val)}
+.tv{grid-column:4;justify-self:end;display:flex;align-items:center;gap:10px;color:var(--muted)}
+.tv.adm{justify-self:stretch}
+.fk{display:flex;margin-left:auto}
+.grp li.me .fk{color:var(--val)}
+/* admin: “Segna come disponibile” subito dopo il ruolo */
+.mk{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);font:700 13px var(--font);color:var(--val);cursor:pointer;white-space:nowrap}
+.mk:disabled{opacity:.5;cursor:default}
+@media (max-width:480px){.mk{gap:4px;padding:0 8px}.mk .lg{display:none}}
 /* sui telefoni la riga è stretta: numero, spazi e distanza dal ruolo più piccoli, così nome e “A tavola” restano su una riga */
 @media (max-width:480px){.pos{margin-left:12px}.grp,.pl,.sqg{column-gap:8px;grid-template-columns:28px minmax(0,max-content) auto minmax(max-content,1fr)}.grp .nr,.pl .nr{width:28px;height:28px;font-size:14px}}
 .ph{margin:12px 0 0;font-size:12.5px;font-weight:700;letter-spacing:.03em;color:var(--muted)}
@@ -425,7 +431,9 @@ let LIVE = true;   // false se l’ultimo aggiornamento da Firebase non è riusc
 let presences = {}, results = {}, callups = {};
 const MAX_CONV = 20;   // massimo convocati per partita
 let STAFF = '';   // codice staff, se questo dispositivo è entrato nell’area staff
-try{ const m = JSON.parse(localStorage.getItem(K('mio')) || '{}'); S.role = m.role || S.role; S.pick = m.pick || ''; STAFF = localStorage.getItem(K('staff')) || ''; }catch(e){}
+let ADMIN = '';   // codice admin: fa tutto quello che fa lo staff e può segnare disponibili gli altri
+const staffOn = () => !!(STAFF || ADMIN);
+try{ const m = JSON.parse(localStorage.getItem(K('mio')) || '{}'); S.role = m.role || S.role; S.pick = m.pick || ''; STAFF = localStorage.getItem(K('staff')) || ''; ADMIN = localStorage.getItem(K('admin')) || ''; }catch(e){}
 
 function useMatches(list){
   MATCHES = list.map(m => Object.assign({}, m, {base:{score:m.score || '', scorers:m.scorers || ''}})); applyResults();
@@ -596,8 +604,8 @@ async function save(matchId, rec){
 const TS = {'.sv':'timestamp'};
 const patch = body => fetch(BASE + '.json', {method:'PATCH', body:JSON.stringify(body)});
 // true = codice staff giusto, false = sbagliato; lancia un errore se manca la connessione
-async function staffCheck(code){
-  const r = await patch({[`proof/${code}/_check`]: TS});
+async function staffCheck(code, node = 'proof'){
+  const r = await patch({[`${node}/${code}/_check`]: TS});
   if(r.status === 401 || r.status === 403) return false;
   if(!r.ok) throw new Error(r.status);
   return true;
@@ -646,6 +654,7 @@ const LOCK = '<svg class="lk" width="16" height="16" viewBox="0 0 24 24" fill="n
 const KEY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>';
 const FORK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>';   // forchetta e coltello (a tavola)
 const COPY = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>';
+const PLUS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
 const CLOCK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 const okDiv = () => S.done && S.bad ? `<div class="ok bad" id="ok">${WARN}<span>${esc(S.done)}</span></div>` : `<div class="ok" id="ok">${esc(S.done)}${S.undo && S.tab === 'me' ? `${S.done ? '' : 'Risposta salvata.'} <button type="button" class="link" data-undo="1">Annulla</button>` : ''}</div>`;
 // link alla partita: #<id> nell’indirizzo, così si può mandare nel gruppo
@@ -673,11 +682,11 @@ function callup(){
   const c = callups[S.sel], sel = (c && c.giocatori) || {};
   return {auto:false, decided:!!c, av, list:av.filter(x => sel[slug(x.nome)])};
 }
-// Solo lo staff può salvare: insieme ai convocati si scrive la prova sotto proof/<codice staff>
+// Solo lo staff (o l’admin) può salvare: insieme ai convocati si scrive la prova sotto proof/<codice staff> (admin/<codice admin>)
 async function saveCallup(id, keys){
   try{
     const giocatori = Object.fromEntries(keys.map(k => [k, true]));
-    const r = await patch({[`convocati/${id}`]: {giocatori, ts:TS}, [`proof/${STAFF}/${id}`]: TS});
+    const r = await patch({[`convocati/${id}`]: {giocatori, ts:TS}, [ADMIN ? `admin/${ADMIN}/${id}` : `proof/${STAFF}/${id}`]: TS});
     if(!r.ok) return false;
     callups[id] = {giocatori};
     return true;
@@ -719,7 +728,7 @@ function drawBody(){
   const b = $('#body');
   document.querySelectorAll('.tab').forEach(t => { const on = t.dataset.tab === S.tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; if(on) b.setAttribute('aria-labelledby', t.id); });
   if(S.tab === 'conv'){
-    if(!STAFF){
+    if(!staffOn()){
       b.innerHTML = `
       <div class="step"><div class="num">${KEY}</div><div><h2>Convocazioni</h2><p>Riservato allo staff: inserisci il codice staff. Te lo chiediamo una volta sola su questo dispositivo.</p></div></div>
       <form id="staffform"><label for="staffcode">Codice staff</label>
@@ -729,7 +738,7 @@ function drawBody(){
       return;
     }
     renderConv(b);
-    b.insertAdjacentHTML('beforeend', '<p class="staffout"><button class="link" data-staffout="1">Esci dall’area staff</button></p>');
+    b.insertAdjacentHTML('beforeend', `<p class="staffout"><button class="link" data-staffout="1">Esci dall’area ${ADMIN ? 'admin' : 'staff'}</button></p>`);
     return;
   }
   if(S.tab === 'ris'){
@@ -756,8 +765,10 @@ function drawBody(){
   }
   if(S.tab === 'sq'){
     const a = answers(), names = new Set(a.map(x => slug(x.nome)));
-    // a destra: forchetta e coltello per chi resta a tavola
-    const li = x => `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}>${row(x, x.tavola === 'si' ? `<span class="tv" role="img" aria-label="A tavola" title="A tavola">${FORK}</span>` : '<span class="tv"></span>')}</li>`;
+    // a destra: forchetta e coltello per chi resta a tavola; l’admin ha anche “Segna come disponibile” accanto al ruolo
+    const fork = x => x.tavola === 'si' ? `<span class="fk" role="img" aria-label="A tavola" title="A tavola">${FORK}</span>` : '';
+    const mark = x => ADMIN && x.stato !== 'si' ? `<button type="button" class="mk" data-mark="${esc(slug(x.nome))}" aria-label="Segna ${esc(x.nome)} come disponibile">${PLUS}<span><span class="lg">Segna come </span>disponibile</span></button>` : '';
+    const li = x => `<li${slug(x.nome) === slug(S.pick || '') ? ' class="me"' : ''}>${row(x, `<span class="tv${mark(x) ? ' adm' : ''}">${mark(x)}${fork(x)}</span>`)}</li>`;
     const ul = arr => `<ul>${arr.map(li).join('') || '<li class="none">Ancora nessuno</li>'}</ul>`;
     // split = calciatori disponibili raggruppati per ruolo
     const grp = (t, arr, keep, split) => !arr.length && !keep ? '' : `<div class="grp"><h3>${t} (${arr.length})</h3>${split && arr.length ? byPos(arr).map(([h, a]) => `<h4 class="ph">${h}</h4>` + ul(a)).join('') : ul(arr)}</div>`;
@@ -779,7 +790,8 @@ function drawBody(){
         present(role) + grp('Assenti', ra.filter(x => x.stato === 'no')) + grp('Da confermare', rw) + '</div>';
     };
     S.sqSig = sqSig();
-    const tools = over(match()) ? '' : `<div class="sqtools"><button type="button" class="btn2" data-remind="1">${COPY}Copia promemoria</button><p>Il messaggio per il gruppo WhatsApp: partita, ritrovo, quanti mancano (i nomi solo quando sono 10 o meno) e il link per rispondere.</p></div>${S.remindText ? `<label for="rtext">Testo del promemoria</label><textarea id="rtext" class="rt" readonly rows="6">${esc(S.remindText)}</textarea>` : ''}${okDiv()}`;
+    const aUndo = S.aUndo && S.aUndo.id === S.sel ? ' <button type="button" class="link" data-aundo="1">Annulla</button></div>' : '</div>';
+    const tools = over(match()) ? okDiv().replace('</div>', aUndo) : `<div class="sqtools"><button type="button" class="btn2" data-remind="1">${COPY}Copia promemoria</button><p>Il messaggio per il gruppo WhatsApp: partita, ritrovo, quanti mancano (i nomi solo quando sono 10 o meno) e il link per rispondere.</p></div>${S.remindText ? `<label for="rtext">Testo del promemoria</label><textarea id="rtext" class="rt" readonly rows="6">${esc(S.remindText)}</textarea>` : ''}${okDiv().replace('</div>', aUndo)}`;
     b.innerHTML = tools + sec('calciatore', 'Calciatori') + sec('dirigente', 'Dirigenti');
     return;
   }
@@ -916,8 +928,8 @@ function acChoose(name){
 function renderTop(){
   $('#outbtn').hidden = false;
   const t = $('#t-conv');
-  t.innerHTML = 'Convocazioni' + (STAFF ? '' : LOCK);
-  t.title = STAFF ? '' : 'Riservato allo staff';
+  t.innerHTML = 'Convocazioni' + (staffOn() ? '' : LOCK);
+  t.title = staffOn() ? '' : 'Riservato allo staff';
 }
 // Gol per giocatore sommando i marcatori di tutte le partite con un risultato
 function renderRank(){
@@ -957,7 +969,7 @@ function ask(title, text, ok){
 // cambia partita: ridisegna, annuncia e aggiorna l’indirizzo (#id) per poterlo condividere
 function selectMatch(id){
   if(!MATCHES.some(m => m.id === id)) return;
-  S.sel = id; S.done = ''; S.fix = false; S.undo = null; S.rUndo = null; S.remindText = ''; S.rFor = S.cFor = '';
+  S.sel = id; S.done = ''; S.fix = false; S.undo = null; S.rUndo = null; S.aUndo = null; S.remindText = ''; S.rFor = S.cFor = '';
   try{ history.replaceState(null, '', '#' + id); }catch(x){}
   renderAll(); announce(vs(match()) + ', ' + dShort(match().date));
 }
@@ -984,14 +996,37 @@ document.addEventListener('click', async e => {
   else if(d.edit !== undefined){ S.edit = d.edit === '1'; S.typed = ''; S.list = false; S.focus = S.edit ? '#typed' : '[data-edit="1"]'; renderBody(); }
   else if(d.list){ S.list = true; S.focus = '#pick'; renderBody(); }
   else if(d.fix){ S.fix = true; S.focus = '[data-stato="si"]'; renderBody(); }
-  else if(d.out){ if(!await ask('Uscire da questo dispositivo?', 'Per rientrare servirà di nuovo il codice squadra.', 'Esci')) return; try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); }catch(x){} location.reload(); }
-  else if(d.staffout){ if(!await ask('Uscire dall’area staff?', 'Su questo dispositivo servirà di nuovo il codice staff per le convocazioni.', 'Esci')) return; STAFF = ''; S.done = ''; try{ localStorage.removeItem(K('staff')); }catch(x){} renderBody(); renderTop(); }
+  else if(d.out){ if(!await ask('Uscire da questo dispositivo?', 'Per rientrare servirà di nuovo il codice squadra.', 'Esci')) return; try{ localStorage.removeItem(K('codice')); localStorage.removeItem(K('staff')); localStorage.removeItem(K('admin')); }catch(x){} location.reload(); }
+  else if(d.staffout){ const a = ADMIN ? 'admin' : 'staff'; if(!await ask(`Uscire dall’area ${a}?`, `Su questo dispositivo servirà di nuovo il codice ${a} per le convocazioni.`, 'Esci')) return; STAFF = ADMIN = ''; S.done = ''; S.aUndo = null; try{ localStorage.removeItem(K('staff')); localStorage.removeItem(K('admin')); }catch(x){} renderBody(); renderTop(); }
   else if(t.id === 'staffgo'){
+    // lo stesso campo accetta il codice staff e quello admin
     const code = normCode($('#staffcode').value);
-    try{ say(code && await staffCheck(code) ? '' : 'Codice staff errato. Riprova.', true); }
+    let as = '';
+    try{ as = !code ? '' : await staffCheck(code) ? 'staff' : await staffCheck(code, 'admin') ? 'admin' : ''; say(as ? '' : 'Codice staff errato. Riprova.', true); }
     catch(x){ say('Non riesco a collegarmi. Controlla la connessione e riprova.', true); }
-    if(!S.done){ STAFF = code; try{ localStorage.setItem(K('staff'), code); }catch(x){} S.done = ''; S.tab = 'conv'; S.cFor = ''; renderTop(); }
+    if(as){ if(as === 'admin') ADMIN = code; else STAFF = code; try{ localStorage.setItem(K(as), code); }catch(x){} S.done = ''; S.tab = 'conv'; S.cFor = ''; renderTop(); }
     renderBody();
+  }
+  else if(d.mark && ADMIN && !S.busy){
+    // l’admin segna disponibile chi non ha risposto o ha detto no; a tavola resta com’era (“no” se non aveva risposto)
+    const r = ROSTER.find(x => slug(x.name) === d.mark); if(!r) return;
+    const id = S.sel, prev = (presences[id] || {})[d.mark] || null;
+    S.busy = true; t.disabled = true;
+    const ok = await save(id, {nome:r.name, ruolo:r.role, stato:'si', tavola:prev ? prev.tavola : 'no'});
+    S.busy = false;
+    S.aUndo = ok ? {id, key:d.mark, prev} : null;
+    say(ok ? `${r.name} segnato come disponibile.` : 'Non sono riuscito a salvare. Controlla la connessione e riprova.', !ok);
+    S.focus = ok ? '[data-aundo]' : ''; renderStats(); renderBody();
+  }
+  else if(d.aundo && S.aUndo){
+    const u = S.aUndo; S.aUndo = null;
+    try{
+      const res = await fetch(`${BASE}/presenze/${u.id}/${u.key}.json`, u.prev ? {method:'PUT', body:JSON.stringify(u.prev)} : {method:'DELETE'});
+      if(!res.ok) throw 0;
+      if(u.prev) presences[u.id][u.key] = u.prev; else delete presences[u.id][u.key];
+      say('Annullato.');
+    }catch(x){ say('Non sono riuscito ad annullare. Controlla la connessione e riprova.', true); }
+    S.focus = `[data-mark="${u.key}"]`; renderStats(); renderBody();
   }
   else if(t.id === 'csave'){
     t.disabled = true; t.textContent = 'Salvataggio…';
