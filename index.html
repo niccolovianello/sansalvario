@@ -924,7 +924,9 @@ function acRender(){
 }
 function acChoose(name){
   const r = ROSTER.find(x => x.name === name); if(!r) return;
-  S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; S.edit = false; S.list = false; S.focus = '#body [data-stato="si"]'; renderBody();
+  S.pick = r.name; S.role = r.role; S.typed = ''; S.done = ''; S.edit = false; S.list = false; S.focus = '#body [data-stato="si"]';
+  try{ localStorage.setItem(K('mio'), JSON.stringify({role:r.role, pick:r.name})); }catch(x){}   // il dispositivo ricorda subito chi è stato scelto
+  renderBody();
 }
 // Scheda Convocazioni: sempre visibile, col lucchetto finché non si inserisce il codice staff
 function renderTop(){
@@ -981,7 +983,6 @@ async function submit(){
   const prev = mine() || null, upd = !!prev, ok = await save(S.sel, {nome:r.name, ruolo:r.role, stato:S.stato, tavola:S.tavola});
   S.busy = false;
   S.undo = ok ? {id:S.sel, prev} : null;
-  if(ok) try{ localStorage.setItem(K('mio'), JSON.stringify({role:r.role, pick:r.name})); }catch(x){}
   return {ok, upd};
 }
 const thanks = (res, m) => !res.ok ? 'Non sono riuscito a salvare. Controlla la connessione e riprova.'
