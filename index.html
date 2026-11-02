@@ -722,8 +722,8 @@ function renderStats(){
   const wait = ROSTER.filter(r => !names.has(slug(r.name))).length;
   const done = over(match());   // a partita finita “da confermare” diventa “senza risposta”
   if(!$('#stats')) return;
-  $('#stats').outerHTML = `<span id="stats" style="display:contents"><span class="c"><b>${yes.length}</b>${yes.length === 1 ? 'disponibile' : 'disponibili'}</span><span class="c"><b>${tav}</b>a tavola</span><span class="c"><b>${wait}</b>${done ? 'senza risposta' : 'da confermare'}</span></span>`;
-  $('#split').textContent = `${pl(np, 'calciatore', 'calciatori')} · ${pl(dr, 'dirigente', 'dirigenti')} · ${pl(no.length, 'assente', 'assenti')}`;
+  $('#stats').outerHTML = `<span id="stats" style="display:contents"><span class="c"><b>${np}</b>${np === 1 ? 'calciatore disponibile' : 'calciatori disponibili'}</span><span class="c"><b>${tav}</b>a tavola</span><span class="c"><b>${wait}</b>${done ? 'senza risposta' : 'da confermare'}</span></span>`;
+  $('#split').textContent = `${pl(dr, 'dirigente disponibile', 'dirigenti disponibili')} · ${pl(no.length, 'assente', 'assenti')}`;
   $('#sqn').textContent = ROSTER.length;
 }
 function drawBody(){
